@@ -99,7 +99,9 @@
       "TEAM_MESSAGE_INPUT_PLACEHOLDER": "Introduzca su mensaje aquí",
       "TEAM_DROPDOWN_PLACEHOLDER": "Seleccionar equipos",
       "EMAIL_INPUT_PLACEHOLDER": "Introducir email",
-      "URL_INPUT_PLACEHOLDER": "Introducir URL"
+      "URL_INPUT_PLACEHOLDER": "Introducir URL",
+      "DEAL_VALUE_INPUT_PLACEHOLDER": "Ingrese valor de oportunidad (ej. 1000,50)",
+      "NEXT_FOLLOW_UP_MINUTES_INPUT_PLACEHOLDER": "Ingrese minutos para el próximo seguimiento (ej. 60)"
     },
     "TOGGLE": {
       "ACTIVATION_TITLE": "Activar regla de automatización",
@@ -125,7 +127,10 @@
       "FILTER_OPERATOR_REQUIRED": "El operador de filtro es requerido",
       "VALUE_REQUIRED": "El valor es requerido",
       "VALUE_MUST_BE_BETWEEN_1_AND_998": "El valor debe ser entre 1 y 998",
+      "VALUE_MUST_BE_GREATER_THAN_0": "El valor debe ser mayor que 0",
       "ACTION_PARAMETERS_REQUIRED": "Se requieren parámetros de acción",
+      "DEAL_VALUE_MUST_BE_VALID_NUMBER": "El valor de oportunidad debe ser un número válido mayor o igual a 0",
+      "NEXT_FOLLOW_UP_MINUTES_MUST_BE_VALID_NUMBER": "Los minutos de seguimiento deben ser un número válido mayor que 0",
       "ATLEAST_ONE_CONDITION_REQUIRED": "Se requiere al menos una condición",
       "ATLEAST_ONE_ACTION_REQUIRED": "Se requiere al menos una acción"
     },
@@ -135,7 +140,8 @@
       "CONVERSATION_UPDATED": "Conversación actualizada",
       "MESSAGE_CREATED": "Mensaje creado",
       "CONVERSATION_RESOLVED": "Conversación Resuelta",
-      "CONVERSATION_OPENED": "Conversación abierta"
+      "CONVERSATION_OPENED": "Conversación abierta",
+      "PERIODIC_CHECK": "Chequeo periódico (cada 10 minutos)"
     },
     "ACTIONS": {
       "ASSIGN_AGENT": "Asignar al agente",
@@ -152,6 +158,9 @@
       "SEND_MESSAGE": "Enviar mensaje",
       "ADD_PRIVATE_NOTE": "Añadir una nota privada",
       "CHANGE_PRIORITY": "Cambiar prioridad",
+      "CHANGE_DEAL_STAGE": "Cambiar etapa de oportunidad",
+      "CHANGE_DEAL_VALUE": "Cambiar valor de oportunidad",
+      "CHANGE_NEXT_FOLLOW_UP_IN_MINUTES": "Definir próximo seguimiento en minutos",
       "ADD_SLA": "Añadir SLA",
       "OPEN_CONVERSATION": "Abrir conversación",
       "PENDING_CONVERSATION": "Marca la conversación como pendiente"
@@ -166,6 +175,19 @@
       "MEDIUM": "Media",
       "HIGH": "Alta",
       "URGENT": "Urgente"
+    },
+    "DEAL_STAGE_TYPES": {
+      "INCOMING": "Entrante",
+      "CONTACTED": "Contactado",
+      "QUALIFIED": "Calificado",
+      "PROPOSAL": "Propuesta",
+      "WON": "Ganado",
+      "LOST": "Perdido"
+    },
+    "LAST_REPLY_TYPES": {
+      "AGENT": "Agente",
+      "CUSTOMER": "Cliente",
+      "NONE": "Sin respuesta aún"
     },
     "ATTRIBUTES": {
       "MESSAGE_TYPE": "Tipo de mensaje",
@@ -182,6 +204,13 @@
       "ASSIGNEE_NAME": "Asignado a",
       "TEAM_NAME": "Equipo",
       "PRIORITY": "Prioridad",
+      "DEAL_STAGE": "Etapa de oportunidad",
+      "DEAL_VALUE": "Valor de oportunidad",
+      "CREATED_AT": "Fecha de creación",
+      "LAST_ACTIVITY_AT": "Fecha de última actividad",
+      "NEXT_FOLLOW_UP_AT": "Próximo seguimiento",
+      "LAST_CONTACTED_AT": "Fecha de último contacto",
+      "LAST_REPLY_TYPE": "Última respuesta de",
       "LABELS": "Etiquetas"
     }
   }

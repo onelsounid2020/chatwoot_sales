@@ -33,6 +33,7 @@ export default {
     regexCue: { type: String, default: null },
     attributeKey: { type: String, required: true },
     contactId: { type: Number, default: null },
+    forceResolveRequiredMissing: { type: Boolean, default: false },
   },
   emits: ['update', 'delete', 'copy'],
   setup() {
@@ -42,6 +43,7 @@ export default {
     return {
       isEditing: false,
       editedValue: null,
+      isResolveRequiredMissing: false,
     };
   },
   computed: {
@@ -86,6 +88,9 @@ export default {
     hasValue() {
       return this.value !== null && this.value !== '';
     },
+    isMarkedResolveRequiredMissing() {
+      return this.forceResolveRequiredMissing || this.isResolveRequiredMissing;
+    },
     urlValue() {
       return isValidURL(this.value) ? this.value : '---';
     },
@@ -117,6 +122,9 @@ export default {
     value() {
       this.isEditing = false;
       this.editedValue = this.formattedValue;
+      if (this.hasValue) {
+        this.isResolveRequiredMissing = false;
+      }
     },
     contactId() {
       // Fix to solve validation not resetting when contactId changes in contact page
@@ -144,15 +152,27 @@ export default {
   mounted() {
     this.editedValue = this.formattedValue;
     emitter.on(BUS_EVENTS.FOCUS_CUSTOM_ATTRIBUTE, this.onFocusAttribute);
+    emitter.on(
+      BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+      this.onResolveRequirementsBlocked
+    );
   },
   unmounted() {
     emitter.off(BUS_EVENTS.FOCUS_CUSTOM_ATTRIBUTE, this.onFocusAttribute);
+    emitter.off(
+      BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+      this.onResolveRequirementsBlocked
+    );
   },
   methods: {
     onFocusAttribute(focusAttributeKey) {
       if (this.attributeKey === focusAttributeKey) {
         this.onEdit();
       }
+    },
+    onResolveRequirementsBlocked(payload = {}) {
+      const missingKeys = payload?.missingAttributeKeys || [];
+      this.isResolveRequiredMissing = missingKeys.includes(this.attributeKey);
     },
     focusInput() {
       if (this.$refs.inputfield) {
@@ -185,6 +205,7 @@ export default {
         return;
       }
       this.isEditing = false;
+      this.isResolveRequiredMissing = false;
       this.$emit('update', this.attributeKey, updatedValue);
     },
     onDelete() {
@@ -200,7 +221,14 @@ export default {
 </script>
 
 <template>
-  <div class="px-4 py-3">
+  <div
+    class="px-4 py-3 transition-colors rounded-md"
+    :class="
+      isMarkedResolveRequiredMissing
+        ? 'bg-n-ruby-3/40 border border-n-ruby-8 outline outline-1 outline-n-ruby-8'
+        : 'border border-transparent'
+    "
+  >
     <div class="flex items-center mb-1">
       <h4 class="flex items-center w-full m-0 text-sm error">
         <div v-if="isAttributeTypeCheckbox" class="flex items-center">
@@ -215,9 +243,16 @@ export default {
           <span
             class="w-full inline-flex gap-1.5 items-start font-medium whitespace-nowrap text-sm mb-0"
             :class="
-              v$.editedValue.$error ? 'text-n-ruby-11' : 'text-n-slate-12'
+              v$.editedValue.$error || isMarkedResolveRequiredMissing
+                ? 'text-n-ruby-11'
+                : 'text-n-slate-12'
             "
           >
+            <span
+              v-if="isMarkedResolveRequiredMissing"
+              class="required-marker text-n-ruby-11 font-bold"
+              aria-hidden="true"
+            />
             {{ label }}
             <HelperTextPopup
               v-if="description"
@@ -246,7 +281,11 @@ export default {
             :type="inputType"
             class="!h-8 ltr:!rounded-r-none rtl:!rounded-l-none !mb-0 !text-sm"
             autofocus="true"
-            :class="{ error: v$.editedValue.$error }"
+            :class="{
+              error: v$.editedValue.$error,
+              '!border-n-ruby-8 !text-n-ruby-11':
+                isMarkedResolveRequiredMissing,
+            }"
             @blur="v$.editedValue.$touch"
             @keyup.enter="onUpdate"
           />
@@ -313,24 +352,38 @@ export default {
       </div>
     </div>
     <div v-if="isAttributeTypeList">
-      <MultiselectDropdown
-        :options="listOptions"
-        :selected-item="selectedItem"
-        :has-thumbnail="false"
-        :multiselector-placeholder="
-          $t('CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.PLACEHOLDER')
+      <div
+        :class="
+          isMarkedResolveRequiredMissing
+            ? 'rounded-md border border-n-ruby-8 px-1 py-1'
+            : ''
         "
-        :no-search-result="
-          $t('CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.NO_RESULT')
-        "
-        :input-placeholder="
-          $t(
-            'CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.SEARCH_INPUT_PLACEHOLDER'
-          )
-        "
-        @select="onUpdateListValue"
-      />
+      >
+        <MultiselectDropdown
+          :options="listOptions"
+          :selected-item="selectedItem"
+          :has-thumbnail="false"
+          :multiselector-placeholder="
+            $t('CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.PLACEHOLDER')
+          "
+          :no-search-result="
+            $t('CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.NO_RESULT')
+          "
+          :input-placeholder="
+            $t(
+              'CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_TYPE.LIST.SEARCH_INPUT_PLACEHOLDER'
+            )
+          "
+          @select="onUpdateListValue"
+        />
+      </div>
     </div>
+    <p
+      v-if="isMarkedResolveRequiredMissing"
+      class="mt-1 mb-0 text-xs font-medium text-n-ruby-11"
+    >
+      {{ $t('CONVERSATION.SALES.RESOLVE_CHECKLIST.FIELD_REQUIRED') }}
+    </p>
   </div>
 </template>
 
@@ -347,5 +400,9 @@ export default {
   .name {
     @apply ml-0;
   }
+}
+
+.required-marker::before {
+  content: '*';
 }
 </style>

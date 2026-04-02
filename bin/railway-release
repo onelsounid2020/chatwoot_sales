@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+POSTGRES_STATEMENT_TIMEOUT=${POSTGRES_STATEMENT_TIMEOUT:-600s}
+export POSTGRES_STATEMENT_TIMEOUT
+
+bundle exec rails db:chatwoot_prepare
+
+if [[ -n "${RAILWAY_GIT_COMMIT_SHA:-}" ]]; then
+  echo "$RAILWAY_GIT_COMMIT_SHA" > .git_sha
+elif [[ -n "${SOURCE_VERSION:-}" ]]; then
+  echo "$SOURCE_VERSION" > .git_sha
+fi

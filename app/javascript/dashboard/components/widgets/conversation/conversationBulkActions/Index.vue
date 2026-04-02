@@ -14,6 +14,7 @@ import AgentSelector from './AgentSelector.vue';
 import UpdateActions from './UpdateActions.vue';
 import LabelActions from './LabelActions.vue';
 import TeamActions from './TeamActions.vue';
+import SalesActions from './SalesActions.vue';
 import CustomSnoozeModal from 'dashboard/components/CustomSnoozeModal.vue';
 export default {
   components: {
@@ -21,6 +22,7 @@ export default {
     UpdateActions,
     LabelActions,
     TeamActions,
+    SalesActions,
     CustomSnoozeModal,
     NextButton,
   },
@@ -57,6 +59,7 @@ export default {
     'assignLabels',
     'assignTeam',
     'resolveConversations',
+    'salesAction',
   ],
   data() {
     return {
@@ -64,6 +67,7 @@ export default {
       showUpdateActions: false,
       showLabelActions: false,
       showTeamsList: false,
+      showSalesActions: false,
       popoverPositions: {},
       showCustomTimeSnoozeModal: false,
     };
@@ -136,6 +140,10 @@ export default {
     assignTeam(team) {
       this.$emit('assignTeam', team);
     },
+    onSalesAction(actionKey) {
+      this.$emit('salesAction', actionKey);
+      this.showSalesActions = false;
+    },
     resolveConversations() {
       this.$emit('resolveConversations');
     },
@@ -150,6 +158,9 @@ export default {
     },
     toggleTeamsList() {
       this.showTeamsList = !this.showTeamsList;
+    },
+    toggleSalesActions() {
+      this.showSalesActions = !this.showSalesActions;
     },
   },
 };
@@ -207,6 +218,14 @@ export default {
           faded
           @click="toggleTeamsList"
         />
+        <NextButton
+          v-tooltip="$t('BULK_ACTION.SALES.TITLE')"
+          icon="i-lucide-briefcase-business"
+          slate
+          xs
+          faded
+          @click="toggleSalesActions"
+        />
       </div>
       <transition name="popover-animation">
         <LabelActions
@@ -245,6 +264,14 @@ export default {
           class="team-actions-box"
           @assign-team="assignTeam"
           @close="showTeamsList = false"
+        />
+      </transition>
+      <transition name="popover-animation">
+        <SalesActions
+          v-if="showSalesActions"
+          class="team-actions-box"
+          @apply="onSalesAction"
+          @close="showSalesActions = false"
         />
       </transition>
     </div>

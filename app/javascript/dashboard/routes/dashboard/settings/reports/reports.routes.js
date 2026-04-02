@@ -23,6 +23,7 @@ import CsatResponses from './CsatResponses.vue';
 import BotReports from './BotReports.vue';
 import LiveReports from './LiveReports.vue';
 import SLAReports from './SLAReports.vue';
+import SalesReports from './SalesReports.vue';
 
 const meta = {
   featureFlag: FEATURE_FLAGS.REPORTS,
@@ -147,6 +148,12 @@ export default {
           name: 'conversation_reports',
           meta,
           component: Index,
+        },
+        {
+          path: 'sales',
+          name: 'sales_reports',
+          meta,
+          component: SalesReports,
         },
         ...oldReportRoutes,
         ...revisedReportRoutes,

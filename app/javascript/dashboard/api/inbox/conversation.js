@@ -119,6 +119,33 @@ class ConversationApi extends ApiClient {
     });
   }
 
+  updateSalesInfo({
+    conversationId,
+    dealStage,
+    dealValue,
+    dealCurrency,
+    lostReason,
+    nextFollowUpAt,
+    lastContactedAt,
+  }) {
+    const normalizeDateField = value => {
+      if (value === null || value === undefined || value === '') return null;
+      if (typeof value === 'number') {
+        return new Date(value * 1000).toISOString();
+      }
+      return value;
+    };
+
+    return axios.patch(`${this.url}/${conversationId}`, {
+      deal_stage: dealStage,
+      deal_value: dealValue,
+      deal_currency: dealCurrency,
+      lost_reason: lostReason,
+      next_follow_up_at: normalizeDateField(nextFollowUpAt),
+      last_contacted_at: normalizeDateField(lastContactedAt),
+    });
+  }
+
   fetchParticipants(conversationId) {
     return axios.get(`${this.url}/${conversationId}/participants`);
   }

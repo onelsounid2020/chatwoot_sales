@@ -1,7 +1,9 @@
 class AddCachedLabelsList < ActiveRecord::Migration[7.0]
-  def change
+  def up
     add_column :conversations, :cached_label_list, :string
-    Conversation.reset_column_information
-    ActsAsTaggableOn::Taggable::Cache.included(Conversation)
+  end
+
+  def down
+    remove_column :conversations, :cached_label_list
   end
 end

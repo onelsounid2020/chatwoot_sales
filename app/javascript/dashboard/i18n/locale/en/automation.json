@@ -99,7 +99,9 @@
       "TEAM_MESSAGE_INPUT_PLACEHOLDER": "Enter your message here",
       "TEAM_DROPDOWN_PLACEHOLDER": "Select teams",
       "EMAIL_INPUT_PLACEHOLDER": "Enter email",
-      "URL_INPUT_PLACEHOLDER": "Enter URL"
+      "URL_INPUT_PLACEHOLDER": "Enter URL",
+      "DEAL_VALUE_INPUT_PLACEHOLDER": "Enter deal value (e.g. 1000.50)",
+      "NEXT_FOLLOW_UP_MINUTES_INPUT_PLACEHOLDER": "Enter minutes until next follow-up (e.g. 60)"
     },
     "TOGGLE": {
       "ACTIVATION_TITLE": "Activate Automation Rule",
@@ -125,7 +127,10 @@
       "FILTER_OPERATOR_REQUIRED": "Filter operator is required",
       "VALUE_REQUIRED": "Value is required",
       "VALUE_MUST_BE_BETWEEN_1_AND_998": "Value must be between 1 and 998",
+      "VALUE_MUST_BE_GREATER_THAN_0": "Value must be greater than 0",
       "ACTION_PARAMETERS_REQUIRED": "Action parameters are required",
+      "DEAL_VALUE_MUST_BE_VALID_NUMBER": "Deal value must be a valid number greater than or equal to 0",
+      "NEXT_FOLLOW_UP_MINUTES_MUST_BE_VALID_NUMBER": "Follow-up minutes must be a valid number greater than 0",
       "ATLEAST_ONE_CONDITION_REQUIRED": "At least one condition is required",
       "ATLEAST_ONE_ACTION_REQUIRED": "At least one action is required"
     },
@@ -135,7 +140,8 @@
       "CONVERSATION_UPDATED": "Conversation Updated",
       "MESSAGE_CREATED": "Message Created",
       "CONVERSATION_RESOLVED": "Conversation Resolved",
-      "CONVERSATION_OPENED": "Conversation Opened"
+      "CONVERSATION_OPENED": "Conversation Opened",
+      "PERIODIC_CHECK": "Periodic Check (every 10 minutes)"
     },
     "ACTIONS": {
       "ASSIGN_AGENT": "Assign to Agent",
@@ -152,6 +158,9 @@
       "SEND_MESSAGE": "Send a Message",
       "ADD_PRIVATE_NOTE": "Add a Private Note",
       "CHANGE_PRIORITY": "Change Priority",
+      "CHANGE_DEAL_STAGE": "Change deal stage",
+      "CHANGE_DEAL_VALUE": "Change deal value",
+      "CHANGE_NEXT_FOLLOW_UP_IN_MINUTES": "Set next follow-up in minutes",
       "ADD_SLA": "Add SLA",
       "OPEN_CONVERSATION": "Open conversation",
       "PENDING_CONVERSATION": "Mark conversation as pending"
@@ -166,6 +175,19 @@
       "MEDIUM": "Medium",
       "HIGH": "High",
       "URGENT": "Urgent"
+    },
+    "DEAL_STAGE_TYPES": {
+      "INCOMING": "Incoming",
+      "CONTACTED": "Contacted",
+      "QUALIFIED": "Qualified",
+      "PROPOSAL": "Proposal",
+      "WON": "Won",
+      "LOST": "Lost"
+    },
+    "LAST_REPLY_TYPES": {
+      "AGENT": "Agent",
+      "CUSTOMER": "Customer",
+      "NONE": "No reply yet"
     },
     "ATTRIBUTES": {
       "MESSAGE_TYPE": "Message Type",
@@ -182,6 +204,13 @@
       "ASSIGNEE_NAME": "Assignee",
       "TEAM_NAME": "Team",
       "PRIORITY": "Priority",
+      "DEAL_STAGE": "Deal stage",
+      "DEAL_VALUE": "Deal value",
+      "CREATED_AT": "Created at",
+      "LAST_ACTIVITY_AT": "Last activity at",
+      "NEXT_FOLLOW_UP_AT": "Next follow-up at",
+      "LAST_CONTACTED_AT": "Last contacted at",
+      "LAST_REPLY_TYPE": "Last reply by",
       "LABELS": "Labels"
     }
   }

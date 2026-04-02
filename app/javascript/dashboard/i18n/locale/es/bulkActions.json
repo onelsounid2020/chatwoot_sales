@@ -40,6 +40,15 @@
       "ASSIGN_SELECTED_TEAMS": "Asignar equipo seleccionado.",
       "ASSIGN_SUCCESFUL": "Equipos asignados correctamente.",
       "ASSIGN_FAILED": "Error al asignar equipo, inténtelo de nuevo."
+    },
+    "SALES": {
+      "TITLE": "Acciones comerciales",
+      "SET_STAGE_CONTACTED": "Mover etapa a Contactado",
+      "SET_STAGE_PROPOSAL": "Mover etapa a Propuesta",
+      "SET_FOLLOW_UP_1H": "Programar seguimiento +1 hora",
+      "SET_FOLLOW_UP_24H": "Programar seguimiento +24 horas",
+      "SUCCESS": "Acción comercial aplicada correctamente.",
+      "FAILED": "No se pudo aplicar la acción comercial. Inténtalo de nuevo."
     }
   }
 }

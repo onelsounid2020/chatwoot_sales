@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import Draggable from 'vuedraggable';
 import { useToggle } from '@vueuse/core';
 import { useRoute } from 'vue-router';
@@ -8,6 +8,8 @@ import { useAlert } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import { copyTextToClipboard } from 'shared/helpers/clipboard';
+import { emitter } from 'shared/helpers/mitt';
+import { BUS_EVENTS } from 'shared/constants/busEvents';
 import CustomAttribute from 'dashboard/components/CustomAttribute.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
 
@@ -40,6 +42,7 @@ const { t } = useI18n();
 const { uiSettings, updateUISettings } = useUISettings();
 
 const dragging = ref(false);
+const missingAttributeKeysForResolve = ref([]);
 
 const [showAllAttributes, toggleShowAllAttributes] = useToggle(false);
 
@@ -211,6 +214,10 @@ const onUpdate = async (key, value) => {
         customAttributes: updatedAttributes,
       });
     }
+    missingAttributeKeysForResolve.value =
+      missingAttributeKeysForResolve.value.filter(
+        attributeKey => attributeKey !== key
+      );
     useAlert(t('CUSTOM_ATTRIBUTES.FORM.UPDATE.SUCCESS'));
   } catch (error) {
     const errorMessage =
@@ -246,8 +253,47 @@ const onCopy = async attributeValue => {
   useAlert(t('CUSTOM_ATTRIBUTES.COPY_SUCCESSFUL'));
 };
 
+function onResolveRequirementsBlocked(payload) {
+  const missingItems = payload?.missingItems || [];
+  const relevantPrefix =
+    props.attributeType === 'conversation_attribute'
+      ? 'conversation_'
+      : 'contact_';
+  const relevantMissingItems = missingItems.filter(item =>
+    item.key?.startsWith(relevantPrefix)
+  );
+  const hasRelevantMissing = relevantMissingItems.length > 0;
+  missingAttributeKeysForResolve.value = relevantMissingItems
+    .map(
+      item =>
+        item.attributeKey ||
+        String(item.key || '')
+          .replace(relevantPrefix, '')
+          .trim()
+    )
+    .filter(Boolean);
+
+  if (!hasRelevantMissing || showAllAttributes.value) return;
+
+  showAllAttributes.value = true;
+  updateUISettings({
+    [`show_all_attributes_${props.attributeFrom}`]: true,
+  });
+}
+
 onMounted(() => {
   initializeSettings();
+  emitter.on(
+    BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+    onResolveRequirementsBlocked
+  );
+});
+
+onUnmounted(() => {
+  emitter.off(
+    BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+    onResolveRequirementsBlocked
+  );
 });
 
 const evenClass = [
@@ -292,6 +338,9 @@ const evenClass = [
               :label="element.attribute_display_name"
               :description="element.attribute_description"
               :value="element.value"
+              :force-resolve-required-missing="
+                missingAttributeKeysForResolve.includes(element.attribute_key)
+              "
               show-actions
               :attribute-regex="element.regex_pattern"
               :regex-cue="element.regex_cue"

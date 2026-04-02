@@ -19,6 +19,8 @@ const props = defineProps({
   phoneNumber: { type: String, default: '' },
   thumbnail: { type: String, default: '' },
   availabilityStatus: { type: String, default: null },
+  leadStage: { type: String, default: '' },
+  dealValue: { type: [String, Number], default: null },
   isExpanded: { type: Boolean, default: false },
   isUpdating: { type: Boolean, default: false },
   selectable: { type: Boolean, default: false },
@@ -42,6 +44,8 @@ const getInitialContactData = () => ({
   name: props.name,
   email: props.email,
   phoneNumber: props.phoneNumber,
+  leadStage: props.leadStage,
+  dealValue: props.dealValue,
   additionalAttributes: props.additionalAttributes,
 });
 
@@ -81,6 +85,31 @@ const formattedLocation = computed(() => {
   return [countryDetails.value.city, countryDetails.value.name]
     .filter(Boolean)
     .join(' ');
+});
+
+const stageLabel = computed(() =>
+  props.leadStage
+    ? t(`CONTACTS_LAYOUT.SALES.STAGES.${props.leadStage.toUpperCase()}`)
+    : ''
+);
+
+const dealValueFormatted = computed(() => {
+  if (
+    props.dealValue === null ||
+    props.dealValue === undefined ||
+    props.dealValue === ''
+  ) {
+    return '';
+  }
+
+  const numericValue = Number(props.dealValue);
+  if (Number.isNaN(numericValue)) return '';
+
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2,
+  }).format(numericValue);
 });
 
 const handleFormUpdate = updatedData => {
@@ -160,6 +189,18 @@ const handleAvatarHover = isHovered => {
               >
                 {{ additionalAttributes.companyName }}
               </span>
+            </span>
+            <span
+              v-if="stageLabel"
+              class="px-2 py-0.5 text-xs rounded-full bg-n-alpha-2 text-n-slate-12"
+            >
+              {{ stageLabel }}
+            </span>
+            <span
+              v-if="dealValueFormatted"
+              class="text-sm font-medium text-n-slate-12"
+            >
+              {{ dealValueFormatted }}
             </span>
           </div>
           <div

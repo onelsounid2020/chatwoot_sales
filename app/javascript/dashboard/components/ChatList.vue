@@ -72,6 +72,9 @@ const props = defineProps({
   label: { type: String, default: '' },
   conversationType: { type: String, default: '' },
   foldersId: { type: [String, Number], default: 0 },
+  salesQuickView: { type: String, default: '' },
+  salesAgentId: { type: [String, Number], default: '' },
+  salesTeamId: { type: [String, Number], default: '' },
   showConversationList: { default: true, type: Boolean },
   isOnExpandedLayout: { default: false, type: Boolean },
 });
@@ -101,6 +104,7 @@ const showAddFoldersModal = ref(false);
 const showDeleteFoldersModal = ref(false);
 const isContextMenuOpen = ref(false);
 const appliedFilter = ref([]);
+const activeSalesQuickView = ref('all_sales');
 const advancedFilterTypes = ref(
   advancedFilterOptions.map(filter => ({
     ...filter,
@@ -182,6 +186,70 @@ const hasActiveFolders = computed(() => {
 const hasAppliedFiltersOrActiveFolders = computed(() => {
   return hasAppliedFilters.value || hasActiveFolders.value;
 });
+
+const salesQuickViews = computed(() => [
+  {
+    id: 'all_sales',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.ALL_SALES'),
+    filters: [],
+  },
+  {
+    id: 'missing_follow_up',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.MISSING_FOLLOW_UP'),
+    filters: [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_not_present',
+        values: [],
+      },
+    ],
+  },
+  {
+    id: 'proposal_stage',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.PROPOSAL_STAGE'),
+    filters: [
+      {
+        attributeKey: 'deal_stage',
+        filterOperator: 'equal_to',
+        values: ['proposal'],
+      },
+    ],
+  },
+  {
+    id: 'won_stage',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.WON_STAGE'),
+    filters: [
+      {
+        attributeKey: 'deal_stage',
+        filterOperator: 'equal_to',
+        values: ['won'],
+      },
+    ],
+  },
+  {
+    id: 'high_value_no_follow_up',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.HIGH_VALUE_NO_FOLLOW_UP'),
+    filters: [
+      {
+        attributeKey: 'deal_value',
+        filterOperator: 'is_present',
+        values: [],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_not_present',
+        values: [],
+      },
+    ],
+  },
+]);
 
 const currentUserDetails = computed(() => {
   const { id, name } = currentUser.value;
@@ -400,6 +468,7 @@ function fetchSavedFilteredConversations(payload) {
 
 function onApplyFilter(payload) {
   payload = useSnakeCase(payload);
+  activeSalesQuickView.value = '';
   resetBulkActions();
   foldersQuery.value = filterQueryGenerator(payload);
   store.dispatch('conversationPage/reset');
@@ -554,6 +623,7 @@ function fetchConversations() {
 
 function resetAndFetchData() {
   appliedFilter.value = [];
+  activeSalesQuickView.value = 'all_sales';
   resetBulkActions();
   store.dispatch('conversationPage/reset');
   store.dispatch('emptyAllConversations');
@@ -609,6 +679,79 @@ function onBasicFilterChange(value, type) {
     activeSortBy.value = value;
   }
   resetAndFetchData();
+}
+
+function applySalesQuickView(view) {
+  activeSalesQuickView.value = view.id;
+  if (view.id === 'all_sales') {
+    resetAndFetchData();
+    return;
+  }
+
+  const filters = JSON.parse(JSON.stringify(view.filters));
+  const snakeFilters = useSnakeCase(filters);
+  appliedFilter.value = filters;
+
+  resetBulkActions();
+  foldersQuery.value = filterQueryGenerator(snakeFilters);
+  store.dispatch('conversationPage/reset');
+  store.dispatch('emptyAllConversations');
+  store.dispatch('setConversationFilters', snakeFilters);
+  fetchFilteredConversations(filters);
+}
+
+function applySalesContextFilters() {
+  const activeViewId = props.salesQuickView || 'all_sales';
+  const activeAgentId = Number(props.salesAgentId || 0);
+  const activeTeamId = Number(props.salesTeamId || 0);
+  const quickView =
+    salesQuickViews.value.find(item => item.id === activeViewId) ||
+    salesQuickViews.value.find(item => item.id === 'all_sales');
+
+  const quickViewFilters =
+    quickView?.id && quickView.id !== 'all_sales'
+      ? JSON.parse(JSON.stringify(quickView.filters || []))
+      : [];
+
+  const agentFilter = activeAgentId
+    ? [
+        {
+          attributeKey: 'assignee_id',
+          filterOperator: 'equal_to',
+          values: [activeAgentId],
+          queryOperator: quickViewFilters.length ? 'and' : undefined,
+        },
+      ]
+    : [];
+
+  const teamFilter = activeTeamId
+    ? [
+        {
+          attributeKey: 'team_id',
+          filterOperator: 'equal_to',
+          values: [activeTeamId],
+          queryOperator:
+            quickViewFilters.length || agentFilter.length ? 'and' : undefined,
+        },
+      ]
+    : [];
+
+  const combinedFilters = [...quickViewFilters, ...agentFilter, ...teamFilter];
+  activeSalesQuickView.value = quickView?.id || 'all_sales';
+
+  if (!combinedFilters.length) {
+    resetAndFetchData();
+    return;
+  }
+
+  const snakeFilters = useSnakeCase(combinedFilters);
+  appliedFilter.value = combinedFilters;
+  resetBulkActions();
+  foldersQuery.value = filterQueryGenerator(snakeFilters);
+  store.dispatch('conversationPage/reset');
+  store.dispatch('emptyAllConversations');
+  store.dispatch('setConversationFilters', snakeFilters);
+  fetchFilteredConversations(combinedFilters);
 }
 
 function openLastSavedItemInFolder() {
@@ -786,6 +929,39 @@ function onContextMenuToggle(state) {
   isContextMenuOpen.value = state;
 }
 
+async function onBulkSalesAction(actionKey) {
+  try {
+    const fields = {};
+    if (actionKey === 'set_stage_contacted') {
+      fields.deal_stage = 'contacted';
+    } else if (actionKey === 'set_stage_proposal') {
+      fields.deal_stage = 'proposal';
+    } else if (actionKey === 'set_follow_up_1h') {
+      fields.next_follow_up_at = new Date(
+        Date.now() + 60 * 60 * 1000
+      ).toISOString();
+    } else if (actionKey === 'set_follow_up_24h') {
+      fields.next_follow_up_at = new Date(
+        Date.now() + 24 * 60 * 60 * 1000
+      ).toISOString();
+    } else {
+      return;
+    }
+
+    await store.dispatch('bulkActions/process', {
+      type: 'Conversation',
+      ids: selectedConversations.value,
+      fields,
+    });
+
+    resetBulkActions();
+    useAlert(t('BULK_ACTION.SALES.SUCCESS'));
+    fetchConversations();
+  } catch (error) {
+    useAlert(t('BULK_ACTION.SALES.FAILED'));
+  }
+}
+
 function toggleSelectAll(check) {
   selectAllConversations(check, conversationList);
 }
@@ -801,6 +977,7 @@ onMounted(() => {
   store.dispatch('setChatStatusFilter', activeStatus.value);
   store.dispatch('setChatSortFilter', activeSortBy.value);
   resetAndFetchData();
+  applySalesContextFilters();
   if (hasActiveFolders.value) {
     store.dispatch('campaigns/get');
   }
@@ -853,6 +1030,14 @@ watch(
 watch(
   computed(() => props.conversationType),
   () => resetAndFetchData()
+);
+watch(
+  [
+    computed(() => props.salesQuickView),
+    computed(() => props.salesAgentId),
+    computed(() => props.salesTeamId),
+  ],
+  () => applySalesContextFilters()
 );
 
 watch(activeFolder, (newVal, oldVal) => {
@@ -925,6 +1110,25 @@ watch(conversationFilters, (newVal, oldVal) => {
       is-compact
       @chat-tab-change="updateAssigneeTab"
     />
+    <div
+      v-if="!hasActiveFolders"
+      class="px-3 py-2 border-b border-n-weak flex flex-wrap gap-1"
+    >
+      <button
+        v-for="view in salesQuickViews"
+        :key="view.id"
+        type="button"
+        class="px-2 py-1 rounded-md text-xs border transition-colors"
+        :class="
+          activeSalesQuickView === view.id
+            ? 'border-n-brand text-n-brand bg-n-alpha-2'
+            : 'border-n-weak text-n-slate-11 hover:bg-n-alpha-2'
+        "
+        @click="applySalesQuickView(view)"
+      >
+        {{ view.label }}
+      </button>
+    </div>
 
     <p
       v-if="!chatListLoading && !conversationList.length"
@@ -945,6 +1149,7 @@ watch(conversationFilters, (newVal, oldVal) => {
       @update-conversations="onUpdateConversations"
       @assign-labels="onAssignLabels"
       @assign-team="onAssignTeamsForBulk"
+      @sales-action="onBulkSalesAction"
     />
     <div
       ref="conversationListRef"

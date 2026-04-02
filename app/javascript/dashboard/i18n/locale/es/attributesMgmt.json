@@ -108,7 +108,8 @@
     "TABS": {
       "HEADER": "Atributos personalizados",
       "CONVERSATION": "Conversación",
-      "CONTACT": "Contacto"
+      "CONTACT": "Contacto",
+      "RESOLVE_RULES": "Reglas de cierre"
     },
     "LIST": {
       "TABLE_HEADER": {
@@ -140,6 +141,44 @@
     "BADGES": {
       "PRE_CHAT": "Pre-chat",
       "RESOLUTION": "Resolución"
+    },
+    "RESOLVE_RULES": {
+      "TITLE": "Reglas de cierre de conversación",
+      "DESCRIPTION": "Define requisitos globales que deben cumplirse antes de poder resolver una conversación.",
+      "FX_RATE_LABEL": "Tipo de cambio USD a CLP",
+      "FX_RATE_PLACEHOLDER": "Ejemplo: 950",
+      "FX_RATE_HINT": "Se usa para normalizar valores en USD a CLP en reportes y totales del pipeline.",
+      "FX_RATE_INVALID": "Ingresa un tipo de cambio válido mayor que 0.",
+      "AUTO_SAVE": {
+        "SAVING": "Guardando...",
+        "SAVED": "Guardado"
+      },
+      "ALLOWED_STAGES_LABEL": "Etapas de oportunidad permitidas para resolver",
+      "REQUIRED_CONVERSATION_ATTRIBUTES_LABEL": "Atributos personalizados obligatorios de conversación",
+      "REQUIRED_CONTACT_ATTRIBUTES_LABEL": "Atributos personalizados obligatorios de contacto",
+      "FORECAST": {
+        "TITLE": "Probabilidades de forecast por etapa (%)",
+        "HINT": "Define la probabilidad (0-100) usada para calcular el forecast ponderado en reportes de ventas.",
+        "PLACEHOLDER": "0-100",
+        "INVALID": "Ingresa probabilidades válidas entre 0 y 100.",
+        "INBOX_TITLE": "Override por bandeja: probabilidades de forecast",
+        "INBOX_HINT": "Selecciona una bandeja para sobrescribir las probabilidades globales solo para esa bandeja.",
+        "INBOX_LABEL": "Bandeja",
+        "INBOX_PLACEHOLDER": "Selecciona bandeja",
+        "SEARCH_PLACEHOLDER": "Buscar bandeja",
+        "NO_RESULTS": "No se encontraron bandejas",
+        "INBOX_REQUIRED": "Selecciona una bandeja para guardar el override.",
+        "SAVE_INBOX_BUTTON": "Guardar Override de Bandeja",
+        "API": {
+          "SUCCESS_MESSAGE": "Override de forecast por bandeja guardado correctamente",
+          "ERROR_MESSAGE": "No se pudo guardar el override de forecast por bandeja. Inténtalo nuevamente."
+        }
+      },
+      "SAVE_BUTTON": "Guardar reglas",
+      "API": {
+        "SUCCESS_MESSAGE": "Reglas de cierre actualizadas correctamente",
+        "ERROR_MESSAGE": "No se pudieron actualizar las reglas de cierre. Inténtalo nuevamente."
+      }
     }
   }
 }

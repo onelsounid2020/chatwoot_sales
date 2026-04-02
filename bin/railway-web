@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export RAILS_ENV="${RAILS_ENV:-production}"
+export PORT="${PORT:-3000}"
+
+bundle exec rails ip_lookup:setup
+exec bundle exec rails server -b 0.0.0.0 -p "$PORT" -e "$RAILS_ENV"

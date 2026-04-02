@@ -34,6 +34,28 @@ const store = useStore();
 const getters = useStoreGetters();
 
 const MAXIMUM_FILE_UPLOAD_SIZE = 4; // in MB
+const DEFAULT_THEME_COLORS = {
+  homeBgColor: '#ffffff',
+  articleBgColor: '#ffffff',
+  articleTextColor: '#0f172a',
+};
+const THEME_PRESET_VALUES = {
+  clean: {
+    homeBgColor: '#ffffff',
+    articleBgColor: '#ffffff',
+    articleTextColor: '#0f172a',
+  },
+  ocean: {
+    homeBgColor: '#f0f9ff',
+    articleBgColor: '#ffffff',
+    articleTextColor: '#0c4a6e',
+  },
+  sand: {
+    homeBgColor: '#fffbeb',
+    articleBgColor: '#ffffff',
+    articleTextColor: '#78350f',
+  },
+};
 
 const state = reactive({
   name: '',
@@ -41,6 +63,9 @@ const state = reactive({
   pageTitle: '',
   slug: '',
   widgetColor: '',
+  homeBgColor: '',
+  articleBgColor: '',
+  articleTextColor: '',
   homePageLink: '',
   liveChatWidgetInboxId: '',
   logoUrl: '',
@@ -66,6 +91,20 @@ const liveChatWidgets = computed(() => {
     ...widgetOptions,
   ];
 });
+const themePresetOptions = computed(() => [
+  {
+    value: 'clean',
+    label: t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.OPTIONS.CLEAN'),
+  },
+  {
+    value: 'ocean',
+    label: t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.OPTIONS.OCEAN'),
+  },
+  {
+    value: 'sand',
+    label: t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.OPTIONS.SAND'),
+  },
+]);
 
 const rules = {
   name: { required, minLength: minLength(2) },
@@ -114,6 +153,9 @@ watch(
         headerText: newVal.header_text,
         pageTitle: newVal.page_title,
         widgetColor: newVal.color,
+        homeBgColor: newVal.home_bg_color || '#ffffff',
+        articleBgColor: newVal.article_bg_color || '#ffffff',
+        articleTextColor: newVal.article_text_color || '#0f172a',
         homePageLink: newVal.homepage_link,
         slug: newVal.slug,
         liveChatWidgetInboxId: newVal.inbox?.id || '',
@@ -147,6 +189,9 @@ const handleUpdatePortal = () => {
     page_title: state.pageTitle,
     header_text: state.headerText,
     homepage_link: state.homePageLink,
+    home_bg_color: state.homeBgColor,
+    article_bg_color: state.articleBgColor,
+    article_text_color: state.articleTextColor,
     blob_id: state.avatarBlobId,
     inbox_id: state.liveChatWidgetInboxId,
   };
@@ -196,6 +241,21 @@ const handleAvatarDelete = () => {
   state.avatarBlobId = '';
   deleteLogo();
 };
+
+const applyThemePreset = preset => {
+  const presetValues = THEME_PRESET_VALUES[preset];
+  if (!presetValues) return;
+
+  state.homeBgColor = presetValues.homeBgColor;
+  state.articleBgColor = presetValues.articleBgColor;
+  state.articleTextColor = presetValues.articleTextColor;
+};
+
+const resetThemeColors = () => {
+  state.homeBgColor = DEFAULT_THEME_COLORS.homeBgColor;
+  state.articleBgColor = DEFAULT_THEME_COLORS.articleBgColor;
+  state.articleTextColor = DEFAULT_THEME_COLORS.articleTextColor;
+};
 </script>
 
 <template>
@@ -215,6 +275,31 @@ const handleAvatarDelete = () => {
       />
     </div>
     <div class="flex flex-col w-full gap-4">
+      <div
+        class="grid items-start justify-between w-full gap-2 grid-cols-[200px,1fr]"
+      >
+        <label
+          class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+        >
+          {{ t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.LABEL') }}
+        </label>
+        <div class="flex items-center gap-2">
+          <div class="w-[300px]">
+            <ComboBox
+              :options="themePresetOptions"
+              :placeholder="
+                t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.PLACEHOLDER')
+              "
+              @update:model-value="applyThemePreset"
+            />
+          </div>
+          <Button
+            color="slate"
+            :label="t('HELP_CENTER.PORTAL_SETTINGS.FORM.THEME_PRESET.RESET')"
+            @click="resetThemeColors"
+          />
+        </div>
+      </div>
       <div
         class="grid items-start justify-between w-full gap-2 grid-cols-[200px,1fr]"
       >
@@ -333,6 +418,42 @@ const handleAvatarDelete = () => {
         </label>
         <div class="w-[432px] justify-start">
           <ColorPicker v-model="state.widgetColor" />
+        </div>
+      </div>
+      <div
+        class="grid items-start justify-between w-full gap-2 grid-cols-[200px,1fr]"
+      >
+        <label
+          class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+        >
+          {{ t('HELP_CENTER.PORTAL_SETTINGS.FORM.HOME_BG_COLOR.LABEL') }}
+        </label>
+        <div class="w-[432px] justify-start">
+          <ColorPicker v-model="state.homeBgColor" />
+        </div>
+      </div>
+      <div
+        class="grid items-start justify-between w-full gap-2 grid-cols-[200px,1fr]"
+      >
+        <label
+          class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+        >
+          {{ t('HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_BG_COLOR.LABEL') }}
+        </label>
+        <div class="w-[432px] justify-start">
+          <ColorPicker v-model="state.articleBgColor" />
+        </div>
+      </div>
+      <div
+        class="grid items-start justify-between w-full gap-2 grid-cols-[200px,1fr]"
+      >
+        <label
+          class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+        >
+          {{ t('HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_TEXT_COLOR.LABEL') }}
+        </label>
+        <div class="w-[432px] justify-start">
+          <ColorPicker v-model="state.articleTextColor" />
         </div>
       </div>
       <div class="flex justify-end w-full gap-2">

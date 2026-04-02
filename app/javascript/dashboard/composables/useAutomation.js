@@ -170,6 +170,7 @@ export function useAutomation(startValue = null) {
       'conversation_created',
       'conversation_updated',
       'conversation_opened',
+      'periodic_check',
     ].forEach(eventToUpdate => {
       const standardConditions = automationTypes[
         eventToUpdate

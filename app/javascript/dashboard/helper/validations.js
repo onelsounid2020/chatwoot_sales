@@ -3,9 +3,14 @@ export const FILTER_OPERATOR_REQUIRED = 'FILTER_OPERATOR_REQUIRED';
 export const VALUE_REQUIRED = 'VALUE_REQUIRED';
 export const VALUE_MUST_BE_BETWEEN_1_AND_998 =
   'VALUE_MUST_BE_BETWEEN_1_AND_998';
+export const VALUE_MUST_BE_GREATER_THAN_0 = 'VALUE_MUST_BE_GREATER_THAN_0';
 export const ACTION_PARAMETERS_REQUIRED = 'ACTION_PARAMETERS_REQUIRED';
 export const ATLEAST_ONE_CONDITION_REQUIRED = 'ATLEAST_ONE_CONDITION_REQUIRED';
 export const ATLEAST_ONE_ACTION_REQUIRED = 'ATLEAST_ONE_ACTION_REQUIRED';
+export const DEAL_VALUE_MUST_BE_VALID_NUMBER =
+  'DEAL_VALUE_MUST_BE_VALID_NUMBER';
+export const NEXT_FOLLOW_UP_MINUTES_MUST_BE_VALID_NUMBER =
+  'NEXT_FOLLOW_UP_MINUTES_MUST_BE_VALID_NUMBER';
 
 const isEmptyValue = value => {
   if (!value) {
@@ -23,6 +28,26 @@ const isEmptyValue = value => {
   }
 
   return false;
+};
+
+const normalizeDealValue = value => {
+  if (value === null || value === undefined) return Number.NaN;
+
+  let raw = String(value).trim();
+  if (!raw) return Number.NaN;
+
+  raw = raw.replace(/\s/g, '');
+
+  if (raw.includes(',') && raw.includes('.')) {
+    raw =
+      raw.lastIndexOf(',') > raw.lastIndexOf('.')
+        ? raw.replace(/\./g, '').replace(',', '.')
+        : raw.replace(/,/g, '');
+  } else if (raw.includes(',')) {
+    raw = raw.replace(',', '.');
+  }
+
+  return Number(raw);
 };
 // ------------------------------------------------------------------
 // ------------------------ Filter Validation -----------------------
@@ -56,10 +81,19 @@ export const validateSingleFilter = filter => {
   }
 
   if (
-    filter.filter_operator === 'days_before' &&
+    ['days_before', 'days_after'].includes(filter.filter_operator) &&
     (parseInt(filter.values, 10) <= 0 || parseInt(filter.values, 10) >= 999)
   ) {
     return VALUE_MUST_BE_BETWEEN_1_AND_998;
+  }
+
+  if (
+    ['hours_before', 'minutes_before', 'hours_after', 'minutes_after'].includes(
+      filter.filter_operator
+    ) &&
+    parseInt(filter.values, 10) <= 0
+  ) {
+    return VALUE_MUST_BE_GREATER_THAN_0;
   }
 
   return null;
@@ -135,6 +169,28 @@ const validateSingleAction = action => {
     (!action.action_params || action.action_params.length === 0)
   ) {
     return ACTION_PARAMETERS_REQUIRED;
+  }
+
+  if (action.action_name === 'change_deal_value') {
+    const value = Array.isArray(action.action_params)
+      ? action.action_params[0]
+      : action.action_params;
+    const parsedValue = normalizeDealValue(value);
+
+    if (Number.isNaN(parsedValue) || parsedValue < 0) {
+      return DEAL_VALUE_MUST_BE_VALID_NUMBER;
+    }
+  }
+
+  if (action.action_name === 'change_next_follow_up_in_minutes') {
+    const value = Array.isArray(action.action_params)
+      ? action.action_params[0]
+      : action.action_params;
+    const parsedValue = Number.parseInt(value, 10);
+
+    if (Number.isNaN(parsedValue) || parsedValue <= 0) {
+      return NEXT_FOLLOW_UP_MINUTES_MUST_BE_VALID_NUMBER;
+    }
   }
 
   return null;

@@ -102,6 +102,28 @@
         "RT": "RT {status}",
         "MISSED": "perdido",
         "DUE": "vencido"
+      },
+      "OPPORTUNITY": {
+        "STAGE": "Etapa",
+        "VALUE": "Valor",
+        "NEXT_FOLLOW_UP": "Próximo seguimiento",
+        "NO_VALUE": "Sin valor",
+        "NO_FOLLOW_UP": "Sin seguimiento",
+        "SAVE_FAILED": "No se pudo actualizar el resumen comercial. Inténtalo de nuevo.",
+        "STATUS": {
+          "OVERDUE": "Seguimiento vencido",
+          "TODAY": "Seguimiento hoy",
+          "MISSING": "Sin seguimiento",
+          "COMPLETED": "Seguimiento realizado",
+          "SCHEDULED": "Seguimiento programado"
+        },
+        "ACTIONS": {
+          "STAGE_CONTACTED": "Etapa: Contactado",
+          "STAGE_PROPOSAL": "Etapa: Propuesta",
+          "FOLLOW_UP_1H": "Seguimiento +1h",
+          "FOLLOW_UP_24H": "Seguimiento +24h",
+          "CONTACTED_NOW": "Contactado ahora"
+        }
       }
     },
     "RESOLVE_DROPDOWN": {
@@ -138,6 +160,140 @@
         "NO_RESULTS": "No se encontraron resultados",
         "SUCCESSFUL": "Se ha cambiado la prioridad del id de conversación {conversationId} a {priority}",
         "FAILED": "No se pudo cambiar la prioridad. Por favor, inténtelo de nuevo."
+      }
+    },
+    "SALES": {
+      "PANEL_SECTIONS": {
+        "EXECUTION": "Ejecución comercial",
+        "PIPELINE": "Pipeline y oportunidad",
+        "CLOSURE": "Requisitos de cierre",
+        "CONTEXT": "Contexto de conversación"
+      },
+      "DEAL_STAGE": {
+        "TITLE": "Etapa de oportunidad",
+        "SELECT_PLACEHOLDER": "Seleccionar etapa",
+        "INPUT_PLACEHOLDER": "Buscar etapa",
+        "NO_RESULTS": "No se encontraron resultados",
+        "SUCCESSFUL": "La etapa de oportunidad se actualizó correctamente",
+        "FAILED": "No se pudo actualizar la etapa de oportunidad. Inténtalo de nuevo.",
+        "OPTIONS": {
+          "INCOMING": "Entrante",
+          "CONTACTED": "Contactado",
+          "QUALIFIED": "Calificado",
+          "PROPOSAL": "Propuesta",
+          "WON": "Ganado",
+          "LOST": "Perdido"
+        }
+      },
+      "DEAL_CURRENCY": {
+        "TITLE": "Moneda de oportunidad",
+        "SELECT_PLACEHOLDER": "Seleccionar moneda",
+        "INPUT_PLACEHOLDER": "Buscar moneda",
+        "NO_RESULTS": "No se encontraron resultados",
+        "SUCCESSFUL": "La moneda de oportunidad se actualizó correctamente",
+        "FAILED": "No se pudo actualizar la moneda de oportunidad. Inténtalo de nuevo.",
+        "OPTIONS": {
+          "CLP": "Peso chileno (CLP)",
+          "USD": "Dólar estadounidense (USD)"
+        }
+      },
+      "DEAL_VALUE": {
+        "TITLE": "Valor de oportunidad",
+        "PLACEHOLDER": "Ingrese el valor de oportunidad",
+        "SUCCESSFUL": "El valor de oportunidad se actualizó correctamente",
+        "FAILED": "No se pudo actualizar el valor. Ingresa un número válido.",
+        "SAVE_FAILED": "No se pudo guardar el valor de oportunidad. Inténtalo nuevamente."
+      },
+      "LOST_REASON": {
+        "TITLE": "Motivo de pérdida",
+        "PLACEHOLDER": "Agrega por qué se perdió esta oportunidad",
+        "FAILED": "No se pudo guardar el motivo de pérdida. Inténtalo nuevamente."
+      },
+      "NEXT_FOLLOW_UP": {
+        "TITLE": "Próximo seguimiento",
+        "PLACEHOLDER": "Define fecha y hora de seguimiento",
+        "CLEAR": "Limpiar",
+        "QUICK": {
+          "MINUTES_30": "+30 min",
+          "HOUR_1": "+1 hora",
+          "HOURS_24": "+24 horas"
+        },
+        "SUCCESSFUL": "El próximo seguimiento se actualizó correctamente",
+        "FAILED": "No se pudo actualizar el seguimiento. Ingresa una fecha y hora válidas.",
+        "SAVE_FAILED": "No se pudo guardar la fecha de seguimiento. Inténtalo nuevamente."
+      },
+      "RESOLVE_CHECKLIST": {
+        "TITLE": "Requisitos de cierre",
+        "READY": "Esta conversación cumple con todos los requisitos de cierre.",
+        "BLOCKED": "Completa los requisitos pendientes antes de resolver.",
+        "BLOCKED_ALERT": "Aún no puedes resolver esta conversación. Completa primero los campos obligatorios.",
+        "FIELD_REQUIRED": "Obligatorio para poder resolver esta conversación.",
+        "STAGE_LABEL": "La etapa de oportunidad debe ser una de: {stages}",
+        "LOST_REASON_LABEL": "El motivo de pérdida es obligatorio cuando la etapa es Perdido",
+        "CONVERSATION_ATTR_LABEL": "Atributo obligatorio de conversación: {attribute}",
+        "CONTACT_ATTR_LABEL": "Atributo obligatorio de contacto: {attribute}"
+      }
+    },
+    "SALES_HOME": {
+      "HEADLINE": "Centro de mando comercial",
+      "SUBHEAD": "Pulso comercial de los últimos 30 días",
+      "LOADING": "Cargando métricas comerciales...",
+      "LOAD_ERROR": "No se pudieron cargar las métricas comerciales en este momento.",
+      "RANGE_NOTE": "Los valores mostrados corresponden a los últimos 30 días.",
+      "CARDS_COUNT": "{count} oportunidades",
+      "ACTIVE_FILTERS_LABEL": "Filtros activos:",
+      "ACTIVE_VIEW_CHIP": "Vista: {view}",
+      "ACTIVE_AGENT_CHIP": "Agente: {agent}",
+      "ACTIVE_TEAM_CHIP": "Equipo: {team}",
+      "SCOPE_LABEL": "Alcance: {scope}",
+      "SCOPE": {
+        "OWN": "Mi cartera",
+        "TEAM": "Mi equipo",
+        "GLOBAL": "Global"
+      },
+      "TEAM_FILTER": {
+        "LABEL": "Equipo",
+        "ALL": "Todos mis equipos"
+      },
+      "AGENT_FILTER": {
+        "LABEL": "Agente",
+        "ALL": "Todos los agentes"
+      },
+      "CLOSE_CHIP": "x",
+      "ALERTS": {
+        "TITLE": "Alertas comerciales",
+        "ACTION": "Ver",
+        "EMPTY": "Sin alertas críticas por ahora.",
+        "OVERDUE_FOLLOW_UP": "{count} oportunidades vencidas sin seguimiento",
+        "LOW_WIN_RATE": "Tasa de cierre baja ({rate}%)",
+        "NO_WINS": "Hay oportunidades abiertas sin cierres ganados"
+      },
+      "STAGES": {
+        "TITLE": "Pipeline por etapa",
+        "EMPTY": "Aún no hay datos por etapa."
+      },
+      "AGENTS": {
+        "TITLE": "Top agentes",
+        "EMPTY": "Aún no hay rendimiento de agentes en el período.",
+        "UNKNOWN_AGENT": "Agente sin nombre",
+        "ATTAINMENT": "{percent}% de cumplimiento"
+      },
+      "TARGET": {
+        "TITLE": "Meta vs avance",
+        "SUBTITLE": "Avance {won} de meta {target}",
+        "PERCENT": "{percent}%"
+      },
+      "ACTIONS": {
+        "CLEAR_FILTER": "Limpiar filtro",
+        "PIPELINE": "Ver pipeline",
+        "REPORTS": "Abrir reporte de ventas"
+      },
+      "CARDS": {
+        "OPEN_OPPORTUNITIES": "Oportunidades abiertas",
+        "STALE_OPPORTUNITIES": "Oportunidades vencidas",
+        "WIN_RATE": "Tasa de cierre",
+        "PIPELINE_VALUE": "Valor de pipeline (CLP)",
+        "WON_VALUE": "Valor ganado (CLP)"
       }
     },
     "DELETE_CONVERSATION": {
@@ -354,7 +510,7 @@
     },
     "ACCORDION": {
       "CONTACT_DETAILS": "Detalles de contacto",
-      "CONVERSATION_ACTIONS": "Acciones de conversación",
+      "CONVERSATION_ACTIONS": "Gestión comercial",
       "CONVERSATION_LABELS": "Etiquetas de conversación",
       "CONVERSATION_INFO": "Información de la conversación",
       "CONTACT_NOTES": "Notas de contacto",

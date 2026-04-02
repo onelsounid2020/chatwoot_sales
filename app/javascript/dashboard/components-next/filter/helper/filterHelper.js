@@ -28,6 +28,10 @@ export const CONTACT_ATTRIBUTES = {
   REFERER: 'referer',
   BLOCKED: 'blocked',
   LABELS: 'labels',
+  LEAD_STAGE: 'lead_stage',
+  DEAL_VALUE: 'deal_value',
+  NEXT_FOLLOW_UP_AT: 'next_follow_up_at',
+  LAST_CONTACTED_AT: 'last_contacted_at',
 };
 
 /**

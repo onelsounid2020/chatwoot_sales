@@ -28,6 +28,8 @@ class Portal < ApplicationRecord
   include Rails.application.routes.url_helpers
 
   DEFAULT_COLOR = '#1f93ff'.freeze
+  HEX_COLOR_REGEX = /\A#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\z/.freeze
+  THEME_CONFIG_KEYS = %w[home_bg_color article_bg_color article_text_color].freeze
 
   belongs_to :account
   has_many :categories, dependent: :destroy_async
@@ -43,10 +45,11 @@ class Portal < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validates :custom_domain, uniqueness: true, allow_nil: true
   validate :config_json_format
+  validate :theme_config_format
 
   scope :active, -> { where(archived: false) }
 
-  CONFIG_JSON_KEYS = %w[allowed_locales default_locale draft_locales website_token].freeze
+  CONFIG_JSON_KEYS = (%w[allowed_locales default_locale draft_locales website_token] + THEME_CONFIG_KEYS).freeze
 
   def file_base_data
     {
@@ -104,6 +107,15 @@ class Portal < ApplicationRecord
     denied_keys = config.keys - CONFIG_JSON_KEYS
     errors.add(:cofig, "in portal on #{denied_keys.join(',')} is not supported.") if denied_keys.any?
     errors.add(:config, 'default locale cannot be drafted.') if draft_locale?(default_locale)
+  end
+
+  def theme_config_format
+    THEME_CONFIG_KEYS.each do |key|
+      value = config_value(key)
+      next if value.blank?
+
+      errors.add(:config, "#{key} is not a valid hex color.") unless value.match?(HEX_COLOR_REGEX)
+    end
   end
 
   def normalize_locale_codes(locale_codes)

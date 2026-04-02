@@ -34,6 +34,23 @@ class ActionService
     @conversation.update!(priority: (priority[0] == 'nil' ? nil : priority[0]))
   end
 
+  def change_deal_stage(stage)
+    @conversation.update!(deal_stage: stage[0])
+  end
+
+  def change_deal_value(value)
+    raw_value = value[0]
+    normalized_value = normalize_deal_value(raw_value)
+    @conversation.update!(deal_value: normalized_value)
+  end
+
+  def change_next_follow_up_in_minutes(value)
+    minutes = normalize_positive_integer(value[0])
+    return if minutes.nil?
+
+    @conversation.update!(next_follow_up_at: minutes.minutes.from_now)
+  end
+
   def add_label(labels)
     return if labels.empty?
 
@@ -101,6 +118,33 @@ class ActionService
 
   def team_belongs_to_account?(team_ids)
     @account.team_ids.include?(team_ids[0])
+  end
+
+  def normalize_deal_value(value)
+    return nil if value.blank?
+
+    raw = value.to_s.strip
+    return nil if raw.empty?
+
+    raw = raw.delete(' ')
+
+    normalized = if raw.include?(',') && raw.include?('.')
+      raw.rindex(',') > raw.rindex('.') ? raw.tr('.', '').tr(',', '.') : raw.delete(',')
+    elsif raw.include?(',')
+      raw.tr(',', '.')
+    else
+      raw
+    end
+
+    Float(normalized)
+  end
+
+  def normalize_positive_integer(value)
+    return nil if value.blank?
+
+    Integer(value.to_s.strip, 10).then { |number| number.positive? ? number : nil }
+  rescue ArgumentError, TypeError
+    nil
   end
 
   def conversation_a_tweet?

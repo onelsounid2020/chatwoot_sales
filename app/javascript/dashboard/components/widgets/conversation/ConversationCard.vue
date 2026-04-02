@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
+import { useI18n } from 'vue-i18n';
 import { getLastMessage } from 'dashboard/helper/conversationHelper';
 import { frontendURL, conversationUrl } from 'dashboard/helper/URLHelper';
 import Avatar from 'next/avatar/Avatar.vue';
@@ -47,6 +48,7 @@ const emit = defineEmits([
 
 const router = useRouter();
 const store = useStore();
+const { t } = useI18n();
 
 const hovered = ref(false);
 const showContextMenu = ref(false);
@@ -126,6 +128,58 @@ const hasSlaPolicyId = computed(() => props.chat?.sla_policy_id);
 
 const showLabelsSection = computed(() => {
   return props.chat.labels?.length > 0 || hasSlaPolicyId.value;
+});
+
+const followUpStatus = computed(() => {
+  const nextFollowUpAt = Number(props.chat?.next_follow_up_at || 0);
+  if (!nextFollowUpAt) return 'missing';
+
+  const lastContactedAt = Number(props.chat?.last_contacted_at || 0);
+  if (lastContactedAt && lastContactedAt >= nextFollowUpAt) {
+    return 'completed';
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  const diffInSeconds = nextFollowUpAt - now;
+
+  if (diffInSeconds < 0) return 'overdue';
+  if (diffInSeconds <= 24 * 60 * 60) return 'today';
+  return 'scheduled';
+});
+
+const showSalesFollowUpBadge = computed(() => {
+  return Boolean(
+    props.chat?.next_follow_up_at ||
+      props.chat?.last_contacted_at ||
+      props.chat?.deal_value
+  );
+});
+
+const followUpBadgeText = computed(() => {
+  if (followUpStatus.value === 'overdue') {
+    return t('CHAT_LIST.SALES_FOLLOW_UP_STATUS.OVERDUE');
+  }
+  if (followUpStatus.value === 'today') {
+    return t('CHAT_LIST.SALES_FOLLOW_UP_STATUS.TODAY');
+  }
+  if (followUpStatus.value === 'missing') {
+    return t('CHAT_LIST.SALES_FOLLOW_UP_STATUS.MISSING');
+  }
+  if (followUpStatus.value === 'completed') {
+    return t('CHAT_LIST.SALES_FOLLOW_UP_STATUS.COMPLETED');
+  }
+  return t('CHAT_LIST.SALES_FOLLOW_UP_STATUS.SCHEDULED');
+});
+
+const followUpBadgeClass = computed(() => {
+  const classMap = {
+    overdue: 'border-n-ruby-6 bg-n-ruby-3 text-n-ruby-11',
+    today: 'border-n-amber-6 bg-n-amber-3 text-n-amber-12',
+    missing: 'border-n-slate-6 bg-n-alpha-2 text-n-slate-11',
+    completed: 'border-n-teal-6 bg-n-teal-3 text-n-teal-12',
+    scheduled: 'border-n-sky-6 bg-n-sky-3 text-n-sky-12',
+  };
+  return classMap[followUpStatus.value];
 });
 
 const messagePreviewClass = computed(() => {
@@ -385,6 +439,13 @@ const deleteConversation = () => {
           <SLACardLabel :chat="chat" class="ltr:mr-1 rtl:ml-1" />
         </template>
       </CardLabels>
+      <div
+        v-if="showSalesFollowUpBadge"
+        class="mt-1 mx-2 inline-flex items-center px-1.5 py-0.5 rounded-md border text-[10px] font-medium"
+        :class="followUpBadgeClass"
+      >
+        {{ followUpBadgeText }}
+      </div>
     </div>
     <ContextMenu
       v-if="showContextMenu"

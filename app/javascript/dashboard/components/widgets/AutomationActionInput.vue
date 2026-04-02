@@ -95,6 +95,15 @@ export default {
     isVerticalLayout() {
       return ['team_message', 'textarea'].includes(this.inputType);
     },
+    plainTextPlaceholder() {
+      if (this.action_name === 'change_next_follow_up_in_minutes') {
+        return this.$t(
+          'AUTOMATION.ACTION.NEXT_FOLLOW_UP_MINUTES_INPUT_PLACEHOLDER'
+        );
+      }
+
+      return this.$t('AUTOMATION.ACTION.DEAL_VALUE_INPUT_PLACEHOLDER');
+    },
     castMessageVmodel: {
       get() {
         if (Array.isArray(this.action_params)) {
@@ -163,6 +172,13 @@ export default {
             type="url"
             size="sm"
             :placeholder="$t('AUTOMATION.ACTION.URL_INPUT_PLACEHOLDER')"
+          />
+          <NextInput
+            v-else-if="inputType === 'plain_text'"
+            v-model="action_params"
+            type="text"
+            size="sm"
+            :placeholder="plainTextPlaceholder"
           />
           <AutomationActionFileInput
             v-else-if="inputType === 'attachment'"

@@ -78,6 +78,21 @@ export default function useAutomationValues() {
     }))
   );
 
+  const dealStageOptions = computed(() => [
+    { id: 'incoming', name: t('AUTOMATION.DEAL_STAGE_TYPES.INCOMING') },
+    { id: 'contacted', name: t('AUTOMATION.DEAL_STAGE_TYPES.CONTACTED') },
+    { id: 'qualified', name: t('AUTOMATION.DEAL_STAGE_TYPES.QUALIFIED') },
+    { id: 'proposal', name: t('AUTOMATION.DEAL_STAGE_TYPES.PROPOSAL') },
+    { id: 'won', name: t('AUTOMATION.DEAL_STAGE_TYPES.WON') },
+    { id: 'lost', name: t('AUTOMATION.DEAL_STAGE_TYPES.LOST') },
+  ]);
+
+  const lastReplyTypeOptions = computed(() => [
+    { id: 'agent', name: t('AUTOMATION.LAST_REPLY_TYPES.AGENT') },
+    { id: 'customer', name: t('AUTOMATION.LAST_REPLY_TYPES.CUSTOMER') },
+    { id: 'none', name: t('AUTOMATION.LAST_REPLY_TYPES.NONE') },
+  ]);
+
   /**
    * Adds a translated "None" option to the beginning of a list
    * @param {Array} list - The list to add "None" to
@@ -103,6 +118,8 @@ export default function useAutomationValues() {
       campaigns: campaigns.value,
       contacts: contacts.value,
       customAttributes: getters['attributes/getAttributes'].value,
+      dealStageOptions: dealStageOptions.value,
+      lastReplyTypeOptions: lastReplyTypeOptions.value,
       inboxes: inboxes.value,
       labels: labels.value,
       statusFilterOptions: statusFilterOptions.value,
@@ -130,6 +147,7 @@ export default function useAutomationValues() {
       type,
       addNoneToListFn: addNoneToList,
       priorityOptions: priorityOptions.value,
+      dealStageOptions: dealStageOptions.value,
     });
   };
 
@@ -139,6 +157,7 @@ export default function useAutomationValues() {
     statusFilterOptions,
     priorityOptions,
     messageTypeOptions,
+    lastReplyTypeOptions,
     getConditionDropdownValues,
     getActionDropdownValues,
     agents,

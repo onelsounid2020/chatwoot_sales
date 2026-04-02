@@ -148,7 +148,20 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def permitted_update_params
     # TODO: Move the other conversation attributes to this method and remove specific endpoints for each attribute
-    params.permit(:priority)
+    permitted = params.permit(
+      :priority, :deal_stage, :deal_value, :deal_currency, :lost_reason, :fx_rate_usd_clp,
+      :next_follow_up_at, :last_contacted_at
+    )
+
+    %i[next_follow_up_at last_contacted_at].each do |key|
+      raw_value = permitted[key]
+      next if raw_value.blank?
+      next unless raw_value.to_s.match?(/\A\d+\z/)
+
+      permitted[key] = Time.zone.at(raw_value.to_i)
+    end
+
+    permitted
   end
 
   def attachment_params

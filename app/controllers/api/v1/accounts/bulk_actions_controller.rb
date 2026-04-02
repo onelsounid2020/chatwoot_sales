@@ -48,7 +48,15 @@ class Api::V1::Accounts::BulkActionsController < Api::V1::Accounts::BaseControll
     # and then remove this method in favor of a common params method.
     base = params.permit(
       :snoozed_until,
-      fields: [:status, :assignee_id, :team_id]
+      fields: [
+        :status,
+        :assignee_id,
+        :team_id,
+        :deal_stage,
+        :deal_value,
+        :next_follow_up_at,
+        :last_contacted_at
+      ]
     )
     append_common_bulk_attributes(base)
   end

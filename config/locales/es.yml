@@ -176,6 +176,48 @@ es:
       avg_customer_waiting_time: Tiempo promedio de espera del cliente
     conversation_traffic_csv:
       timezone: Timezone
+    sales_csv:
+      section: Sección
+      item: Ítem
+      secondary_value: Valor secundario
+      section_overview: Resumen de ventas
+      section_stage_breakdown: Pipeline por etapa
+      section_forecast_by_stage: Forecast ponderado por etapa
+      section_funnel_breakdown: Embudo de conversión
+      section_weekly_trends: Tendencias semanales
+      section_aging_breakdown: Antigüedad del pipeline abierto
+      section_lost_reasons: Principales motivos de pérdida
+      total_leads: Leads totales
+      open_opportunities: Oportunidades abiertas
+      won_opportunities: Oportunidades ganadas
+      lost_opportunities: Oportunidades perdidas
+      win_rate: Tasa de cierre (%)
+      pipeline_value: Valor del pipeline (CLP)
+      forecast_weighted_value: Valor forecast ponderado (CLP)
+      won_value: Valor ganado (CLP)
+      stale_opportunities: Oportunidades estancadas
+      avg_open_age_days: Edad promedio abierta (días)
+      avg_time_to_close_hours: Tiempo promedio de cierre (horas)
+      stage: Etapa
+      opportunities: Oportunidades
+      value: Valor
+      reason: Motivo
+      age_bucket: Rango de antigüedad
+      probability: Probabilidad (%)
+      conversion_from_previous: Conversión desde etapa anterior (%)
+      week_start: Inicio de semana
+      stages:
+        incoming: Entrante
+        contacted: Contactado
+        qualified: Calificado
+        proposal: Propuesta
+        won: Ganado
+        lost: Perdido
+      aging_buckets:
+        "0_7": 0-7 días
+        "8_14": 8-14 días
+        "15_30": 15-30 días
+        "31_plus": 31+ días
     sla_csv:
       conversation_id: ID de conversación
       sla_policy_breached: Política de SLA
@@ -209,6 +251,11 @@ es:
     attachment: 'Adjunto'
     no_content: 'Sin contenido'
   conversations:
+    resolve_policy:
+      invalid_deal_stage: "La conversación no se puede resolver. Etapas permitidas: %{allowed_stages}."
+      missing_conversation_attributes: "La conversación no se puede resolver. Faltan atributos obligatorios de conversación: %{attributes}."
+      missing_contact_attributes: "La conversación no se puede resolver. Faltan atributos obligatorios de contacto: %{attributes}."
+      missing_lost_reason: "La conversación no se puede resolver. Agrega un motivo de pérdida cuando la etapa de oportunidad sea Perdido."
     captain:
       handoff: 'Transferring to another agent for further assistance.'
     messages:

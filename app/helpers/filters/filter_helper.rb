@@ -104,6 +104,10 @@ module Filters::FilterHelper
     values.map { |x| Conversation.priorities[x.to_sym] }
   end
 
+  def conversation_deal_stage_values(values)
+    values.map { |x| Conversation.deal_stages[x.to_sym] }
+  end
+
   def message_type_values(values)
     values.map { |x| Message.message_types[x.to_sym] }
   end

@@ -28,18 +28,37 @@ services:
       - cache:/app/tmp/cache
       - bundle:/usr/local/bundle
     depends_on:
-      - postgres
-      - redis
-      - vite
-      - mailhog
-      - sidekiq
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      vite:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+      sidekiq:
+        condition: service_started
     ports:
       - 3000:3000
     env_file: .env
     environment:
       - VITE_DEV_SERVER_HOST=vite
+      - VITE_RUBY_HOST=vite
+      - VITE_RUBY_PORT=3036
       - NODE_ENV=development
       - RAILS_ENV=development
+    develop:
+      watch:
+        - action: rebuild
+          path: Gemfile
+        - action: rebuild
+          path: Gemfile.lock
+        - action: rebuild
+          path: .ruby-version
+        - action: rebuild
+          path: docker/dockerfiles/rails.Dockerfile
+        - action: rebuild
+          path: docker/Dockerfile
     entrypoint: docker/entrypoints/rails.sh
     command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
 
@@ -77,10 +96,28 @@ services:
       - "3036:3036" # Vite dev server
     environment:
       - VITE_DEV_SERVER_HOST=0.0.0.0
+      - VITE_RUBY_HOST=0.0.0.0
+      - VITE_RUBY_PORT=3036
       - NODE_ENV=development
       - RAILS_ENV=development
+    develop:
+      watch:
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: pnpm-lock.yaml
+        - action: rebuild
+          path: docker/dockerfiles/vite.Dockerfile
+        - action: rebuild
+          path: docker/Dockerfile
     entrypoint: docker/entrypoints/vite.sh
     command: bin/vite dev
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http=require('http');const req=http.get('http://127.0.0.1:3036/vite-dev/@vite/client',res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));"]
+      interval: 5s
+      timeout: 3s
+      retries: 40
+      start_period: 20s
 
   postgres:
     image: pgvector/pgvector:pg16
@@ -88,11 +125,12 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres:/data/postgres
+      - postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=chatwoot
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=
+      - POSTGRES_HOST_AUTH_METHOD=trust
 
   redis:
     image: redis:alpine

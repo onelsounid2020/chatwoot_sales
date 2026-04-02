@@ -108,7 +108,8 @@
     "TABS": {
       "HEADER": "Custom Attributes",
       "CONVERSATION": "Conversation",
-      "CONTACT": "Contact"
+      "CONTACT": "Contact",
+      "RESOLVE_RULES": "Resolve Rules"
     },
     "LIST": {
       "TABLE_HEADER": {
@@ -140,6 +141,44 @@
     "BADGES": {
       "PRE_CHAT": "Pre-chat",
       "RESOLUTION": "Resolution"
+    },
+    "RESOLVE_RULES": {
+      "TITLE": "Conversation Resolve Rules",
+      "DESCRIPTION": "Define global requirements that must be fulfilled before a conversation can be resolved.",
+      "FX_RATE_LABEL": "USD to CLP exchange rate",
+      "FX_RATE_PLACEHOLDER": "Example: 950",
+      "FX_RATE_HINT": "Used to normalize USD deal values into CLP for reports and pipeline totals.",
+      "FX_RATE_INVALID": "Enter a valid exchange rate greater than 0.",
+      "AUTO_SAVE": {
+        "SAVING": "Saving...",
+        "SAVED": "Saved"
+      },
+      "ALLOWED_STAGES_LABEL": "Allowed deal stages for resolution",
+      "REQUIRED_CONVERSATION_ATTRIBUTES_LABEL": "Required conversation custom attributes",
+      "REQUIRED_CONTACT_ATTRIBUTES_LABEL": "Required contact custom attributes",
+      "FORECAST": {
+        "TITLE": "Forecast stage probabilities (%)",
+        "HINT": "Set the probability (0-100) used for weighted forecast calculations in sales reports.",
+        "PLACEHOLDER": "0-100",
+        "INVALID": "Please enter valid forecast probabilities between 0 and 100.",
+        "INBOX_TITLE": "Inbox override: Forecast probabilities",
+        "INBOX_HINT": "Select an inbox to override the global forecast probabilities only for that inbox.",
+        "INBOX_LABEL": "Inbox",
+        "INBOX_PLACEHOLDER": "Select inbox",
+        "SEARCH_PLACEHOLDER": "Search inbox",
+        "NO_RESULTS": "No inboxes found",
+        "INBOX_REQUIRED": "Select an inbox to save override values.",
+        "SAVE_INBOX_BUTTON": "Save Inbox Override",
+        "API": {
+          "SUCCESS_MESSAGE": "Inbox forecast override saved successfully",
+          "ERROR_MESSAGE": "Could not save inbox forecast override. Please try again."
+        }
+      },
+      "SAVE_BUTTON": "Save Rules",
+      "API": {
+        "SUCCESS_MESSAGE": "Resolve rules updated successfully",
+        "ERROR_MESSAGE": "Could not update resolve rules. Please try again."
+      }
     }
   }
 }

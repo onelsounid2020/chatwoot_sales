@@ -344,7 +344,11 @@
             "COUNTRY": "País",
             "CITY": "Ciudad",
             "LAST_ACTIVITY": "Última actividad",
-            "CREATED_AT": "Creado el"
+            "CREATED_AT": "Creado el",
+            "LEAD_STAGE": "Etapa del lead",
+            "DEAL_VALUE": "Valor de oportunidad",
+            "NEXT_FOLLOW_UP": "Próximo seguimiento",
+            "LAST_CONTACTED": "Último contacto"
           }
         },
         "ORDER": {
@@ -391,6 +395,10 @@
       "BLOCKED": "Bloqueado",
       "BLOCKED_TRUE": "Verdadero",
       "BLOCKED_FALSE": "Falso",
+      "LEAD_STAGE": "Etapa del lead",
+      "DEAL_VALUE": "Valor de oportunidad",
+      "NEXT_FOLLOW_UP_AT": "Próximo seguimiento",
+      "LAST_CONTACTED_AT": "Último contacto",
       "BUTTONS": {
         "CLEAR_FILTERS": "Limpiar filtros",
         "UPDATE_SEGMENT": "Actualizar segmento",
@@ -427,6 +435,12 @@
           "PHONE_NUMBER": {
             "PLACEHOLDER": "Ingrese el número de teléfono",
             "DUPLICATE": "Este número de teléfono está en uso para otro contacto."
+          },
+          "LEAD_STAGE": {
+            "PLACEHOLDER": "Seleccione la etapa del lead"
+          },
+          "DEAL_VALUE": {
+            "PLACEHOLDER": "Ingrese el valor de oportunidad"
           },
           "CITY": {
             "PLACEHOLDER": "Introduzca el nombre de la ciudad"
@@ -474,6 +488,52 @@
       "DELETE_CONTACT": {
         "MESSAGE": "Eliminar permanentemente este contacto. Esta acción es irreversible.",
         "BUTTON": "Eliminar ahora"
+      }
+    },
+    "SALES": {
+      "STAGES": {
+        "INCOMING": "Entrante",
+        "CONTACTED": "Contactado",
+        "QUALIFIED": "Calificado",
+        "PROPOSAL": "Propuesta",
+        "WON": "Ganado",
+        "LOST": "Perdido"
+      }
+    },
+    "SALES_PIPELINE": {
+      "TITLE": "Pipeline de ventas",
+      "SUBTITLE": "Gestiona oportunidades por etapa a nivel de conversación.",
+      "FILTERS": {
+        "ALL": "Todas",
+        "OVERDUE": "Vencidas",
+        "TODAY": "Para hoy",
+        "MISSING": "Sin seguimiento",
+        "COMPLETED": "Realizadas",
+        "SCHEDULED": "Programadas"
+      },
+      "FILTERS_WITH_COUNT": "{label} ({count})",
+      "METRICS": {
+        "OPPORTUNITIES": "Oportunidades",
+        "OVERDUE": "Seguimientos vencidos",
+        "MISSING": "Sin seguimiento",
+        "COMPLETED": "Seguimientos realizados",
+        "VALUE_CLP": "Valor total CLP",
+        "VALUE_USD": "Valor total USD"
+      },
+      "NEXT_FOLLOW_UP_AT": "Próximo seguimiento: {datetime}",
+      "NO_FOLLOW_UP_DATE": "Sin fecha de seguimiento",
+      "OPEN_CONVERSATION": "Abrir conversación",
+      "LOADING": "Cargando oportunidades...",
+      "EMPTY_STAGE": "Aún no hay oportunidades en esta etapa.",
+      "NO_VALUE": "Sin valor de oportunidad",
+      "LOAD_ERROR": "No se pudieron cargar las oportunidades. Inténtalo nuevamente.",
+      "UPDATE_ERROR": "No se pudo actualizar la etapa. Inténtalo de nuevo.",
+      "FOLLOW_UP_STATUS": {
+        "OVERDUE": "Seguimiento vencido",
+        "TODAY": "Seguimiento hoy",
+        "MISSING": "Sin seguimiento",
+        "COMPLETED": "Seguimiento realizado",
+        "SCHEDULED": "Seguimiento programado"
       }
     },
     "DETAILS": {

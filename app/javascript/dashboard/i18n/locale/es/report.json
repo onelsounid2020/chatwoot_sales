@@ -126,6 +126,119 @@
       "PER_PAGE_TEMPLATE": "{size} / page"
     }
   },
+  "SALES_REPORTS": {
+    "HEADER": "Resumen de ventas",
+    "DESCRIPTION": "Supervisa la salud de tu pipeline con volumen de leads, conversión y valor de oportunidades.",
+    "DOWNLOAD": "Descargar reporte de ventas",
+    "FILTERS": {
+      "INBOX_LABEL": "Bandeja de entrada",
+      "AGENT_LABEL": "Agente",
+      "ALL_INBOXES": "Todas las bandejas",
+      "ALL_AGENTS": "Todos los agentes",
+      "SEARCH_INBOX": "Buscar bandeja",
+      "SEARCH_AGENT": "Buscar agente",
+      "NO_RESULTS": "No se encontraron resultados"
+    },
+    "API": {
+      "FETCH_FAILED": "No se pudieron obtener los datos del reporte de ventas. Inténtalo nuevamente.",
+      "DOWNLOAD_FAILED": "No se pudo descargar el reporte de ventas. Inténtalo nuevamente."
+    },
+    "METRICS": {
+      "TOTAL_LEADS": {
+        "LABEL": "Leads totales",
+        "TOOLTIP": "Total de conversaciones creadas en el período seleccionado."
+      },
+      "OPEN_OPPORTUNITIES": {
+        "LABEL": "Oportunidades abiertas",
+        "TOOLTIP": "Conversaciones activas en estado abierto, pendiente o pospuesto."
+      },
+      "WIN_RATE": {
+        "LABEL": "Tasa de cierre",
+        "TOOLTIP": "Oportunidades ganadas dividido por ganadas + perdidas."
+      },
+      "PIPELINE_VALUE": {
+        "LABEL": "Valor de pipeline",
+        "TOOLTIP": "Suma de valores de oportunidad para oportunidades activas."
+      },
+      "FORECAST_WEIGHTED_VALUE": {
+        "LABEL": "Forecast ponderado",
+        "TOOLTIP": "Valor estimado ponderado según probabilidad por etapa."
+      },
+      "WON_VALUE": {
+        "LABEL": "Valor ganado",
+        "TOOLTIP": "Suma de valores de oportunidad marcadas como ganadas."
+      },
+      "STALE_OPPORTUNITIES": {
+        "LABEL": "Oportunidades estancadas",
+        "TOOLTIP": "Oportunidades activas sin actividad en los últimos 7 días."
+      },
+      "AVG_OPEN_AGE_DAYS": {
+        "LABEL": "Edad promedio abierta",
+        "TOOLTIP": "Antigüedad promedio (en días) de las oportunidades abiertas."
+      }
+    },
+    "AGING": {
+      "TITLE": "Antigüedad del pipeline abierto",
+      "BUCKET": "Rango de antigüedad",
+      "COUNT": "Oportunidades",
+      "VALUE": "Valor",
+      "BUCKETS": {
+        "ZERO_TO_SEVEN": "0-7 días",
+        "EIGHT_TO_FOURTEEN": "8-14 días",
+        "FIFTEEN_TO_THIRTY": "15-30 días",
+        "THIRTY_ONE_PLUS": "31+ días"
+      }
+    },
+    "LOST_REASONS": {
+      "TITLE": "Principales motivos de pérdida",
+      "REASON": "Motivo",
+      "COUNT": "Oportunidades"
+    },
+    "FORECAST": {
+      "TITLE": "Forecast ponderado por etapa",
+      "STAGE": "Etapa",
+      "WEIGHT": "Probabilidad",
+      "RAW_VALUE": "Valor bruto",
+      "WEIGHTED_VALUE": "Valor ponderado"
+    },
+    "FUNNEL": {
+      "TITLE": "Embudo de conversión",
+      "STAGE": "Etapa",
+      "COUNT": "Oportunidades",
+      "CONVERSION_FROM_PREVIOUS": "Conversión desde la etapa anterior"
+    },
+    "STAGE_BREAKDOWN": {
+      "TITLE": "Pipeline por etapa",
+      "STAGE": "Etapa",
+      "COUNT": "Oportunidades",
+      "VALUE": "Valor"
+    },
+    "TRENDS": {
+      "PIPELINE_VALUE_TITLE": "Tendencia semanal: Valor del pipeline",
+      "WIN_RATE_TITLE": "Tendencia semanal: Tasa de cierre",
+      "NO_DATA": "No hay suficientes datos para generar tendencias."
+    },
+    "TARGETS": {
+      "TITLE": "Meta de ventas por agente",
+      "DESCRIPTION": "Define una meta mensual y revisa el valor ganado por agente en el período seleccionado.",
+      "SAVE_BUTTON": "Guardar metas",
+      "SAVE_SUCCESS": "Metas de ventas guardadas correctamente.",
+      "SAVE_ERROR": "No se pudieron guardar las metas de ventas. Inténtalo nuevamente.",
+      "AGENT": "Agente",
+      "TARGET": "Valor meta",
+      "WON_VALUE": "Valor ganado",
+      "REMAINING": "Pendiente",
+      "ATTAINMENT": "Cumplimiento",
+      "NOT_SET": "No definido",
+      "STATUS": {
+        "ON_TRACK": "En objetivo",
+        "AT_RISK": "En riesgo",
+        "OFF_TRACK": "Crítico",
+        "NOT_SET": "Sin meta"
+      },
+      "TARGET_PLACEHOLDER": "Ingrese valor meta"
+    }
+  },
   "AGENT_REPORTS": {
     "HEADER": "Resumen de agentes",
     "DESCRIPTION": "Easily track agent performance with key metrics such as conversations, response times, resolution times, and resolved cases. Click an agent's name to learn more.",

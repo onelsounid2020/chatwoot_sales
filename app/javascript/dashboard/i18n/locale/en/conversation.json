@@ -102,6 +102,28 @@
         "RT": "RT {status}",
         "MISSED": "missed",
         "DUE": "due"
+      },
+      "OPPORTUNITY": {
+        "STAGE": "Stage",
+        "VALUE": "Value",
+        "NEXT_FOLLOW_UP": "Next follow-up",
+        "NO_VALUE": "No value",
+        "NO_FOLLOW_UP": "No follow-up",
+        "SAVE_FAILED": "Could not update the opportunity header. Please try again.",
+        "STATUS": {
+          "OVERDUE": "Follow-up overdue",
+          "TODAY": "Follow-up today",
+          "MISSING": "No follow-up",
+          "COMPLETED": "Follow-up completed",
+          "SCHEDULED": "Follow-up scheduled"
+        },
+        "ACTIONS": {
+          "STAGE_CONTACTED": "Stage: Contacted",
+          "STAGE_PROPOSAL": "Stage: Proposal",
+          "FOLLOW_UP_1H": "Follow-up +1h",
+          "FOLLOW_UP_24H": "Follow-up +24h",
+          "CONTACTED_NOW": "Contacted now"
+        }
       }
     },
     "RESOLVE_DROPDOWN": {
@@ -138,6 +160,140 @@
         "NO_RESULTS": "No results found",
         "SUCCESSFUL": "Changed priority of conversation id {conversationId} to {priority}",
         "FAILED": "Couldn't change priority. Please try again."
+      }
+    },
+    "SALES": {
+      "PANEL_SECTIONS": {
+        "EXECUTION": "Execution",
+        "PIPELINE": "Pipeline and opportunity",
+        "CLOSURE": "Closure requirements",
+        "CONTEXT": "Conversation context"
+      },
+      "DEAL_STAGE": {
+        "TITLE": "Deal stage",
+        "SELECT_PLACEHOLDER": "Select stage",
+        "INPUT_PLACEHOLDER": "Search stage",
+        "NO_RESULTS": "No results found",
+        "SUCCESSFUL": "Deal stage updated successfully",
+        "FAILED": "Could not update the deal stage. Please try again.",
+        "OPTIONS": {
+          "INCOMING": "Incoming",
+          "CONTACTED": "Contacted",
+          "QUALIFIED": "Qualified",
+          "PROPOSAL": "Proposal",
+          "WON": "Won",
+          "LOST": "Lost"
+        }
+      },
+      "DEAL_CURRENCY": {
+        "TITLE": "Deal currency",
+        "SELECT_PLACEHOLDER": "Select currency",
+        "INPUT_PLACEHOLDER": "Search currency",
+        "NO_RESULTS": "No results found",
+        "SUCCESSFUL": "Deal currency updated successfully",
+        "FAILED": "Could not update the deal currency. Please try again.",
+        "OPTIONS": {
+          "CLP": "Chilean Peso (CLP)",
+          "USD": "US Dollar (USD)"
+        }
+      },
+      "DEAL_VALUE": {
+        "TITLE": "Deal value",
+        "PLACEHOLDER": "Enter deal value",
+        "SUCCESSFUL": "Deal value updated successfully",
+        "FAILED": "Could not update the deal value. Please enter a valid number.",
+        "SAVE_FAILED": "Could not save the deal value. Please try again."
+      },
+      "LOST_REASON": {
+        "TITLE": "Lost reason",
+        "PLACEHOLDER": "Add why this opportunity was lost",
+        "FAILED": "Could not save the lost reason. Please try again."
+      },
+      "NEXT_FOLLOW_UP": {
+        "TITLE": "Next follow-up",
+        "PLACEHOLDER": "Set follow-up date and time",
+        "CLEAR": "Clear",
+        "QUICK": {
+          "MINUTES_30": "+30 min",
+          "HOUR_1": "+1 hour",
+          "HOURS_24": "+24 hours"
+        },
+        "SUCCESSFUL": "Next follow-up updated successfully",
+        "FAILED": "Could not update the follow-up date. Please use a valid date and time.",
+        "SAVE_FAILED": "Could not save the follow-up date. Please try again."
+      },
+      "RESOLVE_CHECKLIST": {
+        "TITLE": "Resolve Requirements",
+        "READY": "This conversation meets all closure requirements.",
+        "BLOCKED": "Complete pending requirements before resolving.",
+        "BLOCKED_ALERT": "You can't resolve this conversation yet. Complete the required fields first.",
+        "FIELD_REQUIRED": "Required to resolve this conversation.",
+        "STAGE_LABEL": "Deal stage must be one of: {stages}",
+        "LOST_REASON_LABEL": "Lost reason is required when deal stage is Lost",
+        "CONVERSATION_ATTR_LABEL": "Conversation attribute required: {attribute}",
+        "CONTACT_ATTR_LABEL": "Contact attribute required: {attribute}"
+      }
+    },
+    "SALES_HOME": {
+      "HEADLINE": "Sales command center",
+      "SUBHEAD": "Commercial pulse for the last 30 days",
+      "LOADING": "Loading sales metrics...",
+      "LOAD_ERROR": "Could not load sales metrics at this moment.",
+      "RANGE_NOTE": "Values shown correspond to the last 30 days.",
+      "CARDS_COUNT": "{count} opps",
+      "ACTIVE_FILTERS_LABEL": "Active filters:",
+      "ACTIVE_VIEW_CHIP": "View: {view}",
+      "ACTIVE_AGENT_CHIP": "Agent: {agent}",
+      "ACTIVE_TEAM_CHIP": "Team: {team}",
+      "SCOPE_LABEL": "Scope: {scope}",
+      "SCOPE": {
+        "OWN": "My pipeline",
+        "TEAM": "My team",
+        "GLOBAL": "Global"
+      },
+      "TEAM_FILTER": {
+        "LABEL": "Team",
+        "ALL": "All my teams"
+      },
+      "AGENT_FILTER": {
+        "LABEL": "Agent",
+        "ALL": "All agents"
+      },
+      "CLOSE_CHIP": "x",
+      "ALERTS": {
+        "TITLE": "Sales alerts",
+        "ACTION": "View",
+        "EMPTY": "No critical alerts right now.",
+        "OVERDUE_FOLLOW_UP": "{count} overdue opportunities without follow-up",
+        "LOW_WIN_RATE": "Low win rate ({rate}%)",
+        "NO_WINS": "There are open opportunities with no wins yet"
+      },
+      "STAGES": {
+        "TITLE": "Pipeline by stage",
+        "EMPTY": "No stage data yet."
+      },
+      "AGENTS": {
+        "TITLE": "Top agents",
+        "EMPTY": "No agent performance data yet for this period.",
+        "UNKNOWN_AGENT": "Unnamed agent",
+        "ATTAINMENT": "{percent}% attainment"
+      },
+      "TARGET": {
+        "TITLE": "Target vs progress",
+        "SUBTITLE": "Progress {won} out of target {target}",
+        "PERCENT": "{percent}%"
+      },
+      "ACTIONS": {
+        "CLEAR_FILTER": "Clear filter",
+        "PIPELINE": "View pipeline",
+        "REPORTS": "Open sales report"
+      },
+      "CARDS": {
+        "OPEN_OPPORTUNITIES": "Open opportunities",
+        "STALE_OPPORTUNITIES": "Overdue opportunities",
+        "WIN_RATE": "Win rate",
+        "PIPELINE_VALUE": "Pipeline value (CLP)",
+        "WON_VALUE": "Won value (CLP)"
       }
     },
     "DELETE_CONVERSATION": {
@@ -354,7 +510,7 @@
     },
     "ACCORDION": {
       "CONTACT_DETAILS": "Contact Details",
-      "CONVERSATION_ACTIONS": "Conversation Actions",
+      "CONVERSATION_ACTIONS": "Commercial workspace",
       "CONVERSATION_LABELS": "Conversation Labels",
       "CONVERSATION_INFO": "Conversation Information",
       "CONTACT_NOTES": "Contact Notes",

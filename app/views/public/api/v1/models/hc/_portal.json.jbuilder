@@ -4,6 +4,9 @@ json.homepage_link portal.homepage_link
 json.name portal.name
 json.page_title portal.page_title
 json.slug portal.slug
+json.home_bg_color portal.config&.dig('home_bg_color')
+json.article_bg_color portal.config&.dig('article_bg_color')
+json.article_text_color portal.config&.dig('article_text_color')
 
 json.categories do
   if portal.categories.any?
