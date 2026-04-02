@@ -12,6 +12,11 @@ import { useI18n } from 'vue-i18n';
  * @property {string} IS_GREATER_THAN - Greater than comparison
  * @property {string} IS_LESS_THAN - Less than comparison
  * @property {string} DAYS_BEFORE - Days before check
+ * @property {string} HOURS_BEFORE - Hours before check
+ * @property {string} MINUTES_BEFORE - Minutes before check
+ * @property {string} DAYS_AFTER - Days after check
+ * @property {string} HOURS_AFTER - Hours after check
+ * @property {string} MINUTES_AFTER - Minutes after check
  * @property {string} STARTS_WITH - Starts with check
  */
 
@@ -34,6 +39,11 @@ const FILTER_OPS = {
   IS_GREATER_THAN: 'is_greater_than',
   IS_LESS_THAN: 'is_less_than',
   DAYS_BEFORE: 'days_before',
+  HOURS_BEFORE: 'hours_before',
+  MINUTES_BEFORE: 'minutes_before',
+  DAYS_AFTER: 'days_after',
+  HOURS_AFTER: 'hours_after',
+  MINUTES_AFTER: 'minutes_after',
   STARTS_WITH: 'starts_with',
 };
 
@@ -41,6 +51,11 @@ const NO_INPUT_OPTS = [FILTER_OPS.IS_PRESENT, FILTER_OPS.IS_NOT_PRESENT];
 
 const OPS_INPUT_OVERRIDE = {
   [FILTER_OPS.DAYS_BEFORE]: 'plainText',
+  [FILTER_OPS.HOURS_BEFORE]: 'plainText',
+  [FILTER_OPS.MINUTES_BEFORE]: 'plainText',
+  [FILTER_OPS.DAYS_AFTER]: 'plainText',
+  [FILTER_OPS.HOURS_AFTER]: 'plainText',
+  [FILTER_OPS.MINUTES_AFTER]: 'plainText',
 };
 
 /**
@@ -56,6 +71,11 @@ const filterOperatorIcon = {
   [FILTER_OPS.IS_GREATER_THAN]: 'i-ph-greater-than-bold',
   [FILTER_OPS.IS_LESS_THAN]: 'i-ph-less-than-bold',
   [FILTER_OPS.DAYS_BEFORE]: 'i-ph-calendar-minus-bold',
+  [FILTER_OPS.HOURS_BEFORE]: 'i-ph-clock-countdown-bold',
+  [FILTER_OPS.MINUTES_BEFORE]: 'i-ph-timer-bold',
+  [FILTER_OPS.DAYS_AFTER]: 'i-ph-calendar-plus-bold',
+  [FILTER_OPS.HOURS_AFTER]: 'i-ph-clock-clockwise-bold',
+  [FILTER_OPS.MINUTES_AFTER]: 'i-ph-timer-bold',
   [FILTER_OPS.STARTS_WITH]: 'i-ph-caret-line-right-bold',
 };
 
@@ -126,6 +146,11 @@ export function useOperators() {
     operators.value[FILTER_OPS.IS_GREATER_THAN],
     operators.value[FILTER_OPS.IS_LESS_THAN],
     operators.value[FILTER_OPS.DAYS_BEFORE],
+    operators.value[FILTER_OPS.HOURS_BEFORE],
+    operators.value[FILTER_OPS.MINUTES_BEFORE],
+    operators.value[FILTER_OPS.DAYS_AFTER],
+    operators.value[FILTER_OPS.HOURS_AFTER],
+    operators.value[FILTER_OPS.MINUTES_AFTER],
   ]);
 
   /**

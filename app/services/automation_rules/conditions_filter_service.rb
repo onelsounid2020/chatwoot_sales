@@ -152,10 +152,33 @@ class AutomationRules::ConditionsFilterService < FilterService
     when 'standard'
       if attribute_key == 'labels'
         build_label_query_string(query_hash, current_index, query_operator)
+      elsif attribute_key == 'last_reply_type'
+        build_last_reply_type_query_string(filter_operator_value, query_operator)
       else
         " #{table_name}.#{attribute_key} #{filter_operator_value} #{query_operator} "
       end
     end
+  end
+
+  def build_last_reply_type_query_string(filter_operator_value, query_operator)
+    incoming_type = Message.message_types[:incoming]
+    outgoing_type = Message.message_types[:outgoing]
+    template_type = Message.message_types[:template]
+
+    <<~SQL.squish
+      COALESCE((
+        SELECT CASE
+                 WHEN lm.message_type = #{incoming_type} THEN 'customer'
+                 ELSE 'agent'
+               END
+        FROM messages lm
+        WHERE lm.conversation_id = conversations.id
+          AND lm.private = FALSE
+          AND lm.message_type IN (#{incoming_type}, #{outgoing_type}, #{template_type})
+        ORDER BY lm.created_at DESC, lm.id DESC
+        LIMIT 1
+      ), 'none') #{filter_operator_value} #{query_operator}
+    SQL
   end
 
   def build_label_query_string(query_hash, current_index, query_operator)

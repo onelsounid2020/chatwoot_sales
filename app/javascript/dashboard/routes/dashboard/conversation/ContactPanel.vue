@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, onMounted, ref } from 'vue';
+import { computed, watch, onMounted, onUnmounted, ref, nextTick } from 'vue';
 import {
   useMapGetter,
   useFunctionGetter,
@@ -23,6 +23,8 @@ import ShopifyOrdersList from 'dashboard/components/widgets/conversation/Shopify
 import SidebarActionsHeader from 'dashboard/components-next/SidebarActionsHeader.vue';
 import LinearIssuesList from 'dashboard/components/widgets/conversation/linear/IssuesList.vue';
 import LinearSetupCTA from 'dashboard/components/widgets/conversation/linear/LinearSetupCTA.vue';
+import { emitter } from 'shared/helpers/mitt';
+import { BUS_EVENTS } from 'shared/constants/busEvents';
 
 const props = defineProps({
   conversationId: {
@@ -121,12 +123,59 @@ const closeContactPanel = () => {
   });
 };
 
+const onResolveRequirementsBlocked = async (payload = {}) => {
+  if (payload?.rebroadcasted) {
+    return;
+  }
+
+  const missingItems = payload?.missingItems || [];
+
+  const settingsToOpen = {
+    is_conv_actions_open: true,
+    // Keep both sections visible while resolving validation issues.
+    // This avoids missing highlights when fields are split between
+    // conversation and contact attributes.
+    is_conv_details_open: true,
+    is_contact_attributes_open: true,
+  };
+  const hasStageMissing = missingItems.some(
+    item => item.key === 'allowed_deal_stages'
+  );
+  if (hasStageMissing) {
+    settingsToOpen.is_conv_actions_open = true;
+  }
+
+  updateUISettings(settingsToOpen);
+  await nextTick();
+
+  emitter.emit(BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED, {
+    ...payload,
+    rebroadcasted: true,
+  });
+
+  const firstMissingAttributeKey = payload?.missingAttributeKeys?.[0];
+  if (firstMissingAttributeKey) {
+    emitter.emit(BUS_EVENTS.FOCUS_CUSTOM_ATTRIBUTE, firstMissingAttributeKey);
+  }
+};
+
 onMounted(() => {
   conversationSidebarItems.value = conversationSidebarItemsOrder.value;
   getContactDetails();
   store.dispatch('attributes/get', 0);
   // Load integrations to ensure linear integration state is available
   store.dispatch('integrations/get', 'linear');
+  emitter.on(
+    BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+    onResolveRequirementsBlocked
+  );
+});
+
+onUnmounted(() => {
+  emitter.off(
+    BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED,
+    onResolveRequirementsBlocked
+  );
 });
 </script>
 

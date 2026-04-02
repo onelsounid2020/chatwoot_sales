@@ -9,9 +9,17 @@
 #  cached_label_list      :text
 #  contact_last_seen_at   :datetime
 #  custom_attributes      :jsonb
+#  deal_currency          :string           default("CLP"), not null
+#  deal_stage             :integer          default("incoming"), not null
+#  deal_value             :decimal(12, 2)
+#  deal_value_clp         :decimal(12, 2)
 #  first_reply_created_at :datetime
+#  fx_rate_usd_clp        :decimal(12, 4)
 #  identifier             :string
 #  last_activity_at       :datetime         not null
+#  last_contacted_at      :datetime
+#  lost_reason            :string
+#  next_follow_up_at      :datetime
 #  priority               :integer
 #  snoozed_until          :datetime
 #  status                 :integer          default("open"), not null
@@ -34,7 +42,9 @@
 #
 #  conv_acid_inbid_stat_asgnid_idx                    (account_id,inbox_id,status,assignee_id)
 #  index_conversations_on_account_id                  (account_id)
+#  index_conversations_on_account_id_and_deal_stage   (account_id,deal_stage)
 #  index_conversations_on_account_id_and_display_id   (account_id,display_id) UNIQUE
+#  index_conversations_on_account_id_and_lost_reason  (account_id,lost_reason)
 #  index_conversations_on_assignee_id_and_account_id  (assignee_id,account_id)
 #  index_conversations_on_campaign_id                 (campaign_id)
 #  index_conversations_on_contact_id                  (contact_id)
@@ -43,6 +53,8 @@
 #  index_conversations_on_id_and_account_id           (account_id,id)
 #  index_conversations_on_identifier_and_account_id   (identifier,account_id)
 #  index_conversations_on_inbox_id                    (inbox_id)
+#  index_conversations_on_last_contacted_at           (last_contacted_at)
+#  index_conversations_on_next_follow_up_at           (next_follow_up_at)
 #  index_conversations_on_priority                    (priority)
 #  index_conversations_on_status_and_account_id       (status,account_id)
 #  index_conversations_on_status_and_priority         (status,priority)
@@ -52,6 +64,9 @@
 #
 
 class Conversation < ApplicationRecord
+  SUPPORTED_DEAL_CURRENCIES = %w[CLP USD].freeze
+  DEFAULT_USD_CLP_RATE = ENV.fetch('DEFAULT_USD_CLP_RATE', '950').to_f
+
   include Labelable
   include LlmFormattable
   include AssignmentHandler
@@ -70,10 +85,25 @@ class Conversation < ApplicationRecord
   validates :additional_attributes, jsonb_attributes_length: true
   validates :custom_attributes, jsonb_attributes_length: true
   validates :uuid, uniqueness: true
+  validates :deal_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :deal_currency, inclusion: { in: SUPPORTED_DEAL_CURRENCIES }
+  validates :lost_reason, length: { maximum: 255 }, allow_blank: true
   validate :validate_referer_url
+  validate :validate_resolve_policy, if: :resolving_existing_conversation?
+  before_validation :normalize_deal_currency
+  before_validation :normalize_deal_value_in_clp
+  before_validation :normalize_lost_reason
 
   enum status: { open: 0, resolved: 1, pending: 2, snoozed: 3 }
   enum priority: { low: 0, medium: 1, high: 2, urgent: 3 }
+  enum deal_stage: {
+    incoming: 0,
+    contacted: 1,
+    qualified: 2,
+    proposal: 3,
+    won: 4,
+    lost: 5
+  }
 
   scope :unassigned, -> { where(assignee_id: nil) }
   scope :assigned, -> { where.not(assignee_id: nil) }
@@ -252,6 +282,19 @@ class Conversation < ApplicationRecord
     self.assignee_agent_bot_id = nil
   end
 
+  def resolving_existing_conversation?
+    persisted? && will_save_change_to_status? && resolved?
+  end
+
+  def validate_resolve_policy
+    result = Conversations::ResolvePolicyService.new(self).validate
+    return if result[:valid]
+
+    result[:errors].each do |error_message|
+      errors.add(:status, error_message)
+    end
+  end
+
   def determine_conversation_status
     self.status = :resolved and return if contact.blocked?
 
@@ -278,7 +321,8 @@ class Conversation < ApplicationRecord
 
   def list_of_keys
     %w[team_id assignee_id assignee_agent_bot_id status snoozed_until custom_attributes label_list waiting_since
-       first_reply_created_at priority]
+       first_reply_created_at priority deal_stage deal_value deal_currency deal_value_clp fx_rate_usd_clp lost_reason
+       next_follow_up_at last_contacted_at]
   end
 
   def allowed_keys?
@@ -335,6 +379,40 @@ class Conversation < ApplicationRecord
     return unless additional_attributes['referer']
 
     self['additional_attributes']['referer'] = nil unless url_valid?(additional_attributes['referer'])
+  end
+
+  def normalize_deal_currency
+    self.deal_currency = deal_currency.to_s.upcase.presence || 'CLP'
+  end
+
+  def normalize_deal_value_in_clp
+    return clear_deal_monetary_fields if deal_value.nil?
+
+    if deal_currency == 'USD'
+      self.fx_rate_usd_clp = effective_usd_clp_rate
+      self.deal_value_clp = (deal_value.to_f * fx_rate_usd_clp.to_f).round(2)
+    else
+      self.fx_rate_usd_clp = 1
+      self.deal_value_clp = deal_value
+    end
+  end
+
+  def clear_deal_monetary_fields
+    self.deal_value_clp = nil
+    self.fx_rate_usd_clp = nil
+  end
+
+  def normalize_lost_reason
+    self.lost_reason = lost_reason.to_s.strip.presence
+  end
+
+  def effective_usd_clp_rate
+    account_rate = account&.settings&.dig('sales_fx_rate_usd_clp').to_f
+    return account_rate if account_rate.positive?
+
+    return fx_rate_usd_clp.to_f if fx_rate_usd_clp.to_f.positive?
+
+    DEFAULT_USD_CLP_RATE.positive? ? DEFAULT_USD_CLP_RATE : 950
   end
 
   # creating db triggers

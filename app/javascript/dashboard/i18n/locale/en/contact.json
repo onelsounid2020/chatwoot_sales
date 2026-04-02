@@ -345,7 +345,11 @@
             "COUNTRY": "Country",
             "CITY": "City",
             "LAST_ACTIVITY": "Last activity",
-            "CREATED_AT": "Created at"
+            "CREATED_AT": "Created at",
+            "LEAD_STAGE": "Lead stage",
+            "DEAL_VALUE": "Deal value",
+            "NEXT_FOLLOW_UP": "Next follow-up",
+            "LAST_CONTACTED": "Last contacted"
           }
         },
         "ORDER": {
@@ -392,6 +396,10 @@
       "BLOCKED": "Blocked",
       "BLOCKED_TRUE": "True",
       "BLOCKED_FALSE": "False",
+      "LEAD_STAGE": "Lead stage",
+      "DEAL_VALUE": "Deal value",
+      "NEXT_FOLLOW_UP_AT": "Next follow-up",
+      "LAST_CONTACTED_AT": "Last contacted",
       "BUTTONS": {
         "CLEAR_FILTERS": "Clear filters",
         "UPDATE_SEGMENT": "Update segment",
@@ -428,6 +436,12 @@
           "PHONE_NUMBER": {
             "PLACEHOLDER": "Enter the phone number",
             "DUPLICATE": "This phone number is in use for another contact."
+          },
+          "LEAD_STAGE": {
+            "PLACEHOLDER": "Select lead stage"
+          },
+          "DEAL_VALUE": {
+            "PLACEHOLDER": "Enter deal value"
           },
           "CITY": {
             "PLACEHOLDER": "Enter the city name"
@@ -475,6 +489,52 @@
       "DELETE_CONTACT": {
         "MESSAGE": "This action is permanent and irreversible.",
         "BUTTON": "Delete now"
+      }
+    },
+    "SALES": {
+      "STAGES": {
+        "INCOMING": "Incoming",
+        "CONTACTED": "Contacted",
+        "QUALIFIED": "Qualified",
+        "PROPOSAL": "Proposal",
+        "WON": "Won",
+        "LOST": "Lost"
+      }
+    },
+    "SALES_PIPELINE": {
+      "TITLE": "Sales Pipeline",
+      "SUBTITLE": "Manage opportunities by stage at the conversation level.",
+      "FILTERS": {
+        "ALL": "All",
+        "OVERDUE": "Overdue",
+        "TODAY": "Due today",
+        "MISSING": "No follow-up",
+        "COMPLETED": "Completed",
+        "SCHEDULED": "Scheduled"
+      },
+      "FILTERS_WITH_COUNT": "{label} ({count})",
+      "METRICS": {
+        "OPPORTUNITIES": "Opportunities",
+        "OVERDUE": "Overdue follow-ups",
+        "MISSING": "No follow-up",
+        "COMPLETED": "Completed follow-ups",
+        "VALUE_CLP": "Total value CLP",
+        "VALUE_USD": "Total value USD"
+      },
+      "NEXT_FOLLOW_UP_AT": "Next follow-up: {datetime}",
+      "NO_FOLLOW_UP_DATE": "No follow-up date",
+      "OPEN_CONVERSATION": "Open conversation",
+      "LOADING": "Loading opportunities...",
+      "EMPTY_STAGE": "No opportunities in this stage yet.",
+      "NO_VALUE": "No deal value",
+      "LOAD_ERROR": "Unable to load opportunities. Please try again later.",
+      "UPDATE_ERROR": "Could not update stage. Please try again.",
+      "FOLLOW_UP_STATUS": {
+        "OVERDUE": "Follow-up overdue",
+        "TODAY": "Follow-up today",
+        "MISSING": "No follow-up set",
+        "COMPLETED": "Follow-up completed",
+        "SCHEDULED": "Follow-up scheduled"
       }
     },
     "DETAILS": {

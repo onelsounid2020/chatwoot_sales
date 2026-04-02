@@ -8,6 +8,9 @@ json.page_title portal.page_title
 json.slug portal.slug
 json.archived portal.archived
 json.account_id portal.account_id
+json.home_bg_color portal.config&.dig('home_bg_color')
+json.article_bg_color portal.config&.dig('article_bg_color')
+json.article_text_color portal.config&.dig('article_text_color')
 
 json.config do
   json.allowed_locales do

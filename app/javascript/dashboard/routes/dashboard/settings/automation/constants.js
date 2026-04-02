@@ -2,7 +2,10 @@ import {
   OPERATOR_TYPES_1,
   OPERATOR_TYPES_2,
   OPERATOR_TYPES_3,
+  OPERATOR_TYPES_5,
   OPERATOR_TYPES_6,
+  OPERATOR_TYPES_7,
+  OPERATOR_TYPES_8,
 } from './operators';
 
 export const AUTOMATIONS = {
@@ -55,6 +58,18 @@ export const AUTOMATIONS = {
         name: 'PRIORITY',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
       },
       {
         key: 'conversation_language',
@@ -129,6 +144,18 @@ export const AUTOMATIONS = {
         name: 'SEND_WEBHOOK_EVENT',
       },
       {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
+      },
+      {
         key: 'send_attachment',
         name: 'SEND_ATTACHMENT',
       },
@@ -197,6 +224,24 @@ export const AUTOMATIONS = {
         filterOperators: OPERATOR_TYPES_1,
       },
       {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
+      },
+      {
+        key: 'next_follow_up_at',
+        name: 'NEXT_FOLLOW_UP_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
         key: 'labels',
         name: 'LABELS',
         inputType: 'multi_select',
@@ -247,6 +292,18 @@ export const AUTOMATIONS = {
       {
         key: 'send_webhook_event',
         name: 'SEND_WEBHOOK_EVENT',
+      },
+      {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
       },
       {
         key: 'send_attachment',
@@ -329,6 +386,24 @@ export const AUTOMATIONS = {
         filterOperators: OPERATOR_TYPES_1,
       },
       {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
+      },
+      {
+        key: 'next_follow_up_at',
+        name: 'NEXT_FOLLOW_UP_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
         key: 'labels',
         name: 'LABELS',
         inputType: 'multi_select',
@@ -379,6 +454,18 @@ export const AUTOMATIONS = {
       {
         key: 'send_webhook_event',
         name: 'SEND_WEBHOOK_EVENT',
+      },
+      {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
       },
       {
         key: 'send_attachment',
@@ -455,6 +542,48 @@ export const AUTOMATIONS = {
         filterOperators: OPERATOR_TYPES_1,
       },
       {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
+      },
+      {
+        key: 'created_at',
+        name: 'CREATED_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_8,
+      },
+      {
+        key: 'last_activity_at',
+        name: 'LAST_ACTIVITY_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_8,
+      },
+      {
+        key: 'next_follow_up_at',
+        name: 'NEXT_FOLLOW_UP_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_8,
+      },
+      {
+        key: 'last_contacted_at',
+        name: 'LAST_CONTACTED_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_8,
+      },
+      {
+        key: 'last_reply_type',
+        name: 'LAST_REPLY_TYPE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
         key: 'labels',
         name: 'LABELS',
         inputType: 'multi_select',
@@ -501,6 +630,18 @@ export const AUTOMATIONS = {
       {
         key: 'send_webhook_event',
         name: 'SEND_WEBHOOK_EVENT',
+      },
+      {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
       },
       {
         key: 'send_attachment',
@@ -576,6 +717,18 @@ export const AUTOMATIONS = {
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
+      {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
+      },
     ],
     actions: [
       {
@@ -603,8 +756,164 @@ export const AUTOMATIONS = {
         name: 'SEND_WEBHOOK_EVENT',
       },
       {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
+      },
+      {
         key: 'send_attachment',
         name: 'SEND_ATTACHMENT',
+      },
+    ],
+  },
+  periodic_check: {
+    conditions: [
+      {
+        key: 'status',
+        name: 'STATUS',
+        inputType: 'multi_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'assignee_id',
+        name: 'ASSIGNEE_NAME',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_3,
+      },
+      {
+        key: 'team_id',
+        name: 'TEAM_NAME',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_3,
+      },
+      {
+        key: 'inbox_id',
+        name: 'INBOX',
+        inputType: 'multi_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'priority',
+        name: 'PRIORITY',
+        inputType: 'multi_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_stage',
+        name: 'DEAL_STAGE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'deal_value',
+        name: 'DEAL_VALUE',
+        inputType: 'plain_text',
+        filterOperators: OPERATOR_TYPES_7,
+      },
+      {
+        key: 'created_at',
+        name: 'CREATED_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
+        key: 'last_activity_at',
+        name: 'LAST_ACTIVITY_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
+        key: 'next_follow_up_at',
+        name: 'NEXT_FOLLOW_UP_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
+        key: 'last_contacted_at',
+        name: 'LAST_CONTACTED_AT',
+        inputType: 'date',
+        filterOperators: OPERATOR_TYPES_5,
+      },
+      {
+        key: 'last_reply_type',
+        name: 'LAST_REPLY_TYPE',
+        inputType: 'search_select',
+        filterOperators: OPERATOR_TYPES_1,
+      },
+      {
+        key: 'labels',
+        name: 'LABELS',
+        inputType: 'multi_select',
+        filterOperators: OPERATOR_TYPES_3,
+      },
+    ],
+    actions: [
+      {
+        key: 'assign_agent',
+        name: 'ASSIGN_AGENT',
+      },
+      {
+        key: 'assign_team',
+        name: 'ASSIGN_TEAM',
+      },
+      {
+        key: 'add_label',
+        name: 'ADD_LABEL',
+      },
+      {
+        key: 'remove_label',
+        name: 'REMOVE_LABEL',
+      },
+      {
+        key: 'change_priority',
+        name: 'CHANGE_PRIORITY',
+      },
+      {
+        key: 'change_deal_stage',
+        name: 'CHANGE_DEAL_STAGE',
+      },
+      {
+        key: 'change_deal_value',
+        name: 'CHANGE_DEAL_VALUE',
+      },
+      {
+        key: 'change_next_follow_up_in_minutes',
+        name: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
+      },
+      {
+        key: 'add_private_note',
+        name: 'ADD_PRIVATE_NOTE',
+      },
+      {
+        key: 'open_conversation',
+        name: 'OPEN_CONVERSATION',
+      },
+      {
+        key: 'pending_conversation',
+        name: 'PENDING_CONVERSATION',
+      },
+      {
+        key: 'resolve_conversation',
+        name: 'RESOLVE_CONVERSATION',
+      },
+      {
+        key: 'mute_conversation',
+        name: 'MUTE_CONVERSATION',
+      },
+      {
+        key: 'snooze_conversation',
+        name: 'SNOOZE_CONVERSATION',
+      },
+      {
+        key: 'send_webhook_event',
+        name: 'SEND_WEBHOOK_EVENT',
       },
     ],
   },
@@ -630,6 +939,10 @@ export const AUTOMATION_RULE_EVENTS = [
   {
     key: 'conversation_opened',
     value: 'CONVERSATION_OPENED',
+  },
+  {
+    key: 'periodic_check',
+    value: 'PERIODIC_CHECK',
   },
 ];
 
@@ -713,6 +1026,21 @@ export const AUTOMATION_ACTION_TYPES = [
     key: 'change_priority',
     label: 'CHANGE_PRIORITY',
     inputType: 'search_select',
+  },
+  {
+    key: 'change_deal_stage',
+    label: 'CHANGE_DEAL_STAGE',
+    inputType: 'search_select',
+  },
+  {
+    key: 'change_deal_value',
+    label: 'CHANGE_DEAL_VALUE',
+    inputType: 'plain_text',
+  },
+  {
+    key: 'change_next_follow_up_in_minutes',
+    label: 'CHANGE_NEXT_FOLLOW_UP_IN_MINUTES',
+    inputType: 'plain_text',
   },
   {
     key: 'add_sla',

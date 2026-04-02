@@ -3,6 +3,8 @@
 require 'pathname'
 
 module ChatwootApp
+  TRUE_VALUES = %w[true 1 yes on].freeze
+
   def self.root
     Pathname.new(File.expand_path('..', __dir__))
   end
@@ -11,8 +13,12 @@ module ChatwootApp
     100_000
   end
 
+  def self.lite_mode?
+    env_flag_enabled?('LITE_MODE')
+  end
+
   def self.enterprise?
-    return if ENV.fetch('DISABLE_ENTERPRISE', false)
+    return false if enterprise_disabled?
 
     @enterprise ||= root.join('enterprise').exist?
   end
@@ -35,7 +41,7 @@ module ChatwootApp
 
   def self.extensions
     if custom?
-      %w[enterprise custom]
+      enterprise? ? %w[enterprise custom] : %w[custom]
     elsif enterprise?
       %w[enterprise]
     else
@@ -52,5 +58,13 @@ module ChatwootApp
     secret_key = InstallationConfig.find_by(name: 'LANGFUSE_SECRET_KEY')&.value
 
     otel_provider.present? && secret_key.present? && otel_provider == 'langfuse'
+  end
+
+  def self.enterprise_disabled?
+    env_flag_enabled?('DISABLE_ENTERPRISE') || lite_mode?
+  end
+
+  def self.env_flag_enabled?(key)
+    TRUE_VALUES.include?(ENV.fetch(key, '').to_s.strip.downcase)
   end
 end

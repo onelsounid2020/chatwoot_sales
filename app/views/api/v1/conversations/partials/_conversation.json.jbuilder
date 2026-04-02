@@ -57,6 +57,14 @@ json.unread_count conversation.unread_incoming_messages.count
 json.last_non_activity_message conversation.messages.where(account_id: conversation.account_id).non_activity_messages.first.try(:push_event_data)
 json.last_activity_at conversation.last_activity_at.to_i
 json.priority conversation.priority
+json.deal_stage conversation.deal_stage
+json.deal_value conversation.deal_value
+json.deal_currency conversation.deal_currency
+json.deal_value_clp conversation.deal_value_clp
+json.lost_reason conversation.lost_reason
+json.fx_rate_usd_clp conversation.fx_rate_usd_clp
+json.next_follow_up_at conversation.next_follow_up_at&.to_i
+json.last_contacted_at conversation.last_contacted_at&.to_i
 json.waiting_since conversation.waiting_since.to_i.to_i
 json.sla_policy_id conversation.sla_policy_id
 json.partial! 'enterprise/api/v1/conversations/partials/conversation', conversation: conversation if ChatwootApp.enterprise?

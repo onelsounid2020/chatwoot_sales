@@ -60,7 +60,7 @@ By default, it renders:
   </head>
   <body>
     <div id="portal" class="antialiased">
-      <main class="flex flex-col min-h-screen bg-white main-content dark:bg-slate-900" role="main">
+      <main id="portal-main" class="flex flex-col min-h-screen bg-white main-content dark:bg-slate-900" role="main">
         <% if !@is_plain_layout_enabled %>
           <%= render "public/api/v1/portals/header", portal: @portal %>
         <% end %>
@@ -100,12 +100,24 @@ By default, it renders:
     --dynamic-portal-bg: <%= generate_portal_bg(@portal.color, 'dark') %>;
     --dynamic-portal-bg-gradient: <%= generate_gradient_to_bottom('dark') %>;
     --dynamic-hover-bg-color: <%= generate_portal_hover_color(@portal.color , 'dark') %>;
+    --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'dark') %>;
+    --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
+    --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-link-color: <%= @portal.color %>;
   }
 
   html.light {
     --dynamic-portal-bg: <%= generate_portal_bg(@portal.color, 'light') %>;
     --dynamic-portal-bg-gradient: <%= generate_gradient_to_bottom('light') %>;
     --dynamic-hover-bg-color: <%= generate_portal_hover_color(@portal.color , 'light') %>;
+    --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'light') %>;
+    --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
+    --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-link-color: <%= @portal.color %>;
+  }
+
+  #portal-main {
+    background-color: var(--portal-home-bg);
   }
 
   /* Portal background */
@@ -133,6 +145,15 @@ By default, it renders:
   }
   #category-block:hover #category-name  {
     color: var(--dynamic-hover-color);
+  }
+
+  #cw-article-content {
+    background-color: var(--portal-article-bg);
+    color: var(--portal-article-text);
+  }
+
+  #cw-article-content a {
+    color: var(--portal-link-color);
   }
   </style>
 

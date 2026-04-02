@@ -51,6 +51,22 @@ const sortMenus = [
     label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.SORT_BY.OPTIONS.CREATED_AT'),
     value: 'created_at',
   },
+  {
+    label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.SORT_BY.OPTIONS.LEAD_STAGE'),
+    value: 'lead_stage',
+  },
+  {
+    label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.SORT_BY.OPTIONS.DEAL_VALUE'),
+    value: 'deal_value',
+  },
+  {
+    label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.SORT_BY.OPTIONS.NEXT_FOLLOW_UP'),
+    value: 'next_follow_up_at',
+  },
+  {
+    label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.SORT_BY.OPTIONS.LAST_CONTACTED'),
+    value: 'last_contacted_at',
+  },
 ];
 
 const orderingMenus = [

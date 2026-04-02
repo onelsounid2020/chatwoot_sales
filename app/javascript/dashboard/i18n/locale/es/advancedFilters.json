@@ -28,6 +28,11 @@
       "is_greater_than": "Es mayor que",
       "is_less_than": "Es menor que",
       "days_before": "Es X días antes",
+      "hours_before": "Es X horas antes",
+      "minutes_before": "Es X minutos antes",
+      "days_after": "Es X días después",
+      "hours_after": "Es X horas después",
+      "minutes_after": "Es X minutos después",
       "starts_with": "Empieza con",
       "equalTo": "Igual a",
       "notEqualTo": "No igual a",
@@ -38,6 +43,11 @@
       "isGreaterThan": "Es mayor que",
       "isLessThan": "Es menor que",
       "daysBefore": "Es X días antes",
+      "hoursBefore": "Es X horas antes",
+      "minutesBefore": "Es X minutos antes",
+      "daysAfter": "Es X días después",
+      "hoursAfter": "Es X horas después",
+      "minutesAfter": "Es X minutos después",
       "startsWith": "Empieza con"
     },
     "ATTRIBUTE_LABELS": {
@@ -68,7 +78,8 @@
       "VALUE_REQUIRED": "El valor es requerido",
       "ATTRIBUTE_KEY_REQUIRED": "Clave de atributo es requerida",
       "FILTER_OPERATOR_REQUIRED": "El operador de filtro es requerido",
-      "VALUE_MUST_BE_BETWEEN_1_AND_998": "El valor debe ser entre 1 y 998"
+      "VALUE_MUST_BE_BETWEEN_1_AND_998": "El valor debe ser entre 1 y 998",
+      "VALUE_MUST_BE_GREATER_THAN_0": "El valor debe ser mayor que 0"
     },
     "GROUPS": {
       "STANDARD_FILTERS": "Filtros estándar",

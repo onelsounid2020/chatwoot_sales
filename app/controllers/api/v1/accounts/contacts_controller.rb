@@ -8,6 +8,10 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   sort_on :company, internal_name: :order_on_company_name, type: :scope, scope_params: [:direction]
   sort_on :city, internal_name: :order_on_city, type: :scope, scope_params: [:direction]
   sort_on :country, internal_name: :order_on_country_name, type: :scope, scope_params: [:direction]
+  sort_on :deal_value, type: :string
+  sort_on :lead_stage, type: :string
+  sort_on :next_follow_up_at, type: :string
+  sort_on :last_contacted_at, type: :string
 
   RESULTS_PER_PAGE = 15
 
@@ -171,7 +175,11 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params
-    params.permit(:name, :identifier, :email, :phone_number, :avatar, :blocked, :avatar_url, additional_attributes: {}, custom_attributes: {})
+    params.permit(
+      :name, :identifier, :email, :phone_number, :avatar, :blocked, :avatar_url,
+      :lead_stage, :deal_value, :next_follow_up_at, :last_contacted_at,
+      additional_attributes: {}, custom_attributes: {}
+    )
   end
 
   def contact_custom_attributes

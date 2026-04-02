@@ -28,7 +28,12 @@
       "is_not_present": "No está presente",
       "is_greater_than": "Es mayor que",
       "is_lesser_than": "Es menor que",
-      "days_before": "Es X días antes"
+      "days_before": "Es X días antes",
+      "hours_before": "Es X horas antes",
+      "minutes_before": "Es X minutos antes",
+      "days_after": "Es X días después",
+      "hours_after": "Es X horas después",
+      "minutes_after": "Es X minutos después"
     },
     "ERRORS": {
       "VALUE_REQUIRED": "El valor es requerido"
@@ -49,6 +54,10 @@
       "LAST_ACTIVITY": "Última actividad",
       "REFERER_LINK": "Enlace de referencia",
       "BLOCKED": "Bloqueado",
+      "LEAD_STAGE": "Etapa del lead",
+      "DEAL_VALUE": "Valor de oportunidad",
+      "NEXT_FOLLOW_UP_AT": "Próximo seguimiento",
+      "LAST_CONTACTED_AT": "Último contacto",
       "LABELS": "Etiquetas"
     },
     "GROUPS": {

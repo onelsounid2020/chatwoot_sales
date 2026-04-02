@@ -97,6 +97,30 @@ class ReportsAPI extends ApiClient {
     });
   }
 
+  getSalesMetrics({ from, to, inboxId, assigneeId, teamIds } = {}) {
+    return axios.get(`${this.url}/sales_metrics`, {
+      params: {
+        since: from,
+        until: to,
+        inbox_id: inboxId,
+        assignee_id: assigneeId,
+        team_ids: teamIds,
+      },
+    });
+  }
+
+  getSalesSummaryReports({ from, to, inboxId, assigneeId, teamIds } = {}) {
+    return axios.get(`${this.url}/sales_summary`, {
+      params: {
+        since: from,
+        until: to,
+        inbox_id: inboxId,
+        assignee_id: assigneeId,
+        team_ids: teamIds,
+      },
+    });
+  }
+
   getBotSummary({ from, to, groupBy, businessHours } = {}) {
     return axios.get(`${this.url}/bot_summary`, {
       params: {

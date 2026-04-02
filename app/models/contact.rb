@@ -10,13 +10,17 @@
 #  contact_type          :integer          default("visitor")
 #  country_code          :string           default("")
 #  custom_attributes     :jsonb
+#  deal_value            :decimal(12, 2)
 #  email                 :string
 #  identifier            :string
 #  last_activity_at      :datetime
+#  last_contacted_at     :datetime
 #  last_name             :string           default("")
+#  lead_stage            :integer          default("incoming"), not null
 #  location              :string           default("")
 #  middle_name           :string           default("")
 #  name                  :string           default("")
+#  next_follow_up_at     :datetime
 #  phone_number          :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
@@ -28,10 +32,13 @@
 #  index_contacts_on_account_id                          (account_id)
 #  index_contacts_on_account_id_and_contact_type         (account_id,contact_type)
 #  index_contacts_on_account_id_and_last_activity_at     (account_id,last_activity_at DESC NULLS LAST)
+#  index_contacts_on_account_id_and_lead_stage           (account_id,lead_stage)
 #  index_contacts_on_blocked                             (blocked)
 #  index_contacts_on_company_id                          (company_id)
+#  index_contacts_on_last_contacted_at                   (last_contacted_at)
 #  index_contacts_on_lower_email_account_id              (lower((email)::text), account_id)
 #  index_contacts_on_name_email_phone_number_identifier  (name,email,phone_number,identifier) USING gin
+#  index_contacts_on_next_follow_up_at                   (next_follow_up_at)
 #  index_contacts_on_nonempty_fields                     (account_id,email,phone_number,identifier) WHERE (((email)::text <> ''::text) OR ((phone_number)::text <> ''::text) OR ((identifier)::text <> ''::text))
 #  index_contacts_on_phone_number_and_account_id         (phone_number,account_id)
 #  index_resolved_contact_account_id                     (account_id) WHERE (((email)::text <> ''::text) OR ((phone_number)::text <> ''::text) OR ((identifier)::text <> ''::text))
@@ -54,6 +61,7 @@ class Contact < ApplicationRecord
   validates :phone_number,
             allow_blank: true, uniqueness: { scope: [:account_id] },
             format: { with: /\+[1-9]\d{1,14}\z/, message: I18n.t('errors.contacts.phone_number.invalid') }
+  validates :deal_value, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   belongs_to :account
   has_many :conversations, dependent: :destroy_async
@@ -69,6 +77,14 @@ class Contact < ApplicationRecord
   before_save :sync_contact_attributes
 
   enum contact_type: { visitor: 0, lead: 1, customer: 2 }
+  enum lead_stage: {
+    incoming: 0,
+    contacted: 1,
+    qualified: 2,
+    proposal: 3,
+    won: 4,
+    lost: 5
+  }
 
   scope :order_on_last_activity_at, lambda { |direction|
     order(
@@ -158,6 +174,10 @@ class Contact < ApplicationRecord
       phone_number: phone_number,
       thumbnail: avatar_url,
       blocked: blocked,
+      lead_stage: lead_stage,
+      deal_value: deal_value&.to_f,
+      next_follow_up_at: next_follow_up_at&.to_i,
+      last_contacted_at: last_contacted_at&.to_i,
       type: 'contact'
     }
   end
@@ -174,7 +194,11 @@ class Contact < ApplicationRecord
       name: name,
       phone_number: phone_number,
       thumbnail: avatar_url,
-      blocked: blocked
+      blocked: blocked,
+      lead_stage: lead_stage,
+      deal_value: deal_value&.to_f,
+      next_follow_up_at: next_follow_up_at&.to_i,
+      last_contacted_at: last_contacted_at&.to_i
     }
   end
 

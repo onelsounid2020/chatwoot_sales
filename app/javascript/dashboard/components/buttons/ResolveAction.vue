@@ -7,6 +7,8 @@ import { useStore, useStoreGetters } from 'dashboard/composables/store';
 import { useEmitter } from 'dashboard/composables/emitter';
 import { useKeyboardEvents } from 'dashboard/composables/useKeyboardEvents';
 import { useConversationRequiredAttributes } from 'dashboard/composables/useConversationRequiredAttributes';
+import { emitter } from 'shared/helpers/mitt';
+import { BUS_EVENTS } from 'shared/constants/busEvents';
 
 import WootDropdownItem from 'shared/components/ui/dropdown/DropdownItem.vue';
 import WootDropdownMenu from 'shared/components/ui/dropdown/DropdownMenu.vue';
@@ -34,6 +36,109 @@ const closeDropdown = () => toggleDropdown(false);
 const openDropdown = () => toggleDropdown(true);
 
 const currentChat = computed(() => getters.getSelectedChat.value);
+const currentAccount = computed(() => getters.getCurrentAccount.value || {});
+const inboxes = computed(() => getters['inboxes/getInboxes'].value || []);
+const currentInbox = computed(
+  () =>
+    inboxes.value.find(inbox => inbox.id === currentChat.value?.inbox_id) || {}
+);
+
+const isBlankValue = value => {
+  if (value === null || value === undefined) return true;
+  if (typeof value === 'string') return !value.trim();
+  if (Array.isArray(value)) return value.length === 0;
+  return false;
+};
+
+const resolveRuleConfig = computed(() => {
+  const globalRules =
+    currentAccount.value?.settings?.conversation_resolve_rules || {};
+  const inboxRules =
+    currentInbox.value?.auto_assignment_config?.resolve_rules || {};
+
+  const requiredConversationAttrs = [
+    ...(globalRules.required_conversation_custom_attributes || []),
+    ...(inboxRules.required_conversation_custom_attributes || []),
+  ]
+    .map(String)
+    .filter(Boolean);
+
+  const requiredContactAttrs = [
+    ...(globalRules.required_contact_custom_attributes || []),
+    ...(inboxRules.required_contact_custom_attributes || []),
+  ]
+    .map(String)
+    .filter(Boolean);
+
+  const allowedDealStages =
+    inboxRules.allowed_deal_stages || globalRules.allowed_deal_stages || [];
+
+  return {
+    allowedDealStages: [...new Set(allowedDealStages.map(String))],
+    requiredConversationAttrs: [...new Set(requiredConversationAttrs)],
+    requiredContactAttrs: [...new Set(requiredContactAttrs)],
+  };
+});
+
+const resolveChecklistItems = computed(() => {
+  const items = [];
+  const { allowedDealStages, requiredConversationAttrs, requiredContactAttrs } =
+    resolveRuleConfig.value;
+
+  if (allowedDealStages.length > 0) {
+    const currentStage = currentChat.value?.deal_stage || 'incoming';
+    items.push({
+      key: 'allowed_deal_stages',
+      fulfilled: allowedDealStages.includes(currentStage),
+    });
+  }
+
+  requiredConversationAttrs.forEach(attributeKey => {
+    const value = currentChat.value?.custom_attributes?.[attributeKey];
+    items.push({
+      key: `conversation_${attributeKey}`,
+      attributeKey,
+      fulfilled: !isBlankValue(value),
+    });
+  });
+
+  requiredContactAttrs.forEach(attributeKey => {
+    const value =
+      currentChat.value?.meta?.sender?.custom_attributes?.[attributeKey];
+    items.push({
+      key: `contact_${attributeKey}`,
+      attributeKey,
+      fulfilled: !isBlankValue(value),
+    });
+  });
+
+  const currentStage = currentChat.value?.deal_stage || 'incoming';
+  if (currentStage === 'lost') {
+    const lostReason = currentChat.value?.lost_reason;
+    items.push({
+      key: 'lost_reason',
+      fulfilled: !isBlankValue(lostReason),
+    });
+  }
+
+  return items;
+});
+
+const notifyResolveBlocked = () => {
+  const missingItems = resolveChecklistItems.value.filter(
+    item => !item.fulfilled
+  );
+  const missingAttributeKeys = missingItems
+    .map(item => item.attributeKey)
+    .filter(Boolean);
+
+  emitter.emit(BUS_EVENTS.CONVERSATION_RESOLVE_REQUIREMENTS_BLOCKED, {
+    missingItems,
+    missingAttributeKeys,
+  });
+
+  useAlert(t('CONVERSATION.SALES.RESOLVE_CHECKLIST.BLOCKED_ALERT'));
+};
 
 const isOpen = computed(
   () => currentChat.value.status === wootConstants.STATUS_TYPE.OPEN
@@ -81,7 +186,7 @@ const openSnoozeModal = () => {
   ninja.open({ parent: 'snooze_conversation' });
 };
 
-const toggleStatus = (status, snoozedUntil, customAttributes = null) => {
+const toggleStatus = async (status, snoozedUntil, customAttributes = null) => {
   closeDropdown();
   isLoading.value = true;
 
@@ -95,10 +200,18 @@ const toggleStatus = (status, snoozedUntil, customAttributes = null) => {
     payload.customAttributes = customAttributes;
   }
 
-  store.dispatch('toggleStatus', payload).then(() => {
+  try {
+    await store.dispatch('toggleStatus', payload);
     useAlert(t('CONVERSATION.CHANGE_STATUS'));
+  } catch (error) {
+    if (status === wootConstants.STATUS_TYPE.RESOLVED) {
+      notifyResolveBlocked();
+      return;
+    }
+    useAlert(t('CONVERSATION.SALES.RESOLVE_CHECKLIST.BLOCKED_ALERT'));
+  } finally {
     isLoading.value = false;
-  });
+  }
 };
 
 const handleResolveWithAttributes = ({ attributes, context }) => {
@@ -118,6 +231,14 @@ const onCmdOpenConversation = () => {
 };
 
 const onCmdResolveConversation = () => {
+  const hasResolveRulesMissing = resolveChecklistItems.value.some(
+    item => !item.fulfilled
+  );
+  if (hasResolveRulesMissing) {
+    notifyResolveBlocked();
+    return;
+  }
+
   const currentCustomAttributes = currentChat.value.custom_attributes || {};
   const { hasMissing, missing } = checkMissingAttributes(
     currentCustomAttributes

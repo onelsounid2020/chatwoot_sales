@@ -140,6 +140,20 @@
     "HIDE_QUOTED_TEXT": "Ocultar texto citado",
     "SHOW_QUOTED_TEXT": "Mostrar texto citado",
     "MESSAGE_READ": "Leído",
-    "SENDING": "Enviando"
+    "SENDING": "Enviando",
+    "SALES_FOLLOW_UP_STATUS": {
+      "OVERDUE": "Vencido",
+      "TODAY": "Hoy",
+      "MISSING": "Sin seguimiento",
+      "COMPLETED": "Realizado",
+      "SCHEDULED": "Programado"
+    },
+    "SALES_QUICK_VIEWS": {
+      "ALL_SALES": "Todas ventas",
+      "MISSING_FOLLOW_UP": "Sin seguimiento",
+      "PROPOSAL_STAGE": "En propuesta",
+      "WON_STAGE": "Ganadas",
+      "HIGH_VALUE_NO_FOLLOW_UP": "Con valor y sin seguimiento"
+    }
   }
 }

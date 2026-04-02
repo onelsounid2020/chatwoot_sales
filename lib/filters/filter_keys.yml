@@ -9,7 +9,7 @@
 #   - Key (attribute_name)
 #     - attribute_type: "standard" : supported ["standard", "additional_attributes (only for conversations and messages)"]
 #     - data_type: "text" :  supported ["text", "text_case_insensitive", "number", "boolean", "labels", "date", "link"]
-#     - filter_operators: ["equal_to", "not_equal_to", "contains", "does_not_contain", "is_present", "is_not_present", "is_greater_than", "is_less_than", "days_before", "starts_with"]
+#     - filter_operators: ["equal_to", "not_equal_to", "contains", "does_not_contain", "is_present", "is_not_present", "is_greater_than", "is_less_than", "days_before", "hours_before", "minutes_before", "days_after", "hours_after", "minutes_after", "starts_with"]
 
 ### ----- Conversation Filters ----- ###
 
@@ -50,6 +50,20 @@ conversations:
     filter_operators:
       - "equal_to"
       - "not_equal_to"
+  deal_stage:
+    attribute_type: "standard"
+    data_type: "number"
+    filter_operators:
+      - "equal_to"
+      - "not_equal_to"
+  deal_value:
+    attribute_type: "standard"
+    data_type: "number"
+    filter_operators:
+      - "equal_to"
+      - "not_equal_to"
+      - "is_greater_than"
+      - "is_less_than"
   display_id:
     attribute_type: "standard"
     data_type: "Number"
@@ -101,6 +115,11 @@ conversations:
       - "is_greater_than"
       - "is_less_than"
       - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
   last_activity_at:
     attribute_type: "standard"
     data_type: "date"
@@ -108,6 +127,41 @@ conversations:
       - "is_greater_than"
       - "is_less_than"
       - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
+  next_follow_up_at:
+    attribute_type: "standard"
+    data_type: "date"
+    filter_operators:
+      - "is_greater_than"
+      - "is_less_than"
+      - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
+  last_contacted_at:
+    attribute_type: "standard"
+    data_type: "date"
+    filter_operators:
+      - "is_greater_than"
+      - "is_less_than"
+      - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
+  last_reply_type:
+    attribute_type: "standard"
+    data_type: "text"
+    filter_operators:
+      - "equal_to"
+      - "not_equal_to"
   mail_subject:
     attribute_type: "additional_attributes"
     data_type: "text"
@@ -190,6 +244,11 @@ contacts:
       - "is_greater_than"
       - "is_less_than"
       - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
   last_activity_at:
     attribute_type: "standard"
     data_type: "date"
@@ -197,12 +256,57 @@ contacts:
       - "is_greater_than"
       - "is_less_than"
       - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
   blocked:
     attribute_type: "standard"
     data_type: "boolean"
     filter_operators:
       - "equal_to"
       - "not_equal_to"
+  lead_stage:
+    attribute_type: "standard"
+    data_type: "number"
+    filter_operators:
+      - "equal_to"
+      - "not_equal_to"
+      - "is_greater_than"
+      - "is_less_than"
+  deal_value:
+    attribute_type: "standard"
+    data_type: "number"
+    filter_operators:
+      - "equal_to"
+      - "not_equal_to"
+      - "is_greater_than"
+      - "is_less_than"
+  next_follow_up_at:
+    attribute_type: "standard"
+    data_type: "date"
+    filter_operators:
+      - "is_greater_than"
+      - "is_less_than"
+      - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
+  last_contacted_at:
+    attribute_type: "standard"
+    data_type: "date"
+    filter_operators:
+      - "is_greater_than"
+      - "is_less_than"
+      - "days_before"
+      - "hours_before"
+      - "minutes_before"
+      - "days_after"
+      - "hours_after"
+      - "minutes_after"
 
 ### ----- End of Contact Filters ----- ###
 

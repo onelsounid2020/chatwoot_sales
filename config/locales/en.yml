@@ -190,6 +190,48 @@ en:
       avg_customer_waiting_time: Avg customer waiting time
     conversation_traffic_csv:
       timezone: Timezone
+    sales_csv:
+      section: Section
+      item: Item
+      secondary_value: Secondary value
+      section_overview: Sales overview
+      section_stage_breakdown: Pipeline by stage
+      section_forecast_by_stage: Weighted forecast by stage
+      section_funnel_breakdown: Conversion funnel
+      section_weekly_trends: Weekly trends
+      total_leads: Total leads
+      open_opportunities: Open opportunities
+      won_opportunities: Won opportunities
+      lost_opportunities: Lost opportunities
+      win_rate: Win rate (%)
+      pipeline_value: Pipeline value (CLP)
+      forecast_weighted_value: Forecast weighted value (CLP)
+      won_value: Won value (CLP)
+      stale_opportunities: Stale opportunities
+      avg_open_age_days: Avg open age (days)
+      avg_time_to_close_hours: Avg time to close (hours)
+      section_aging_breakdown: Open pipeline aging
+      section_lost_reasons: Top lost reasons
+      stage: Stage
+      opportunities: Opportunities
+      value: Value
+      reason: Reason
+      age_bucket: Age bucket
+      probability: Probability (%)
+      conversion_from_previous: Conversion from previous stage (%)
+      week_start: Week start
+      stages:
+        incoming: Incoming
+        contacted: Contacted
+        qualified: Qualified
+        proposal: Proposal
+        won: Won
+        lost: Lost
+      aging_buckets:
+        "0_7": 0-7 days
+        "8_14": 8-14 days
+        "15_30": 15-30 days
+        "31_plus": 31+ days
     sla_csv:
       conversation_id: Conversation ID
       sla_policy_breached: SLA Policy
@@ -223,6 +265,11 @@ en:
     attachment: 'Attachment'
     no_content: 'No content'
   conversations:
+    resolve_policy:
+      invalid_deal_stage: "Conversation cannot be resolved. Allowed deal stages: %{allowed_stages}."
+      missing_conversation_attributes: "Conversation cannot be resolved. Missing required conversation attributes: %{attributes}."
+      missing_contact_attributes: "Conversation cannot be resolved. Missing required contact attributes: %{attributes}."
+      missing_lost_reason: "Conversation cannot be resolved. Add a lost reason when the deal stage is Lost."
     captain:
       handoff: 'Transferring to another agent for further assistance.'
     messages:

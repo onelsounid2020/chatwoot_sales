@@ -28,7 +28,12 @@
       "is_not_present": "Is not present",
       "is_greater_than": "Is greater than",
       "is_lesser_than": "Is lesser than",
-      "days_before": "Is x days before"
+      "days_before": "Is x days before",
+      "hours_before": "Is x hours before",
+      "minutes_before": "Is x minutes before",
+      "days_after": "Is x days after",
+      "hours_after": "Is x hours after",
+      "minutes_after": "Is x minutes after"
     },
     "ERRORS": {
       "VALUE_REQUIRED": "Value is required"

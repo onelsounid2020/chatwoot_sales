@@ -15,7 +15,7 @@ class Api::V1::Accounts::PortalsController < Api::V1::Accounts::BaseController
   end
 
   def create
-    @portal = Current.account.portals.build(portal_params.merge(live_chat_widget_params))
+    @portal = Current.account.portals.build(merged_portal_params)
     @portal.custom_domain = parsed_custom_domain
     @portal.save!
     process_attached_logo
@@ -23,7 +23,7 @@ class Api::V1::Accounts::PortalsController < Api::V1::Accounts::BaseController
 
   def update
     ActiveRecord::Base.transaction do
-      @portal.update!(portal_params.merge(live_chat_widget_params)) if params[:portal].present?
+      @portal.update!(merged_portal_params) if params[:portal].present?
       # @portal.custom_domain = parsed_custom_domain
       process_attached_logo if params[:blob_id].present?
     rescue ActiveRecord::RecordInvalid => e
@@ -81,6 +81,19 @@ class Api::V1::Accounts::PortalsController < Api::V1::Accounts::BaseController
       :id, :color, :custom_domain, :header_text, :homepage_link,
       :name, :page_title, :slug, :archived, { config: [:default_locale, { allowed_locales: [] }, { draft_locales: [] }] }
     )
+  end
+
+  def portal_theme_params
+    params.require(:portal).permit(:home_bg_color, :article_bg_color, :article_text_color).to_h.compact
+  end
+
+  def merged_portal_params
+    merged_params = portal_params.merge(live_chat_widget_params)
+    return merged_params if portal_theme_params.empty?
+
+    existing_config = @portal&.config || {}
+    merged_params[:config] = existing_config.merge(merged_params[:config] || {}).merge(portal_theme_params)
+    merged_params
   end
 
   def live_chat_widget_params

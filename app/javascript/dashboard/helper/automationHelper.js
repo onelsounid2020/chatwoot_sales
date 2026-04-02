@@ -102,6 +102,7 @@ export const getActionOptions = ({
   type,
   addNoneToListFn,
   priorityOptions,
+  dealStageOptions,
 }) => {
   const actionsMap = {
     assign_agent: addNoneToListFn ? addNoneToListFn(agents) : agents,
@@ -110,6 +111,7 @@ export const getActionOptions = ({
     add_label: generateConditionOptions(labels, 'title'),
     remove_label: generateConditionOptions(labels, 'title'),
     change_priority: priorityOptions,
+    change_deal_stage: dealStageOptions,
     add_sla: slaPolicies,
   };
   return actionsMap[type];
@@ -122,6 +124,8 @@ export const getConditionOptions = ({
   contacts,
   countries,
   customAttributes,
+  dealStageOptions,
+  lastReplyTypeOptions,
   inboxes,
   languages,
   labels,
@@ -151,6 +155,8 @@ export const getConditionOptions = ({
     country_code: countries,
     message_type: messageTypeOptions,
     priority: priorityOptions,
+    deal_stage: dealStageOptions,
+    last_reply_type: lastReplyTypeOptions,
     labels: generateConditionOptions(labels, 'title'),
   };
 

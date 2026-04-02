@@ -34,6 +34,8 @@ const FORM_CONFIG = {
   LAST_NAME: { field: 'lastName' },
   EMAIL_ADDRESS: { field: 'email' },
   PHONE_NUMBER: { field: 'phoneNumber' },
+  LEAD_STAGE: { field: 'leadStage' },
+  DEAL_VALUE: { field: 'dealValue' },
   CITY: { field: 'additionalAttributes.city' },
   COUNTRY: { field: 'additionalAttributes.countryCode' },
   BIO: { field: 'additionalAttributes.description' },
@@ -57,6 +59,8 @@ const defaultState = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
+  leadStage: 'incoming',
+  dealValue: '',
   additionalAttributes: {
     description: '',
     companyName: '',
@@ -96,6 +100,8 @@ const prepareStateBasedOnProps = () => {
     name = '',
     email: emailAddress,
     phoneNumber,
+    leadStage = 'incoming',
+    dealValue = '',
     additionalAttributes = {},
   } = props.contactData || {};
   const { firstName, lastName } = splitName(name || '');
@@ -119,6 +125,8 @@ const prepareStateBasedOnProps = () => {
     lastName,
     email: emailAddress,
     phoneNumber,
+    leadStage,
+    dealValue: dealValue?.toString() || '',
     additionalAttributes: {
       description,
       companyName,
@@ -136,6 +144,15 @@ const prepareStateBasedOnProps = () => {
 const countryOptions = computed(() =>
   countries.map(({ name, id }) => ({ label: name, value: id }))
 );
+
+const leadStageOptions = computed(() => [
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.INCOMING'), value: 'incoming' },
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.CONTACTED'), value: 'contacted' },
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.QUALIFIED'), value: 'qualified' },
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.PROPOSAL'), value: 'proposal' },
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.WON'), value: 'won' },
+  { label: t('CONTACTS_LAYOUT.SALES.STAGES.LOST'), value: 'lost' },
+]);
 
 const editDetailsForm = computed(() =>
   Object.keys(FORM_CONFIG).map(key => ({
@@ -266,6 +283,19 @@ defineExpose({
               '[&>div>button]:!bg-n-alpha-black2': isDetailsView,
             }"
             @update:model-value="handleCountrySelection"
+          />
+          <ComboBox
+            v-else-if="item.key === 'LEAD_STAGE'"
+            v-model="state.leadStage"
+            :options="leadStageOptions"
+            :placeholder="item.placeholder"
+            class="[&>div>button]:h-8"
+            :class="{
+              '[&>div>button]:bg-n-alpha-black2 [&>div>button:not(.focused)]:!outline-transparent':
+                !isDetailsView,
+              '[&>div>button]:!bg-n-alpha-black2': isDetailsView,
+            }"
+            @update:model-value="emit('update', state)"
           />
           <PhoneNumberInput
             v-else-if="item.key === 'PHONE_NUMBER'"

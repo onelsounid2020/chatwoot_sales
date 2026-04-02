@@ -20,6 +20,7 @@ const {
   LOGO_DARK: logoDark,
   PRIVACY_URL: privacyURL,
   IS_ENTERPRISE: isEnterprise,
+  LITE_MODE: liteMode,
   TERMS_URL: termsURL,
   WIDGET_BRAND_URL: widgetBrandURL,
   DISABLE_USER_PROFILE_UPDATE: disableUserProfileUpdate,
@@ -49,10 +50,12 @@ const state = {
   termsURL,
   widgetBrandURL,
   isEnterprise: parseBoolean(isEnterprise),
+  isLiteMode: parseBoolean(liteMode),
 };
 
 export const getters = {
   get: $state => $state,
+  isLiteMode: $state => $state.isLiteMode,
   isOnChatwootCloud: $state => $state.deploymentEnv === 'cloud',
   isACustomBrandedInstance: $state => $state.installationName !== 'Chatwoot',
   isAChatwootInstance: $state => $state.installationName === 'Chatwoot',

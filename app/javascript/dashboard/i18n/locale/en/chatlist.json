@@ -140,6 +140,20 @@
     "HIDE_QUOTED_TEXT": "Hide Quoted Text",
     "SHOW_QUOTED_TEXT": "Show Quoted Text",
     "MESSAGE_READ": "Read",
-    "SENDING": "Sending"
+    "SENDING": "Sending",
+    "SALES_FOLLOW_UP_STATUS": {
+      "OVERDUE": "Overdue",
+      "TODAY": "Today",
+      "MISSING": "No follow-up",
+      "COMPLETED": "Completed",
+      "SCHEDULED": "Scheduled"
+    },
+    "SALES_QUICK_VIEWS": {
+      "ALL_SALES": "All sales",
+      "MISSING_FOLLOW_UP": "No follow-up",
+      "PROPOSAL_STAGE": "Proposal stage",
+      "WON_STAGE": "Won deals",
+      "HIGH_VALUE_NO_FOLLOW_UP": "Has value, no follow-up"
+    }
   }
 }

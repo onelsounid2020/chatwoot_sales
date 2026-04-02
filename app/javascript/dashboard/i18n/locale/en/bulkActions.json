@@ -40,6 +40,15 @@
       "ASSIGN_SELECTED_TEAMS": "Assign selected team.",
       "ASSIGN_SUCCESFUL": "Teams assigned successfully.",
       "ASSIGN_FAILED": "Failed to assign team. Please try again."
+    },
+    "SALES": {
+      "TITLE": "Sales actions",
+      "SET_STAGE_CONTACTED": "Move stage to Contacted",
+      "SET_STAGE_PROPOSAL": "Move stage to Proposal",
+      "SET_FOLLOW_UP_1H": "Schedule follow-up +1 hour",
+      "SET_FOLLOW_UP_24H": "Schedule follow-up +24 hours",
+      "SUCCESS": "Sales action applied successfully.",
+      "FAILED": "Failed to apply sales action. Please try again."
     }
   }
 }

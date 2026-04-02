@@ -37,6 +37,16 @@ class FilterService
       lt_gt_filter_query(query_hash, current_index)
     when 'days_before'
       days_before_filter_query(query_hash, current_index)
+    when 'days_after'
+      days_after_filter_query(query_hash, current_index)
+    when 'hours_before'
+      hours_before_filter_query(query_hash, current_index)
+    when 'hours_after'
+      hours_after_filter_query(query_hash, current_index)
+    when 'minutes_before'
+      minutes_before_filter_query(query_hash, current_index)
+    when 'minutes_after'
+      minutes_after_filter_query(query_hash, current_index)
     else
       @filter_values["value_#{current_index}"] = filter_values(query_hash).to_s
       "= :value_#{current_index}"
@@ -49,6 +59,7 @@ class FilterService
 
     return conversation_status_values(values) if attribute_key == 'status'
     return conversation_priority_values(values) if attribute_key == 'priority'
+    return conversation_deal_stage_values(values) if attribute_key == 'deal_stage'
     return message_type_values(values) if attribute_key == 'message_type'
     return downcase_array_values(values) if attribute_key == 'content'
 
@@ -98,10 +109,35 @@ class FilterService
   end
 
   def days_before_filter_query(query_hash, current_index)
-    date = Time.zone.today - query_hash['values'][0].to_i.days
+    relative_time_filter_query(query_hash, current_index, :days, :before)
+  end
+
+  def days_after_filter_query(query_hash, current_index)
+    relative_time_filter_query(query_hash, current_index, :days, :after)
+  end
+
+  def hours_before_filter_query(query_hash, current_index)
+    relative_time_filter_query(query_hash, current_index, :hours, :before)
+  end
+
+  def hours_after_filter_query(query_hash, current_index)
+    relative_time_filter_query(query_hash, current_index, :hours, :after)
+  end
+
+  def minutes_before_filter_query(query_hash, current_index)
+    relative_time_filter_query(query_hash, current_index, :minutes, :before)
+  end
+
+  def minutes_after_filter_query(query_hash, current_index)
+    relative_time_filter_query(query_hash, current_index, :minutes, :after)
+  end
+
+  def relative_time_filter_query(query_hash, current_index, unit, direction)
+    interval_value = query_hash['values'][0].to_i.public_send(unit)
+    date_time = direction == :before ? Time.current - interval_value : Time.current + interval_value
     updated_query_hash = query_hash.with_indifferent_access.merge(
-      values: [date.strftime],
-      filter_operator: 'is_less_than'
+      values: [date_time.iso8601],
+      filter_operator: direction == :before ? 'is_less_than' : 'is_greater_than'
     )
 
     lt_gt_filter_query(updated_query_hash, current_index)
@@ -150,8 +186,8 @@ class FilterService
   def coerce_lt_gt_value(raw_value, attribute_data_type, attribute_key)
     case attribute_data_type
     when 'date'
-      Date.iso8601(raw_value.to_s)
-    when 'numeric'
+      Time.zone.parse(raw_value.to_s) || Date.iso8601(raw_value.to_s)
+    when 'numeric', 'number'
       BigDecimal(raw_value.to_s)
     else
       raise CustomExceptions::CustomFilter::InvalidValue.new(attribute_name: attribute_key)

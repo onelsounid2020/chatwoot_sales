@@ -779,6 +779,25 @@
         "BRAND_COLOR": {
           "LABEL": "Brand color"
         },
+        "HOME_BG_COLOR": {
+          "LABEL": "Home background color"
+        },
+        "ARTICLE_BG_COLOR": {
+          "LABEL": "Article background color"
+        },
+        "ARTICLE_TEXT_COLOR": {
+          "LABEL": "Article text color"
+        },
+        "THEME_PRESET": {
+          "LABEL": "Theme preset",
+          "PLACEHOLDER": "Choose a preset",
+          "RESET": "Reset",
+          "OPTIONS": {
+            "CLEAN": "Clean",
+            "OCEAN": "Ocean",
+            "SAND": "Sand"
+          }
+        },
         "SAVE_CHANGES": "Save changes"
       },
       "CONFIGURATION_FORM": {

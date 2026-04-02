@@ -4,4 +4,8 @@ json.name contact.name
 json.phone_number contact.phone_number
 json.identifier contact.identifier
 json.additional_attributes contact.additional_attributes
+json.lead_stage contact.lead_stage
+json.deal_value contact.deal_value
+json.next_follow_up_at contact.next_follow_up_at&.to_i
+json.last_contacted_at contact.last_contacted_at&.to_i
 json.last_activity_at contact.last_activity_at&.to_i

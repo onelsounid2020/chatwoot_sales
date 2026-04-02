@@ -1,0 +1,81 @@
+<%= CSVSafe.generate_line [I18n.t('reports.period', since: Date.strptime(params[:since], '%s'), until: Date.strptime(params[:until], '%s'))] %>
+<%= CSVSafe.generate_line [] %>
+
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section'),
+  I18n.t('reports.sales_csv.item'),
+  I18n.t('reports.sales_csv.value'),
+  I18n.t('reports.sales_csv.secondary_value')
+] %>
+
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.total_leads'), @report_data[:total_leads], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.open_opportunities'), @report_data[:open_opportunities], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.won_opportunities'), @report_data[:won_opportunities], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.lost_opportunities'), @report_data[:lost_opportunities], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.win_rate'), @report_data[:win_rate], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.pipeline_value'), @report_data[:pipeline_value], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.forecast_weighted_value'), @report_data[:forecast_weighted_value], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.won_value'), @report_data[:won_value], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.stale_opportunities'), @report_data[:stale_opportunities], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.avg_open_age_days'), @report_data[:avg_open_age_days], nil] %>
+<%= CSVSafe.generate_line [I18n.t('reports.sales_csv.section_overview'), I18n.t('reports.sales_csv.avg_time_to_close_hours'), @report_data[:avg_time_to_close_hours], nil] %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:stage_breakdown].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_stage_breakdown'),
+  I18n.t("reports.sales_csv.stages.#{row[:stage]}", default: row[:stage].to_s.titleize),
+  row[:count],
+  row[:value]
+] %>
+<% end %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:forecast_by_stage].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_forecast_by_stage'),
+  I18n.t("reports.sales_csv.stages.#{row[:stage]}", default: row[:stage].to_s.titleize),
+  row[:raw_value],
+  "#{(row[:weight].to_f * 100).round(2)}% | #{row[:weighted_value]}"
+] %>
+<% end %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:funnel_breakdown].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_funnel_breakdown'),
+  I18n.t("reports.sales_csv.stages.#{row[:stage]}", default: row[:stage].to_s.titleize),
+  row[:count],
+  row[:conversion_from_previous]
+] %>
+<% end %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:aging_breakdown].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_aging_breakdown'),
+  I18n.t("reports.sales_csv.aging_buckets.#{row[:bucket]}", default: row[:bucket].to_s),
+  row[:count],
+  row[:value]
+] %>
+<% end %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:top_lost_reasons].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_lost_reasons'),
+  row[:reason],
+  row[:count],
+  nil
+] %>
+<% end %>
+
+<%= CSVSafe.generate_line [] %>
+<% @report_data[:weekly_trends].each do |row| %>
+<%= CSVSafe.generate_line [
+  I18n.t('reports.sales_csv.section_weekly_trends'),
+  Time.zone.at(row[:timestamp]).to_date,
+  row[:pipeline_value],
+  row[:win_rate]
+] %>
+<% end %>

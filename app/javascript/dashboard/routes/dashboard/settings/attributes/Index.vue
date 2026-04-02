@@ -6,6 +6,7 @@ import { picoSearch } from '@scmmishra/pico-search';
 import BaseSettingsHeader from '../components/BaseSettingsHeader.vue';
 import AddAttribute from './AddAttribute.vue';
 import EditAttribute from './EditAttribute.vue';
+import ResolveRulesSettings from './ResolveRulesSettings.vue';
 import SettingsLayout from '../SettingsLayout.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
 import TabBar from 'dashboard/components-next/tabbar/TabBar.vue';
@@ -32,6 +33,7 @@ const uiFlags = computed(() => getters['attributes/getUIFlags'].value);
 const [showEditPopup, toggleEditPopup] = useToggle(false);
 const [showDeletePopup, toggleDeletePopup] = useToggle(false);
 const selectedAttribute = ref({});
+const resolveRulesTabKey = 2;
 
 const openAddPopup = () => {
   toggleAddPopup(true);
@@ -58,6 +60,10 @@ const tabs = computed(() => {
       key: 1,
       name: t('ATTRIBUTES_MGMT.TABS.CONTACT'),
     },
+    {
+      key: resolveRulesTabKey,
+      name: t('ATTRIBUTES_MGMT.TABS.RESOLVE_RULES'),
+    },
   ];
 });
 
@@ -69,12 +75,23 @@ onMounted(() => {
   store.dispatch('attributes/get');
 });
 
-const attributeModel = computed(() =>
-  selectedTabIndex.value ? 'contact_attribute' : 'conversation_attribute'
+const attributeModel = computed(() => {
+  if (selectedTabIndex.value === 1) return 'contact_attribute';
+  return 'conversation_attribute';
+});
+const isResolveRulesTab = computed(
+  () => selectedTabIndex.value === resolveRulesTabKey
 );
+const isAttributeListTab = computed(() => !isResolveRulesTab.value);
 
 const attributes = computed(() =>
   getters['attributes/getAttributesByModel'].value(attributeModel.value)
+);
+const conversationAttributes = computed(() =>
+  getters['attributes/getAttributesByModel'].value('conversation_attribute')
+);
+const contactAttributes = computed(() =>
+  getters['attributes/getAttributesByModel'].value('contact_attribute')
 );
 
 const onClickTabChange = tab => {
@@ -170,10 +187,12 @@ const filteredAttributes = computed(() => {
         :title="$t('ATTRIBUTES_MGMT.HEADER')"
         :description="$t('ATTRIBUTES_MGMT.DESCRIPTION')"
         :link-text="$t('ATTRIBUTES_MGMT.LEARN_MORE')"
-        :search-placeholder="$t('ATTRIBUTES_MGMT.SEARCH_PLACEHOLDER')"
+        :search-placeholder="
+          isAttributeListTab ? $t('ATTRIBUTES_MGMT.SEARCH_PLACEHOLDER') : ''
+        "
         feature-name="custom_attributes"
       >
-        <template v-if="attributes?.length" #count>
+        <template v-if="isAttributeListTab && attributes?.length" #count>
           <span class="text-body-main text-n-slate-11 truncate min-w-0">
             {{ $t('ATTRIBUTES_MGMT.COUNT', { n: attributes.length }) }}
           </span>
@@ -185,7 +204,7 @@ const filteredAttributes = computed(() => {
             @tab-changed="onClickTabChange"
           />
         </template>
-        <template #actions>
+        <template v-if="isAttributeListTab" #actions>
           <Button
             :label="$t('ATTRIBUTES_MGMT.HEADER_BTN_TXT')"
             size="sm"
@@ -195,7 +214,12 @@ const filteredAttributes = computed(() => {
       </BaseSettingsHeader>
     </template>
     <template #body>
-      <div class="flex flex-col gap-4">
+      <ResolveRulesSettings
+        v-if="isResolveRulesTab"
+        :conversation-attributes="conversationAttributes"
+        :contact-attributes="contactAttributes"
+      />
+      <div v-else class="flex flex-col gap-4">
         <span
           v-if="!filteredAttributes.length && searchQuery"
           class="flex-1 flex items-center justify-center py-20 text-center text-body-main !text-base text-n-slate-11"

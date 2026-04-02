@@ -87,6 +87,16 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
     render json: builder.build
   end
 
+  def sales_metrics
+    builder = V2::Reports::SalesMetricsBuilder.new(Current.account, sales_metrics_params)
+    render json: builder.metrics
+  end
+
+  def sales_summary
+    @report_data = V2::Reports::SalesMetricsBuilder.new(Current.account, sales_metrics_params).metrics
+    generate_csv('sales_summary_report', 'api/v2/accounts/reports/sales_summary')
+  end
+
   private
 
   def generate_csv(filename, template)
@@ -187,5 +197,47 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
       since: params[:since],
       until: params[:until]
     }
+  end
+
+  def sales_metrics_params
+    scope_overrides = sales_scope_overrides
+    {
+      since: params[:since],
+      until: params[:until],
+      inbox_id: params[:inbox_id],
+      assignee_id: scope_overrides[:assignee_id],
+      team_ids: scope_overrides[:team_ids]
+    }
+  end
+
+  def sales_scope_overrides
+    return { assignee_id: params[:assignee_id], team_ids: parsed_team_ids } if can_view_global_sales_scope?
+    return { assignee_id: params[:assignee_id], team_ids: team_scope_ids } if can_view_team_sales_scope?
+
+    { assignee_id: current_user.id, team_ids: nil }
+  end
+
+  def can_view_global_sales_scope?
+    return true if Current.account_user&.administrator?
+
+    Current.account_user&.permissions&.include?('conversation_manage')
+  end
+
+  def can_view_team_sales_scope?
+    permissions = Current.account_user&.permissions || []
+    permissions.include?('report_manage') && !can_view_global_sales_scope? && team_scope_ids.present?
+  end
+
+  def parsed_team_ids
+    Array(params[:team_ids]).flat_map { |value| value.to_s.split(',') }.map(&:to_i).select(&:positive?)
+  end
+
+  def team_scope_ids
+    @team_scope_ids ||= begin
+      user_team_ids = current_user.teams.where(account_id: Current.account.id).pluck(:id)
+      return user_team_ids if parsed_team_ids.blank?
+
+      parsed_team_ids & user_team_ids
+    end
   end
 end

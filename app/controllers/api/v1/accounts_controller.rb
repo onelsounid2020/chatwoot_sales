@@ -96,7 +96,27 @@ class Api::V1::AccountsController < Api::BaseController
   end
 
   def permitted_settings_attributes
-    [:auto_resolve_after, :auto_resolve_message, :auto_resolve_ignore_waiting, :audio_transcriptions, :auto_resolve_label]
+    [
+      :auto_resolve_after,
+      :auto_resolve_message,
+      :auto_resolve_ignore_waiting,
+      :audio_transcriptions,
+      :auto_resolve_label,
+      :sales_fx_rate_usd_clp,
+      { sales_agent_targets_clp: {} },
+      {
+        sales_forecast_stage_weights: %i[
+          incoming contacted qualified proposal won lost
+        ]
+      },
+      {
+        conversation_resolve_rules: [
+          { allowed_deal_stages: [] },
+          { required_conversation_custom_attributes: [] },
+          { required_contact_custom_attributes: [] }
+        ]
+      }
+    ]
   end
 
   def check_signup_enabled

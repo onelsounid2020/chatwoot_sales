@@ -76,16 +76,55 @@ export const OPERATOR_TYPES_4 = [
 
 export const OPERATOR_TYPES_5 = [
   {
-    value: 'is_greater_than',
-    label: 'Is greater than',
+    value: 'days_before',
+    label: 'Is x days before',
   },
   {
-    value: 'is_less_than',
-    label: 'Is less than',
+    value: 'hours_before',
+    label: 'Is x hours before',
   },
+  {
+    value: 'minutes_before',
+    label: 'Is x minutes before',
+  },
+  {
+    value: 'days_after',
+    label: 'Is x days after',
+  },
+  {
+    value: 'hours_after',
+    label: 'Is x hours after',
+  },
+  {
+    value: 'minutes_after',
+    label: 'Is x minutes after',
+  },
+];
+
+export const OPERATOR_TYPES_8 = [
   {
     value: 'days_before',
     label: 'Is x days before',
+  },
+  {
+    value: 'hours_before',
+    label: 'Is x hours before',
+  },
+  {
+    value: 'minutes_before',
+    label: 'Is x minutes before',
+  },
+  {
+    value: 'days_after',
+    label: 'Is x days after',
+  },
+  {
+    value: 'hours_after',
+    label: 'Is x hours after',
+  },
+  {
+    value: 'minutes_after',
+    label: 'Is x minutes after',
   },
 ];
 
@@ -109,5 +148,24 @@ export const OPERATOR_TYPES_6 = [
   {
     value: 'starts_with',
     label: 'Starts With',
+  },
+];
+
+export const OPERATOR_TYPES_7 = [
+  {
+    value: 'equal_to',
+    label: 'Equal to',
+  },
+  {
+    value: 'not_equal_to',
+    label: 'Not equal to',
+  },
+  {
+    value: 'is_greater_than',
+    label: 'Is greater than',
+  },
+  {
+    value: 'is_less_than',
+    label: 'Is less than',
   },
 ];

@@ -56,6 +56,7 @@ export function useContactFilterContext() {
     equalityOperators,
     containmentOperators,
     dateOperators,
+    comparisonOperators,
     getOperatorTypes,
   } = useOperators();
 
@@ -183,6 +184,72 @@ export function useContactFilterContext() {
       ],
       dataType: 'text',
       filterOperators: equalityOperators.value,
+      attributeModel: 'standard',
+    },
+    {
+      attributeKey: CONTACT_ATTRIBUTES.LEAD_STAGE,
+      value: CONTACT_ATTRIBUTES.LEAD_STAGE,
+      attributeName: t('CONTACTS_LAYOUT.FILTER.LEAD_STAGE'),
+      label: t('CONTACTS_LAYOUT.FILTER.LEAD_STAGE'),
+      inputType: 'searchSelect',
+      options: [
+        {
+          id: 'incoming',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.INCOMING'),
+        },
+        {
+          id: 'contacted',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.CONTACTED'),
+        },
+        {
+          id: 'qualified',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.QUALIFIED'),
+        },
+        {
+          id: 'proposal',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.PROPOSAL'),
+        },
+        {
+          id: 'won',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.WON'),
+        },
+        {
+          id: 'lost',
+          name: t('CONTACTS_LAYOUT.SALES.STAGES.LOST'),
+        },
+      ],
+      dataType: 'text',
+      filterOperators: equalityOperators.value,
+      attributeModel: 'standard',
+    },
+    {
+      attributeKey: CONTACT_ATTRIBUTES.DEAL_VALUE,
+      value: CONTACT_ATTRIBUTES.DEAL_VALUE,
+      attributeName: t('CONTACTS_LAYOUT.FILTER.DEAL_VALUE'),
+      label: t('CONTACTS_LAYOUT.FILTER.DEAL_VALUE'),
+      inputType: 'plainText',
+      dataType: 'number',
+      filterOperators: comparisonOperators.value,
+      attributeModel: 'standard',
+    },
+    {
+      attributeKey: CONTACT_ATTRIBUTES.NEXT_FOLLOW_UP_AT,
+      value: CONTACT_ATTRIBUTES.NEXT_FOLLOW_UP_AT,
+      attributeName: t('CONTACTS_LAYOUT.FILTER.NEXT_FOLLOW_UP_AT'),
+      label: t('CONTACTS_LAYOUT.FILTER.NEXT_FOLLOW_UP_AT'),
+      inputType: 'date',
+      dataType: 'text',
+      filterOperators: dateOperators.value,
+      attributeModel: 'standard',
+    },
+    {
+      attributeKey: CONTACT_ATTRIBUTES.LAST_CONTACTED_AT,
+      value: CONTACT_ATTRIBUTES.LAST_CONTACTED_AT,
+      attributeName: t('CONTACTS_LAYOUT.FILTER.LAST_CONTACTED_AT'),
+      label: t('CONTACTS_LAYOUT.FILTER.LAST_CONTACTED_AT'),
+      inputType: 'date',
+      dataType: 'text',
+      filterOperators: dateOperators.value,
       attributeModel: 'standard',
     },
     {

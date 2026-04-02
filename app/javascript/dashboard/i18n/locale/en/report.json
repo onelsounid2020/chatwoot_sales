@@ -126,6 +126,119 @@
       "PER_PAGE_TEMPLATE": "{size} / page"
     }
   },
+  "SALES_REPORTS": {
+    "HEADER": "Sales Overview",
+    "DESCRIPTION": "Track your pipeline health with lead volume, conversion performance, and deal value.",
+    "DOWNLOAD": "Download sales report",
+    "FILTERS": {
+      "INBOX_LABEL": "Inbox",
+      "AGENT_LABEL": "Agent",
+      "ALL_INBOXES": "All inboxes",
+      "ALL_AGENTS": "All agents",
+      "SEARCH_INBOX": "Search inbox",
+      "SEARCH_AGENT": "Search agent",
+      "NO_RESULTS": "No results found"
+    },
+    "API": {
+      "FETCH_FAILED": "Failed to fetch sales report data. Please try again later.",
+      "DOWNLOAD_FAILED": "Failed to download sales report. Please try again."
+    },
+    "METRICS": {
+      "TOTAL_LEADS": {
+        "LABEL": "Total leads",
+        "TOOLTIP": "Total conversations created in the selected period."
+      },
+      "OPEN_OPPORTUNITIES": {
+        "LABEL": "Open opportunities",
+        "TOOLTIP": "Conversations still active in open, pending, or snoozed status."
+      },
+      "WIN_RATE": {
+        "LABEL": "Win rate",
+        "TOOLTIP": "Won opportunities divided by won + lost opportunities."
+      },
+      "PIPELINE_VALUE": {
+        "LABEL": "Pipeline value",
+        "TOOLTIP": "Sum of deal values for active opportunities."
+      },
+      "FORECAST_WEIGHTED_VALUE": {
+        "LABEL": "Forecast (weighted)",
+        "TOOLTIP": "Weighted forecast value based on stage probabilities."
+      },
+      "WON_VALUE": {
+        "LABEL": "Won value",
+        "TOOLTIP": "Sum of deal values for opportunities marked as won."
+      },
+      "STALE_OPPORTUNITIES": {
+        "LABEL": "Stale opportunities",
+        "TOOLTIP": "Active opportunities with no activity in the last 7 days."
+      },
+      "AVG_OPEN_AGE_DAYS": {
+        "LABEL": "Avg open age",
+        "TOOLTIP": "Average age (in days) of open opportunities."
+      }
+    },
+    "AGING": {
+      "TITLE": "Open pipeline aging",
+      "BUCKET": "Age bucket",
+      "COUNT": "Opportunities",
+      "VALUE": "Value",
+      "BUCKETS": {
+        "ZERO_TO_SEVEN": "0-7 days",
+        "EIGHT_TO_FOURTEEN": "8-14 days",
+        "FIFTEEN_TO_THIRTY": "15-30 days",
+        "THIRTY_ONE_PLUS": "31+ days"
+      }
+    },
+    "LOST_REASONS": {
+      "TITLE": "Top lost reasons",
+      "REASON": "Reason",
+      "COUNT": "Opportunities"
+    },
+    "FORECAST": {
+      "TITLE": "Weighted forecast by stage",
+      "STAGE": "Stage",
+      "WEIGHT": "Probability",
+      "RAW_VALUE": "Raw value",
+      "WEIGHTED_VALUE": "Weighted value"
+    },
+    "FUNNEL": {
+      "TITLE": "Conversion funnel",
+      "STAGE": "Stage",
+      "COUNT": "Opportunities",
+      "CONVERSION_FROM_PREVIOUS": "Conversion from previous stage"
+    },
+    "STAGE_BREAKDOWN": {
+      "TITLE": "Pipeline by stage",
+      "STAGE": "Stage",
+      "COUNT": "Opportunities",
+      "VALUE": "Value"
+    },
+    "TRENDS": {
+      "PIPELINE_VALUE_TITLE": "Weekly trend: Pipeline value",
+      "WIN_RATE_TITLE": "Weekly trend: Win rate",
+      "NO_DATA": "Not enough data to generate trends."
+    },
+    "TARGETS": {
+      "TITLE": "Sales target by agent",
+      "DESCRIPTION": "Set a monthly target and track achieved won value per agent in the selected period.",
+      "SAVE_BUTTON": "Save targets",
+      "SAVE_SUCCESS": "Sales targets saved successfully.",
+      "SAVE_ERROR": "Unable to save sales targets. Please try again.",
+      "AGENT": "Agent",
+      "TARGET": "Target value",
+      "WON_VALUE": "Won value",
+      "REMAINING": "Remaining",
+      "ATTAINMENT": "Attainment",
+      "NOT_SET": "Not set",
+      "STATUS": {
+        "ON_TRACK": "On track",
+        "AT_RISK": "At risk",
+        "OFF_TRACK": "Off track",
+        "NOT_SET": "No target"
+      },
+      "TARGET_PLACEHOLDER": "Enter target value"
+    }
+  },
   "AGENT_REPORTS": {
     "HEADER": "Agents Overview",
     "DESCRIPTION": "Easily track agent performance with key metrics such as conversations, response times, resolution times, and resolved cases. Click an agent's name to learn more.",
