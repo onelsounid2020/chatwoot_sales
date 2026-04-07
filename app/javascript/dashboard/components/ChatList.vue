@@ -76,6 +76,7 @@ const props = defineProps({
   salesAgentId: { type: [String, Number], default: '' },
   salesTeamId: { type: [String, Number], default: '' },
   salesStageId: { type: String, default: '' },
+  salesSortBy: { type: String, default: '' },
   showConversationList: { default: true, type: Boolean },
   isOnExpandedLayout: { default: false, type: Boolean },
 });
@@ -712,6 +713,15 @@ function onBasicFilterChange(value, type) {
     activeStatus.value = value;
   } else {
     activeSortBy.value = value;
+    if (route.name === 'home') {
+      const nextQuery = { ...route.query };
+      if (value === wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC) {
+        delete nextQuery.sales_sort;
+      } else {
+        nextQuery.sales_sort = value;
+      }
+      router.replace({ query: nextQuery });
+    }
   }
   resetAndFetchData();
 }
@@ -1030,6 +1040,9 @@ useEmitter('fetch_conversation_stats', () => {
 onMounted(() => {
   store.dispatch('setChatListFilters', conversationFilters.value);
   setFiltersFromUISettings();
+  if (props.salesSortBy) {
+    activeSortBy.value = props.salesSortBy;
+  }
   store.dispatch('setChatStatusFilter', activeStatus.value);
   store.dispatch('setChatSortFilter', activeSortBy.value);
   activeSalesStage.value = props.salesStageId || 'all_stages';
@@ -1096,6 +1109,18 @@ watch(
     computed(() => props.salesStageId),
   ],
   () => applySalesContextFilters()
+);
+
+watch(
+  computed(() => props.salesSortBy),
+  sortBy => {
+    const nextSortBy =
+      sortBy || wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC;
+    if (activeSortBy.value === nextSortBy) return;
+    activeSortBy.value = nextSortBy;
+    store.dispatch('setChatSortFilter', nextSortBy);
+    applySalesContextFilters();
+  }
 );
 
 watch(activeFolder, (newVal, oldVal) => {

@@ -257,6 +257,9 @@ export default {
     activeSalesAgentId() {
       return Number(this.$route.query.sales_agent_id || 0);
     },
+    activeSalesSortBy() {
+      return this.$route.query.sales_sort || '';
+    },
     activeSalesStageId() {
       return this.$route.query.sales_stage || 'all_stages';
     },
@@ -343,6 +346,7 @@ export default {
         this.hasActiveSalesQuickView ||
         this.hasActiveSalesAgent ||
         this.selectedSalesTeamId > 0 ||
+        this.activeSalesSortBy !== '' ||
         this.activeSalesStageId !== 'all_stages'
       );
     },
@@ -575,6 +579,7 @@ export default {
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_view;
       delete nextQuery.sales_stage;
+      delete nextQuery.sales_sort;
       if (this.canManageAgentFilter) {
         delete nextQuery.sales_agent_id;
       }
@@ -1108,6 +1113,7 @@ export default {
         :sales-agent-id="isHomeRoute ? effectiveSalesAgentId : ''"
         :sales-team-id="isHomeRoute ? selectedSalesTeamId : ''"
         :sales-stage-id="isHomeRoute ? activeSalesStageId : ''"
+        :sales-sort-by="isHomeRoute ? activeSalesSortBy : ''"
         :is-on-expanded-layout="isOnExpandedLayout"
         @conversation-load="onConversationLoad"
       />
