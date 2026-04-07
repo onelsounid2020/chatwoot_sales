@@ -75,6 +75,7 @@ const props = defineProps({
   salesQuickView: { type: String, default: '' },
   salesAgentId: { type: [String, Number], default: '' },
   salesTeamId: { type: [String, Number], default: '' },
+  salesStageId: { type: String, default: '' },
   showConversationList: { default: true, type: Boolean },
   isOnExpandedLayout: { default: false, type: Boolean },
 });
@@ -720,7 +721,7 @@ function applySalesContextFilters() {
     props.salesQuickView || activeSalesQuickView.value || 'all_sales';
   const activeAgentId = Number(props.salesAgentId || 0);
   const activeTeamId = Number(props.salesTeamId || 0);
-  const activeStageId = activeSalesStage.value;
+  const activeStageId = props.salesStageId || activeSalesStage.value;
   const quickView =
     salesQuickViews.value.find(item => item.id === activeViewId) ||
     salesQuickViews.value.find(item => item.id === 'all_sales');
@@ -797,7 +798,15 @@ function applySalesQuickView(view) {
 }
 
 function applySalesStageView(stageId) {
-  activeSalesStage.value = stageId || 'all_stages';
+  const normalizedStageId = stageId || 'all_stages';
+  activeSalesStage.value = normalizedStageId;
+  const nextQuery = { ...route.query };
+  if (normalizedStageId === 'all_stages') {
+    delete nextQuery.sales_stage;
+  } else {
+    nextQuery.sales_stage = normalizedStageId;
+  }
+  router.replace({ query: nextQuery });
   applySalesContextFilters();
 }
 
@@ -1023,6 +1032,7 @@ onMounted(() => {
   setFiltersFromUISettings();
   store.dispatch('setChatStatusFilter', activeStatus.value);
   store.dispatch('setChatSortFilter', activeSortBy.value);
+  activeSalesStage.value = props.salesStageId || 'all_stages';
   resetAndFetchData();
   applySalesContextFilters();
   if (hasActiveFolders.value) {
@@ -1083,6 +1093,7 @@ watch(
     computed(() => props.salesQuickView),
     computed(() => props.salesAgentId),
     computed(() => props.salesTeamId),
+    computed(() => props.salesStageId),
   ],
   () => applySalesContextFilters()
 );

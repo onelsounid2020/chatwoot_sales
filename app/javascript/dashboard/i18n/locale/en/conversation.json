@@ -245,6 +245,7 @@
       "ACTIVE_VIEW_CHIP": "View: {view}",
       "ACTIVE_AGENT_CHIP": "Agent: {agent}",
       "ACTIVE_TEAM_CHIP": "Team: {team}",
+      "ACTIVE_STAGE_CHIP": "Stage: {stage}",
       "SCOPE_LABEL": "Scope: {scope}",
       "SCOPE": {
         "OWN": "My pipeline",

@@ -245,6 +245,7 @@
       "ACTIVE_VIEW_CHIP": "Vista: {view}",
       "ACTIVE_AGENT_CHIP": "Agente: {agent}",
       "ACTIVE_TEAM_CHIP": "Equipo: {team}",
+      "ACTIVE_STAGE_CHIP": "Etapa: {stage}",
       "SCOPE_LABEL": "Alcance: {scope}",
       "SCOPE": {
         "OWN": "Mi cartera",

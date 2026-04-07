@@ -257,6 +257,9 @@ export default {
     activeSalesAgentId() {
       return Number(this.$route.query.sales_agent_id || 0);
     },
+    activeSalesStageId() {
+      return this.$route.query.sales_stage || 'all_stages';
+    },
     canViewGlobalSales() {
       const permissions = this.currentAccount?.permissions || [];
       return (
@@ -339,7 +342,8 @@ export default {
       return (
         this.hasActiveSalesQuickView ||
         this.hasActiveSalesAgent ||
-        this.selectedSalesTeamId > 0
+        this.selectedSalesTeamId > 0 ||
+        this.activeSalesStageId !== 'all_stages'
       );
     },
     activeSalesQuickViewLabel() {
@@ -371,6 +375,10 @@ export default {
       )?.agentName;
       return fromTop || '';
     },
+    activeSalesStageLabel() {
+      if (this.activeSalesStageId === 'all_stages') return '';
+      return this.getDealStageLabel(this.activeSalesStageId);
+    },
   },
   watch: {
     conversationId() {
@@ -383,6 +391,9 @@ export default {
       this.fetchSalesOverviewIfRequired();
     },
     '$route.query.sales_team_id'() {
+      this.fetchSalesOverviewIfRequired();
+    },
+    '$route.query.sales_stage'() {
       this.fetchSalesOverviewIfRequired();
     },
     '$route.name': {
@@ -563,6 +574,7 @@ export default {
     clearSalesFilters() {
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_view;
+      delete nextQuery.sales_stage;
       if (this.canManageAgentFilter) {
         delete nextQuery.sales_agent_id;
       }
@@ -606,6 +618,11 @@ export default {
       if (!this.canManageTeamScope) return;
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_team_id;
+      this.$router.replace({ query: nextQuery });
+    },
+    clearSalesStage() {
+      const nextQuery = { ...this.$route.query };
+      delete nextQuery.sales_stage;
       this.$router.replace({ query: nextQuery });
     },
     getDealStageLabel(stage) {
@@ -741,7 +758,8 @@ export default {
             v-if="
               hasActiveSalesQuickView ||
               (canManageAgentFilter && hasActiveSalesAgent) ||
-              selectedSalesTeamId > 0
+              selectedSalesTeamId > 0 ||
+              activeSalesStageId !== 'all_stages'
             "
             type="button"
             class="inline-flex h-9 items-center px-3 text-xs font-medium rounded-lg border border-n-weak bg-n-alpha-2 text-n-slate-11 hover:bg-n-alpha-3"
@@ -785,6 +803,23 @@ export default {
             type="button"
             class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
             @click="clearSalesQuickView"
+          >
+            {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
+          </button>
+        </span>
+        <span
+          v-if="activeSalesStageId !== 'all_stages' && activeSalesStageLabel"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-n-weak bg-n-alpha-2 text-xs text-n-slate-12"
+        >
+          {{
+            $t('CONVERSATION.SALES_HOME.ACTIVE_STAGE_CHIP', {
+              stage: activeSalesStageLabel,
+            })
+          }}
+          <button
+            type="button"
+            class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
+            @click="clearSalesStage"
           >
             {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
           </button>
@@ -1072,6 +1107,7 @@ export default {
         :sales-quick-view="isHomeRoute ? $route.query.sales_view : ''"
         :sales-agent-id="isHomeRoute ? effectiveSalesAgentId : ''"
         :sales-team-id="isHomeRoute ? selectedSalesTeamId : ''"
+        :sales-stage-id="isHomeRoute ? activeSalesStageId : ''"
         :is-on-expanded-layout="isOnExpandedLayout"
         @conversation-load="onConversationLoad"
       />
