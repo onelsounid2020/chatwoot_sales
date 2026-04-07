@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export RAILS_ENV="${RAILS_ENV:-production}"
+if [[ -z "${RAILS_ENV:-}" || "${RAILS_ENV}" == "environment" ]]; then
+  export RAILS_ENV="production"
+else
+  export RAILS_ENV
+fi
+export RACK_ENV="${RACK_ENV:-$RAILS_ENV}"
+export NODE_ENV="${NODE_ENV:-production}"
 
 bundle exec rails ip_lookup:setup
 exec bundle exec sidekiq -C config/sidekiq.yml

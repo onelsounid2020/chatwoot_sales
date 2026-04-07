@@ -245,6 +245,7 @@
       "ACTIVE_VIEW_CHIP": "View: {view}",
       "ACTIVE_AGENT_CHIP": "Agent: {agent}",
       "ACTIVE_TEAM_CHIP": "Team: {team}",
+      "ACTIVE_STAGE_CHIP": "Stage: {stage}",
       "SCOPE_LABEL": "Scope: {scope}",
       "SCOPE": {
         "OWN": "My pipeline",
@@ -285,9 +286,12 @@
       },
       "ACTIONS": {
         "CLEAR_FILTER": "Clear filter",
+        "SAVE_DEFAULT_VIEW": "Save default view and filters",
+        "RESET_DEFAULT_VIEW": "Reset defaults",
         "PIPELINE": "View pipeline",
         "REPORTS": "Open sales report"
       },
+      "DEFAULT_VIEW_BADGE": "Default",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Open opportunities",
         "STALE_OPPORTUNITIES": "Overdue opportunities",
