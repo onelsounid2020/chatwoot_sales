@@ -79,6 +79,12 @@
       },
       "priority_desc_created_at_asc": {
         "TEXT": "Priority: Highest first, Created: Oldest first"
+      },
+      "deal_value_desc": {
+        "TEXT": "Valor oportunidad: Mayor primero"
+      },
+      "next_follow_up_at_asc": {
+        "TEXT": "Próximo seguimiento: Más cercano primero"
       }
     },
     "ATTACHMENTS": {
@@ -148,12 +154,18 @@
       "COMPLETED": "Realizado",
       "SCHEDULED": "Programado"
     },
+    "SALES_PIPELINE": {
+      "VALUE_EMPTY": "Sin monto"
+    },
     "SALES_QUICK_VIEWS": {
       "ALL_SALES": "Todas ventas",
       "MISSING_FOLLOW_UP": "Sin seguimiento",
       "PROPOSAL_STAGE": "En propuesta",
       "WON_STAGE": "Ganadas",
       "HIGH_VALUE_NO_FOLLOW_UP": "Con valor y sin seguimiento"
+    },
+    "SALES_STAGE_FILTERS": {
+      "ALL": "Todas las etapas"
     }
   }
 }

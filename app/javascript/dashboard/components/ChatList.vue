@@ -105,6 +105,7 @@ const showDeleteFoldersModal = ref(false);
 const isContextMenuOpen = ref(false);
 const appliedFilter = ref([]);
 const activeSalesQuickView = ref('all_sales');
+const activeSalesStage = ref('all_stages');
 const advancedFilterTypes = ref(
   advancedFilterOptions.map(filter => ({
     ...filter,
@@ -248,6 +249,37 @@ const salesQuickViews = computed(() => [
         values: [],
       },
     ],
+  },
+]);
+
+const salesStageViews = computed(() => [
+  {
+    id: 'all_stages',
+    label: t('CHAT_LIST.SALES_STAGE_FILTERS.ALL'),
+  },
+  {
+    id: 'incoming',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.INCOMING'),
+  },
+  {
+    id: 'contacted',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.CONTACTED'),
+  },
+  {
+    id: 'qualified',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.QUALIFIED'),
+  },
+  {
+    id: 'proposal',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.PROPOSAL'),
+  },
+  {
+    id: 'won',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.WON'),
+  },
+  {
+    id: 'lost',
+    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.LOST'),
   },
 ]);
 
@@ -469,6 +501,7 @@ function fetchSavedFilteredConversations(payload) {
 function onApplyFilter(payload) {
   payload = useSnakeCase(payload);
   activeSalesQuickView.value = '';
+  activeSalesStage.value = 'all_stages';
   resetBulkActions();
   foldersQuery.value = filterQueryGenerator(payload);
   store.dispatch('conversationPage/reset');
@@ -624,6 +657,7 @@ function fetchConversations() {
 function resetAndFetchData() {
   appliedFilter.value = [];
   activeSalesQuickView.value = 'all_sales';
+  activeSalesStage.value = 'all_stages';
   resetBulkActions();
   store.dispatch('conversationPage/reset');
   store.dispatch('emptyAllConversations');
@@ -681,29 +715,12 @@ function onBasicFilterChange(value, type) {
   resetAndFetchData();
 }
 
-function applySalesQuickView(view) {
-  activeSalesQuickView.value = view.id;
-  if (view.id === 'all_sales') {
-    resetAndFetchData();
-    return;
-  }
-
-  const filters = JSON.parse(JSON.stringify(view.filters));
-  const snakeFilters = useSnakeCase(filters);
-  appliedFilter.value = filters;
-
-  resetBulkActions();
-  foldersQuery.value = filterQueryGenerator(snakeFilters);
-  store.dispatch('conversationPage/reset');
-  store.dispatch('emptyAllConversations');
-  store.dispatch('setConversationFilters', snakeFilters);
-  fetchFilteredConversations(filters);
-}
-
 function applySalesContextFilters() {
-  const activeViewId = props.salesQuickView || 'all_sales';
+  const activeViewId =
+    props.salesQuickView || activeSalesQuickView.value || 'all_sales';
   const activeAgentId = Number(props.salesAgentId || 0);
   const activeTeamId = Number(props.salesTeamId || 0);
+  const activeStageId = activeSalesStage.value;
   const quickView =
     salesQuickViews.value.find(item => item.id === activeViewId) ||
     salesQuickViews.value.find(item => item.id === 'all_sales');
@@ -736,7 +753,27 @@ function applySalesContextFilters() {
       ]
     : [];
 
-  const combinedFilters = [...quickViewFilters, ...agentFilter, ...teamFilter];
+  const stageFilter =
+    activeStageId && activeStageId !== 'all_stages'
+      ? [
+          {
+            attributeKey: 'deal_stage',
+            filterOperator: 'equal_to',
+            values: [activeStageId],
+            queryOperator:
+              quickViewFilters.length || agentFilter.length || teamFilter.length
+                ? 'and'
+                : undefined,
+          },
+        ]
+      : [];
+
+  const combinedFilters = [
+    ...quickViewFilters,
+    ...agentFilter,
+    ...teamFilter,
+    ...stageFilter,
+  ];
   activeSalesQuickView.value = quickView?.id || 'all_sales';
 
   if (!combinedFilters.length) {
@@ -752,6 +789,16 @@ function applySalesContextFilters() {
   store.dispatch('emptyAllConversations');
   store.dispatch('setConversationFilters', snakeFilters);
   fetchFilteredConversations(combinedFilters);
+}
+
+function applySalesQuickView(view) {
+  activeSalesQuickView.value = view.id;
+  applySalesContextFilters();
+}
+
+function applySalesStageView(stageId) {
+  activeSalesStage.value = stageId || 'all_stages';
+  applySalesContextFilters();
 }
 
 function openLastSavedItemInFolder() {
@@ -1127,6 +1174,25 @@ watch(conversationFilters, (newVal, oldVal) => {
         @click="applySalesQuickView(view)"
       >
         {{ view.label }}
+      </button>
+    </div>
+    <div
+      v-if="!hasActiveFolders"
+      class="px-3 py-2 border-b border-n-weak/50 flex flex-wrap gap-1"
+    >
+      <button
+        v-for="stage in salesStageViews"
+        :key="stage.id"
+        type="button"
+        class="px-2 py-1 rounded-md text-xs border transition-colors"
+        :class="
+          activeSalesStage === stage.id
+            ? 'border-n-brand text-n-brand bg-n-alpha-2'
+            : 'border-n-weak text-n-slate-11 hover:bg-n-alpha-2'
+        "
+        @click="applySalesStageView(stage.id)"
+      >
+        {{ stage.label }}
       </button>
     </div>
 

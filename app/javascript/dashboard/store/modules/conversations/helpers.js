@@ -117,6 +117,8 @@ const SORT_OPTIONS = {
   waiting_since_asc: ['sortOnWaitingSince', 'asc'],
   waiting_since_desc: ['sortOnWaitingSince', 'desc'],
   priority_desc_created_at_asc: ['sortOnPriorityCreatedAt', 'desc'],
+  deal_value_desc: ['sortOnDealValue', 'desc'],
+  next_follow_up_at_asc: ['sortOnNextFollowUpAt', 'asc'],
 };
 const sortAscending = (valueA, valueB) => valueA - valueB;
 const sortDescending = (valueA, valueB) => valueB - valueA;
@@ -158,6 +160,24 @@ const sortConfig = {
     }
 
     return sortFunc(a.waiting_since, b.waiting_since);
+  },
+
+  sortOnDealValue: (a, b) => {
+    const valueA = Number(a?.deal_value || 0);
+    const valueB = Number(b?.deal_value || 0);
+    return valueB - valueA;
+  },
+
+  sortOnNextFollowUpAt: (a, b) => {
+    const followUpA = Number(a?.next_follow_up_at || 0);
+    const followUpB = Number(b?.next_follow_up_at || 0);
+
+    // Keep conversations without follow-up at the end.
+    if (!followUpA && !followUpB) return 0;
+    if (!followUpA) return 1;
+    if (!followUpB) return -1;
+
+    return followUpA - followUpB;
   },
 };
 
