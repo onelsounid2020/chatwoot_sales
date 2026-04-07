@@ -86,17 +86,8 @@ RUN if [ "$RAILS_ENV" = "production" ]; then \
   && rm -rf spec node_modules tmp/cache; \
   fi
 
-# Generate .git_sha file with current commit hash.
-# In some CI/CD contexts (ex: Railway), `.git` is not available in build context.
-RUN if git rev-parse HEAD >/dev/null 2>&1; then \
-      git rev-parse HEAD > /app/.git_sha; \
-    elif [ -n "$RAILWAY_GIT_COMMIT_SHA" ]; then \
-      echo "$RAILWAY_GIT_COMMIT_SHA" > /app/.git_sha; \
-    elif [ -n "$SOURCE_VERSION" ]; then \
-      echo "$SOURCE_VERSION" > /app/.git_sha; \
-    else \
-      echo "unknown" > /app/.git_sha; \
-    fi
+# Generate .git_sha file with current commit hash
+RUN git rev-parse HEAD > /app/.git_sha
 
 # Remove unnecessary files
 RUN rm -rf /gems/ruby/3.4.0/cache/*.gem \

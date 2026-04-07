@@ -38,9 +38,6 @@ Usa estos comandos en Railway:
 - **Start Command (worker):**
   - `bin/railway-worker`
 
-Nota:
-- El repositorio incluye `railway.toml` para forzar build con `docker/Dockerfile` y evitar builds lentos con Nixpacks.
-
 ## 4) Variables de entorno mínimas
 
 Variables clave (por entorno):
