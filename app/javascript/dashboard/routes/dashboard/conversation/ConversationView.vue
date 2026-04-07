@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import { useAccount } from 'dashboard/composables/useAccount';
-import { useAlert } from 'dashboard/composables';
 import ReportsAPI from 'dashboard/api/reports';
 import ChatList from '../../../components/ChatList.vue';
 import ConversationBox from '../../../components/widgets/conversation/ConversationBox.vue';
@@ -556,7 +555,6 @@ export default {
         sales_home_default_stage: normalizedStage,
         sales_home_default_sort: normalizedSort,
       });
-      useAlert(this.$t('CONVERSATION.SALES_HOME.FEEDBACK.DEFAULTS_SAVED'));
     },
     resetPreferredSalesHomeDefaults() {
       if (!this.canManageTeamScope) return;
@@ -567,7 +565,6 @@ export default {
         sales_home_default_stage: null,
         sales_home_default_sort: null,
       });
-      useAlert(this.$t('CONVERSATION.SALES_HOME.FEEDBACK.DEFAULTS_RESET'));
     },
     onConversationLoad() {
       this.fetchConversationIfUnavailable();

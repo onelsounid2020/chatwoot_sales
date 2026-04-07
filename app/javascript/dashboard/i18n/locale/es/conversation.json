@@ -291,10 +291,6 @@
         "PIPELINE": "Ver pipeline",
         "REPORTS": "Abrir reporte de ventas"
       },
-      "FEEDBACK": {
-        "DEFAULTS_SAVED": "Se guardaron los predeterminados comerciales.",
-        "DEFAULTS_RESET": "Se restablecieron los predeterminados comerciales."
-      },
       "DEFAULT_VIEW_BADGE": "Predeterminada",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Oportunidades abiertas",

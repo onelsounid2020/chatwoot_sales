@@ -291,10 +291,6 @@
         "PIPELINE": "View pipeline",
         "REPORTS": "Open sales report"
       },
-      "FEEDBACK": {
-        "DEFAULTS_SAVED": "Sales defaults were saved.",
-        "DEFAULTS_RESET": "Sales defaults were reset."
-      },
       "DEFAULT_VIEW_BADGE": "Default",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Open opportunities",
