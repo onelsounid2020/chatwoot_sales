@@ -257,12 +257,6 @@ export default {
     activeSalesAgentId() {
       return Number(this.$route.query.sales_agent_id || 0);
     },
-    activeSalesSortBy() {
-      return this.$route.query.sales_sort || '';
-    },
-    activeSalesStageId() {
-      return this.$route.query.sales_stage || 'all_stages';
-    },
     canViewGlobalSales() {
       const permissions = this.currentAccount?.permissions || [];
       return (
@@ -338,49 +332,6 @@ export default {
     hasActiveSalesQuickView() {
       return this.activeSalesQuickView !== 'all_sales';
     },
-    preferredSalesQuickView() {
-      return this.normalizeSalesQuickView(
-        this.uiSettings?.sales_home_default_view
-      );
-    },
-    preferredSalesStageId() {
-      return this.normalizeSalesStage(
-        this.uiSettings?.sales_home_default_stage || 'all_stages'
-      );
-    },
-    preferredSalesSortBy() {
-      return this.normalizeSalesSort(this.uiSettings?.sales_home_default_sort);
-    },
-    isSalesHomeDefaultsConfigured() {
-      return Boolean(
-        this.preferredSalesQuickView ||
-          this.preferredSalesStageId !== 'all_stages' ||
-          this.preferredSalesSortBy !== ''
-      );
-    },
-    isActiveSalesViewDefault() {
-      const hasExplicitSalesContext =
-        this.hasActiveSalesQuickView ||
-        this.activeSalesStageId !== 'all_stages' ||
-        this.activeSalesSortBy !== '';
-      if (!hasExplicitSalesContext) return false;
-      return (
-        this.activeSalesQuickView === this.preferredSalesQuickView &&
-        this.activeSalesStageId === this.preferredSalesStageId &&
-        this.activeSalesSortBy === this.preferredSalesSortBy
-      );
-    },
-    canSetActiveSalesViewAsDefault() {
-      const hasExplicitSalesContext =
-        this.hasActiveSalesQuickView ||
-        this.activeSalesStageId !== 'all_stages' ||
-        this.activeSalesSortBy !== '';
-      return (
-        this.canManageTeamScope &&
-        hasExplicitSalesContext &&
-        !this.isActiveSalesViewDefault
-      );
-    },
     hasActiveSalesAgent() {
       return this.effectiveSalesAgentId > 0;
     },
@@ -388,35 +339,11 @@ export default {
       return (
         this.hasActiveSalesQuickView ||
         this.hasActiveSalesAgent ||
-        this.selectedSalesTeamId > 0 ||
-        this.activeSalesSortBy !== '' ||
-        this.activeSalesStageId !== 'all_stages'
+        this.selectedSalesTeamId > 0
       );
     },
     activeSalesQuickViewLabel() {
       const view = [
-        {
-          id: 'follow_up_today',
-          label: this.$t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_TODAY'),
-        },
-        {
-          id: 'overdue_follow_up',
-          label: this.$t('CHAT_LIST.SALES_QUICK_VIEWS.OVERDUE_FOLLOW_UP'),
-        },
-        {
-          id: 'high_value_overdue_follow_up',
-          label: this.$t(
-            'CHAT_LIST.SALES_QUICK_VIEWS.HIGH_VALUE_OVERDUE_FOLLOW_UP'
-          ),
-        },
-        {
-          id: 'follow_up_next_1h',
-          label: this.$t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_1H'),
-        },
-        {
-          id: 'follow_up_next_24h',
-          label: this.$t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_24H'),
-        },
         {
           id: 'missing_follow_up',
           label: this.$t('CHAT_LIST.SALES_QUICK_VIEWS.MISSING_FOLLOW_UP'),
@@ -444,10 +371,6 @@ export default {
       )?.agentName;
       return fromTop || '';
     },
-    activeSalesStageLabel() {
-      if (this.activeSalesStageId === 'all_stages') return '';
-      return this.getDealStageLabel(this.activeSalesStageId);
-    },
   },
   watch: {
     conversationId() {
@@ -462,12 +385,8 @@ export default {
     '$route.query.sales_team_id'() {
       this.fetchSalesOverviewIfRequired();
     },
-    '$route.query.sales_stage'() {
-      this.fetchSalesOverviewIfRequired();
-    },
     '$route.name': {
       handler() {
-        if (this.ensureDefaultSalesView()) return;
         this.fetchSalesOverviewIfRequired();
       },
       immediate: true,
@@ -496,76 +415,6 @@ export default {
   },
 
   methods: {
-    normalizeSalesQuickView(viewId) {
-      const supportedViews = [
-        'all_sales',
-        'missing_follow_up',
-        'proposal_stage',
-        'won_stage',
-        'follow_up_today',
-        'overdue_follow_up',
-        'high_value_overdue_follow_up',
-        'follow_up_next_1h',
-        'follow_up_next_24h',
-        'high_value_no_follow_up',
-      ];
-
-      const normalizedView = String(viewId || '');
-      return supportedViews.includes(normalizedView) ? normalizedView : '';
-    },
-    normalizeSalesStage(stageId) {
-      const supportedStages = [
-        'all_stages',
-        'incoming',
-        'contacted',
-        'qualified',
-        'proposal',
-        'won',
-        'lost',
-      ];
-      const normalizedStage = String(stageId || 'all_stages');
-      return supportedStages.includes(normalizedStage)
-        ? normalizedStage
-        : 'all_stages';
-    },
-    normalizeSalesSort(sortBy) {
-      const normalizedSort = String(sortBy || '');
-      if (!normalizedSort) return '';
-      const supportedSorts = Object.values(wootConstants.SORT_BY_TYPE);
-      return supportedSorts.includes(normalizedSort) ? normalizedSort : '';
-    },
-    savePreferredSalesHomeDefaults() {
-      if (!this.canManageTeamScope) return;
-      const normalizedView = this.normalizeSalesQuickView(
-        this.activeSalesQuickView || 'all_sales'
-      );
-      const normalizedStage = this.normalizeSalesStage(this.activeSalesStageId);
-      const normalizedSort = this.normalizeSalesSort(this.activeSalesSortBy);
-
-      if (
-        this.uiSettings?.sales_home_default_view === normalizedView &&
-        this.uiSettings?.sales_home_default_stage === normalizedStage &&
-        this.uiSettings?.sales_home_default_sort === normalizedSort
-      ) {
-        return;
-      }
-
-      this.updateUISettings({
-        sales_home_default_view: normalizedView,
-        sales_home_default_stage: normalizedStage,
-        sales_home_default_sort: normalizedSort,
-      });
-    },
-    resetPreferredSalesHomeDefaults() {
-      if (!this.canManageTeamScope) return;
-      if (!this.isSalesHomeDefaultsConfigured) return;
-
-      this.updateUISettings({
-        sales_home_default_view: null,
-        sales_home_default_stage: null,
-        sales_home_default_sort: null,
-      });
-    },
     onConversationLoad() {
       this.fetchConversationIfUnavailable();
     },
@@ -648,54 +497,6 @@ export default {
       if (!this.isHomeRoute) return;
       await this.fetchSalesOverview();
     },
-    ensureDefaultSalesView() {
-      if (!this.isHomeRoute || !this.canManageTeamScope) return false;
-
-      const query = this.$route.query || {};
-      const hasSalesFilters =
-        query.sales_view ||
-        query.sales_agent_id ||
-        query.sales_team_id ||
-        query.sales_stage ||
-        query.sales_sort;
-
-      if (hasSalesFilters) return false;
-
-      const preferredView =
-        this.normalizeSalesQuickView(
-          this.uiSettings?.sales_home_default_view
-        ) || 'high_value_overdue_follow_up';
-      const preferredStage = this.normalizeSalesStage(
-        this.uiSettings?.sales_home_default_stage || 'all_stages'
-      );
-      const preferredSort = this.normalizeSalesSort(
-        this.uiSettings?.sales_home_default_sort
-      );
-
-      const nextQuery = { ...query };
-      let hasAnyDefaultFilter = false;
-      if (preferredView && preferredView !== 'all_sales') {
-        nextQuery.sales_view = preferredView;
-        hasAnyDefaultFilter = true;
-      }
-      if (preferredStage !== 'all_stages') {
-        nextQuery.sales_stage = preferredStage;
-        hasAnyDefaultFilter = true;
-      }
-      if (
-        preferredSort &&
-        preferredSort !== wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC
-      ) {
-        nextQuery.sales_sort = preferredSort;
-        hasAnyDefaultFilter = true;
-      }
-      if (!hasAnyDefaultFilter) return false;
-
-      this.$router.replace({
-        query: nextQuery,
-      });
-      return true;
-    },
     async fetchSalesOverview() {
       this.isSalesOverviewLoading = true;
       this.salesOverviewLoadFailed = false;
@@ -762,8 +563,6 @@ export default {
     clearSalesFilters() {
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_view;
-      delete nextQuery.sales_stage;
-      delete nextQuery.sales_sort;
       if (this.canManageAgentFilter) {
         delete nextQuery.sales_agent_id;
       }
@@ -807,11 +606,6 @@ export default {
       if (!this.canManageTeamScope) return;
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_team_id;
-      this.$router.replace({ query: nextQuery });
-    },
-    clearSalesStage() {
-      const nextQuery = { ...this.$route.query };
-      delete nextQuery.sales_stage;
       this.$router.replace({ query: nextQuery });
     },
     getDealStageLabel(stage) {
@@ -947,30 +741,13 @@ export default {
             v-if="
               hasActiveSalesQuickView ||
               (canManageAgentFilter && hasActiveSalesAgent) ||
-              selectedSalesTeamId > 0 ||
-              activeSalesStageId !== 'all_stages'
+              selectedSalesTeamId > 0
             "
             type="button"
             class="inline-flex h-9 items-center px-3 text-xs font-medium rounded-lg border border-n-weak bg-n-alpha-2 text-n-slate-11 hover:bg-n-alpha-3"
             @click="clearSalesFilters"
           >
             {{ $t('CONVERSATION.SALES_HOME.ACTIONS.CLEAR_FILTER') }}
-          </button>
-          <button
-            v-if="canSetActiveSalesViewAsDefault"
-            type="button"
-            class="inline-flex h-9 items-center px-3 text-xs font-medium rounded-lg border border-n-weak bg-n-solid-1 text-n-slate-12 hover:bg-n-alpha-2"
-            @click="savePreferredSalesHomeDefaults()"
-          >
-            {{ $t('CONVERSATION.SALES_HOME.ACTIONS.SAVE_DEFAULT_VIEW') }}
-          </button>
-          <button
-            v-if="canManageTeamScope && isSalesHomeDefaultsConfigured"
-            type="button"
-            class="inline-flex h-9 items-center px-3 text-xs font-medium rounded-lg border border-n-weak bg-n-solid-1 text-n-slate-12 hover:bg-n-alpha-2"
-            @click="resetPreferredSalesHomeDefaults()"
-          >
-            {{ $t('CONVERSATION.SALES_HOME.ACTIONS.RESET_DEFAULT_VIEW') }}
           </button>
           <button
             type="button"
@@ -1004,33 +781,10 @@ export default {
               view: activeSalesQuickViewLabel,
             })
           }}
-          <span
-            v-if="isActiveSalesViewDefault"
-            class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-n-brand/20 text-[10px] font-medium text-n-brand"
-          >
-            {{ $t('CONVERSATION.SALES_HOME.DEFAULT_VIEW_BADGE') }}
-          </span>
           <button
             type="button"
             class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
             @click="clearSalesQuickView"
-          >
-            {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
-          </button>
-        </span>
-        <span
-          v-if="activeSalesStageId !== 'all_stages' && activeSalesStageLabel"
-          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-n-weak bg-n-alpha-2 text-xs text-n-slate-12"
-        >
-          {{
-            $t('CONVERSATION.SALES_HOME.ACTIVE_STAGE_CHIP', {
-              stage: activeSalesStageLabel,
-            })
-          }}
-          <button
-            type="button"
-            class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
-            @click="clearSalesStage"
           >
             {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
           </button>
@@ -1318,8 +1072,6 @@ export default {
         :sales-quick-view="isHomeRoute ? $route.query.sales_view : ''"
         :sales-agent-id="isHomeRoute ? effectiveSalesAgentId : ''"
         :sales-team-id="isHomeRoute ? selectedSalesTeamId : ''"
-        :sales-stage-id="isHomeRoute ? activeSalesStageId : ''"
-        :sales-sort-by="isHomeRoute ? activeSalesSortBy : ''"
         :is-on-expanded-layout="isOnExpandedLayout"
         @conversation-load="onConversationLoad"
       />

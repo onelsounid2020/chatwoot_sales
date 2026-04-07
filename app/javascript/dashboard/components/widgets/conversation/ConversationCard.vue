@@ -130,70 +130,6 @@ const showLabelsSection = computed(() => {
   return props.chat.labels?.length > 0 || hasSlaPolicyId.value;
 });
 
-const dealStage = computed(() => props.chat?.deal_stage || 'incoming');
-
-const dealStageLabel = computed(() => {
-  if (dealStage.value === 'incoming') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.INCOMING');
-  }
-  if (dealStage.value === 'contacted') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.CONTACTED');
-  }
-  if (dealStage.value === 'qualified') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.QUALIFIED');
-  }
-  if (dealStage.value === 'proposal') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.PROPOSAL');
-  }
-  if (dealStage.value === 'won') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.WON');
-  }
-  if (dealStage.value === 'lost') {
-    return t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.LOST');
-  }
-  return dealStage.value;
-});
-
-const dealStageClass = computed(() => {
-  const classMap = {
-    incoming: 'border-n-slate-6 bg-n-alpha-2 text-n-slate-11',
-    contacted: 'border-n-sky-6 bg-n-sky-3 text-n-sky-12',
-    qualified: 'border-n-indigo-6 bg-n-indigo-3 text-n-indigo-12',
-    proposal: 'border-n-amber-6 bg-n-amber-3 text-n-amber-12',
-    won: 'border-n-teal-6 bg-n-teal-3 text-n-teal-12',
-    lost: 'border-n-ruby-6 bg-n-ruby-3 text-n-ruby-11',
-  };
-  return classMap[dealStage.value] || classMap.incoming;
-});
-
-const dealValueLabel = computed(() => {
-  const rawValue = props.chat?.deal_value;
-  if (rawValue === null || rawValue === undefined || rawValue === '') {
-    return t('CHAT_LIST.SALES_PIPELINE.VALUE_EMPTY');
-  }
-
-  const numericValue = Number(rawValue);
-  if (Number.isNaN(numericValue) || numericValue <= 0) {
-    return t('CHAT_LIST.SALES_PIPELINE.VALUE_EMPTY');
-  }
-
-  const currency = props.chat?.deal_currency || 'CLP';
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(numericValue);
-});
-
-const showSalesPipelineMeta = computed(() => {
-  return Boolean(
-    dealStage.value !== 'incoming' ||
-      Number(props.chat?.deal_value || 0) > 0 ||
-      props.chat?.next_follow_up_at ||
-      props.chat?.last_contacted_at
-  );
-});
-
 const followUpStatus = computed(() => {
   const nextFollowUpAt = Number(props.chat?.next_follow_up_at || 0);
   if (!nextFollowUpAt) return 'missing';
@@ -209,6 +145,14 @@ const followUpStatus = computed(() => {
   if (diffInSeconds < 0) return 'overdue';
   if (diffInSeconds <= 24 * 60 * 60) return 'today';
   return 'scheduled';
+});
+
+const showSalesFollowUpBadge = computed(() => {
+  return Boolean(
+    props.chat?.next_follow_up_at ||
+      props.chat?.last_contacted_at ||
+      props.chat?.deal_value
+  );
 });
 
 const followUpBadgeText = computed(() => {
@@ -496,26 +440,11 @@ const deleteConversation = () => {
         </template>
       </CardLabels>
       <div
-        v-if="showSalesPipelineMeta"
-        class="mx-2 mt-1 flex flex-wrap items-center gap-1.5"
+        v-if="showSalesFollowUpBadge"
+        class="mt-1 mx-2 inline-flex items-center px-1.5 py-0.5 rounded-md border text-[10px] font-medium"
+        :class="followUpBadgeClass"
       >
-        <span
-          class="inline-flex items-center px-1.5 py-0.5 rounded-md border text-[10px] font-medium"
-          :class="dealStageClass"
-        >
-          {{ dealStageLabel }}
-        </span>
-        <span
-          class="inline-flex items-center px-1.5 py-0.5 rounded-md border text-[10px] font-medium border-n-weak bg-n-alpha-2 text-n-slate-12"
-        >
-          {{ dealValueLabel }}
-        </span>
-        <span
-          class="inline-flex items-center px-1.5 py-0.5 rounded-md border text-[10px] font-medium"
-          :class="followUpBadgeClass"
-        >
-          {{ followUpBadgeText }}
-        </span>
+        {{ followUpBadgeText }}
       </div>
     </div>
     <ContextMenu

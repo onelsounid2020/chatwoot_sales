@@ -75,8 +75,6 @@ const props = defineProps({
   salesQuickView: { type: String, default: '' },
   salesAgentId: { type: [String, Number], default: '' },
   salesTeamId: { type: [String, Number], default: '' },
-  salesStageId: { type: String, default: '' },
-  salesSortBy: { type: String, default: '' },
   showConversationList: { default: true, type: Boolean },
   isOnExpandedLayout: { default: false, type: Boolean },
 });
@@ -107,7 +105,6 @@ const showDeleteFoldersModal = ref(false);
 const isContextMenuOpen = ref(false);
 const appliedFilter = ref([]);
 const activeSalesQuickView = ref('all_sales');
-const activeSalesStage = ref('all_stages');
 const advancedFilterTypes = ref(
   advancedFilterOptions.map(filter => ({
     ...filter,
@@ -190,25 +187,6 @@ const hasAppliedFiltersOrActiveFolders = computed(() => {
   return hasAppliedFilters.value || hasActiveFolders.value;
 });
 
-const getStartOfTodayIso = () => {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date.toISOString();
-};
-
-const getStartOfTomorrowIso = () => {
-  const date = new Date();
-  date.setHours(24, 0, 0, 0);
-  return date.toISOString();
-};
-
-const getNowIso = () => new Date().toISOString();
-
-const getIsoFromNowPlusHours = hours => {
-  const date = new Date(Date.now() + hours * 60 * 60 * 1000);
-  return date.toISOString();
-};
-
 const salesQuickViews = computed(() => [
   {
     id: 'all_sales',
@@ -255,127 +233,6 @@ const salesQuickViews = computed(() => [
     ],
   },
   {
-    id: 'follow_up_today',
-    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_TODAY'),
-    buildFilters: () => [
-      {
-        attributeKey: 'status',
-        filterOperator: 'equal_to',
-        values: ['open', 'pending', 'snoozed'],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_greater_than',
-        values: [getStartOfTodayIso()],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_less_than',
-        values: [getStartOfTomorrowIso()],
-      },
-    ],
-  },
-  {
-    id: 'overdue_follow_up',
-    label: t('CHAT_LIST.SALES_QUICK_VIEWS.OVERDUE_FOLLOW_UP'),
-    buildFilters: () => [
-      {
-        attributeKey: 'status',
-        filterOperator: 'equal_to',
-        values: ['open', 'pending', 'snoozed'],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_present',
-        values: [],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_less_than',
-        values: [getNowIso()],
-      },
-    ],
-  },
-  {
-    id: 'high_value_overdue_follow_up',
-    label: t('CHAT_LIST.SALES_QUICK_VIEWS.HIGH_VALUE_OVERDUE_FOLLOW_UP'),
-    buildFilters: () => [
-      {
-        attributeKey: 'status',
-        filterOperator: 'equal_to',
-        values: ['open', 'pending', 'snoozed'],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'deal_value',
-        filterOperator: 'is_present',
-        values: [],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_present',
-        values: [],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_less_than',
-        values: [getNowIso()],
-      },
-    ],
-  },
-  {
-    id: 'follow_up_next_1h',
-    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_1H'),
-    buildFilters: () => [
-      {
-        attributeKey: 'status',
-        filterOperator: 'equal_to',
-        values: ['open', 'pending', 'snoozed'],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_greater_than',
-        values: [getNowIso()],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_less_than',
-        values: [getIsoFromNowPlusHours(1)],
-      },
-    ],
-  },
-  {
-    id: 'follow_up_next_24h',
-    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_24H'),
-    buildFilters: () => [
-      {
-        attributeKey: 'status',
-        filterOperator: 'equal_to',
-        values: ['open', 'pending', 'snoozed'],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_greater_than',
-        values: [getNowIso()],
-        queryOperator: 'and',
-      },
-      {
-        attributeKey: 'next_follow_up_at',
-        filterOperator: 'is_less_than',
-        values: [getIsoFromNowPlusHours(24)],
-      },
-    ],
-  },
-  {
     id: 'high_value_no_follow_up',
     label: t('CHAT_LIST.SALES_QUICK_VIEWS.HIGH_VALUE_NO_FOLLOW_UP'),
     filters: [
@@ -391,37 +248,6 @@ const salesQuickViews = computed(() => [
         values: [],
       },
     ],
-  },
-]);
-
-const salesStageViews = computed(() => [
-  {
-    id: 'all_stages',
-    label: t('CHAT_LIST.SALES_STAGE_FILTERS.ALL'),
-  },
-  {
-    id: 'incoming',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.INCOMING'),
-  },
-  {
-    id: 'contacted',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.CONTACTED'),
-  },
-  {
-    id: 'qualified',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.QUALIFIED'),
-  },
-  {
-    id: 'proposal',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.PROPOSAL'),
-  },
-  {
-    id: 'won',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.WON'),
-  },
-  {
-    id: 'lost',
-    label: t('CONVERSATION.SALES.DEAL_STAGE.OPTIONS.LOST'),
   },
 ]);
 
@@ -643,7 +469,6 @@ function fetchSavedFilteredConversations(payload) {
 function onApplyFilter(payload) {
   payload = useSnakeCase(payload);
   activeSalesQuickView.value = '';
-  activeSalesStage.value = 'all_stages';
   resetBulkActions();
   foldersQuery.value = filterQueryGenerator(payload);
   store.dispatch('conversationPage/reset');
@@ -799,7 +624,6 @@ function fetchConversations() {
 function resetAndFetchData() {
   appliedFilter.value = [];
   activeSalesQuickView.value = 'all_sales';
-  activeSalesStage.value = 'all_stages';
   resetBulkActions();
   store.dispatch('conversationPage/reset');
   store.dispatch('emptyAllConversations');
@@ -853,35 +677,41 @@ function onBasicFilterChange(value, type) {
     activeStatus.value = value;
   } else {
     activeSortBy.value = value;
-    if (route.name === 'home') {
-      const nextQuery = { ...route.query };
-      if (value === wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC) {
-        delete nextQuery.sales_sort;
-      } else {
-        nextQuery.sales_sort = value;
-      }
-      router.replace({ query: nextQuery });
-    }
   }
   resetAndFetchData();
 }
 
+function applySalesQuickView(view) {
+  activeSalesQuickView.value = view.id;
+  if (view.id === 'all_sales') {
+    resetAndFetchData();
+    return;
+  }
+
+  const filters = JSON.parse(JSON.stringify(view.filters));
+  const snakeFilters = useSnakeCase(filters);
+  appliedFilter.value = filters;
+
+  resetBulkActions();
+  foldersQuery.value = filterQueryGenerator(snakeFilters);
+  store.dispatch('conversationPage/reset');
+  store.dispatch('emptyAllConversations');
+  store.dispatch('setConversationFilters', snakeFilters);
+  fetchFilteredConversations(filters);
+}
+
 function applySalesContextFilters() {
-  const activeViewId =
-    props.salesQuickView || activeSalesQuickView.value || 'all_sales';
+  const activeViewId = props.salesQuickView || 'all_sales';
   const activeAgentId = Number(props.salesAgentId || 0);
   const activeTeamId = Number(props.salesTeamId || 0);
-  const activeStageId = props.salesStageId || activeSalesStage.value;
   const quickView =
     salesQuickViews.value.find(item => item.id === activeViewId) ||
     salesQuickViews.value.find(item => item.id === 'all_sales');
 
-  let quickViewFilters = [];
-  if (quickView?.id && quickView.id !== 'all_sales') {
-    quickViewFilters = quickView.buildFilters
-      ? quickView.buildFilters()
-      : JSON.parse(JSON.stringify(quickView.filters || []));
-  }
+  const quickViewFilters =
+    quickView?.id && quickView.id !== 'all_sales'
+      ? JSON.parse(JSON.stringify(quickView.filters || []))
+      : [];
 
   const agentFilter = activeAgentId
     ? [
@@ -906,27 +736,7 @@ function applySalesContextFilters() {
       ]
     : [];
 
-  const stageFilter =
-    activeStageId && activeStageId !== 'all_stages'
-      ? [
-          {
-            attributeKey: 'deal_stage',
-            filterOperator: 'equal_to',
-            values: [activeStageId],
-            queryOperator:
-              quickViewFilters.length || agentFilter.length || teamFilter.length
-                ? 'and'
-                : undefined,
-          },
-        ]
-      : [];
-
-  const combinedFilters = [
-    ...quickViewFilters,
-    ...agentFilter,
-    ...teamFilter,
-    ...stageFilter,
-  ];
+  const combinedFilters = [...quickViewFilters, ...agentFilter, ...teamFilter];
   activeSalesQuickView.value = quickView?.id || 'all_sales';
 
   if (!combinedFilters.length) {
@@ -942,24 +752,6 @@ function applySalesContextFilters() {
   store.dispatch('emptyAllConversations');
   store.dispatch('setConversationFilters', snakeFilters);
   fetchFilteredConversations(combinedFilters);
-}
-
-function applySalesQuickView(view) {
-  activeSalesQuickView.value = view.id;
-  applySalesContextFilters();
-}
-
-function applySalesStageView(stageId) {
-  const normalizedStageId = stageId || 'all_stages';
-  activeSalesStage.value = normalizedStageId;
-  const nextQuery = { ...route.query };
-  if (normalizedStageId === 'all_stages') {
-    delete nextQuery.sales_stage;
-  } else {
-    nextQuery.sales_stage = normalizedStageId;
-  }
-  router.replace({ query: nextQuery });
-  applySalesContextFilters();
 }
 
 function openLastSavedItemInFolder() {
@@ -1182,12 +974,8 @@ useEmitter('fetch_conversation_stats', () => {
 onMounted(() => {
   store.dispatch('setChatListFilters', conversationFilters.value);
   setFiltersFromUISettings();
-  if (props.salesSortBy) {
-    activeSortBy.value = props.salesSortBy;
-  }
   store.dispatch('setChatStatusFilter', activeStatus.value);
   store.dispatch('setChatSortFilter', activeSortBy.value);
-  activeSalesStage.value = props.salesStageId || 'all_stages';
   resetAndFetchData();
   applySalesContextFilters();
   if (hasActiveFolders.value) {
@@ -1248,21 +1036,8 @@ watch(
     computed(() => props.salesQuickView),
     computed(() => props.salesAgentId),
     computed(() => props.salesTeamId),
-    computed(() => props.salesStageId),
   ],
   () => applySalesContextFilters()
-);
-
-watch(
-  computed(() => props.salesSortBy),
-  sortBy => {
-    const nextSortBy =
-      sortBy || wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC;
-    if (activeSortBy.value === nextSortBy) return;
-    activeSortBy.value = nextSortBy;
-    store.dispatch('setChatSortFilter', nextSortBy);
-    applySalesContextFilters();
-  }
 );
 
 watch(activeFolder, (newVal, oldVal) => {
@@ -1352,25 +1127,6 @@ watch(conversationFilters, (newVal, oldVal) => {
         @click="applySalesQuickView(view)"
       >
         {{ view.label }}
-      </button>
-    </div>
-    <div
-      v-if="!hasActiveFolders"
-      class="px-3 py-2 border-b border-n-weak/50 flex flex-wrap gap-1"
-    >
-      <button
-        v-for="stage in salesStageViews"
-        :key="stage.id"
-        type="button"
-        class="px-2 py-1 rounded-md text-xs border transition-colors"
-        :class="
-          activeSalesStage === stage.id
-            ? 'border-n-brand text-n-brand bg-n-alpha-2'
-            : 'border-n-weak text-n-slate-11 hover:bg-n-alpha-2'
-        "
-        @click="applySalesStageView(stage.id)"
-      >
-        {{ stage.label }}
       </button>
     </div>
 

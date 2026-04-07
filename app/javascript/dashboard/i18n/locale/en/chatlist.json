@@ -79,12 +79,6 @@
       },
       "priority_desc_created_at_asc": {
         "TEXT": "Priority: Highest first, Created: Oldest first"
-      },
-      "deal_value_desc": {
-        "TEXT": "Opportunity value: Highest first"
-      },
-      "next_follow_up_at_asc": {
-        "TEXT": "Next follow-up: Nearest first"
       }
     },
     "ATTACHMENTS": {
@@ -154,23 +148,12 @@
       "COMPLETED": "Completed",
       "SCHEDULED": "Scheduled"
     },
-    "SALES_PIPELINE": {
-      "VALUE_EMPTY": "No value"
-    },
     "SALES_QUICK_VIEWS": {
       "ALL_SALES": "All sales",
       "MISSING_FOLLOW_UP": "No follow-up",
       "PROPOSAL_STAGE": "Proposal stage",
       "WON_STAGE": "Won deals",
-      "FOLLOW_UP_TODAY": "Today's follow-up",
-      "OVERDUE_FOLLOW_UP": "Overdue follow-up",
-      "HIGH_VALUE_OVERDUE_FOLLOW_UP": "High value + overdue follow-up",
-      "FOLLOW_UP_NEXT_1H": "Follow-up next 1h",
-      "FOLLOW_UP_NEXT_24H": "Follow-up next 24h",
       "HIGH_VALUE_NO_FOLLOW_UP": "Has value, no follow-up"
-    },
-    "SALES_STAGE_FILTERS": {
-      "ALL": "All stages"
     }
   }
 }

@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ -z "${RAILS_ENV:-}" || "${RAILS_ENV}" == "environment" ]]; then
-  export RAILS_ENV="production"
-else
-  export RAILS_ENV
-fi
-export RACK_ENV="${RACK_ENV:-$RAILS_ENV}"
-export NODE_ENV="${NODE_ENV:-production}"
-
 POSTGRES_STATEMENT_TIMEOUT=${POSTGRES_STATEMENT_TIMEOUT:-600s}
 export POSTGRES_STATEMENT_TIMEOUT
 
