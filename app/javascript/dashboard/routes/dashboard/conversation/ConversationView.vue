@@ -381,6 +381,13 @@ export default {
         !this.isActiveSalesViewDefault
       );
     },
+    canRestoreSalesHomeDefaults() {
+      return (
+        this.canManageTeamScope &&
+        this.isSalesHomeDefaultsConfigured &&
+        !this.isActiveSalesViewDefault
+      );
+    },
     hasActiveSalesAgent() {
       return this.effectiveSalesAgentId > 0;
     },
@@ -448,6 +455,18 @@ export default {
       if (this.activeSalesStageId === 'all_stages') return '';
       return this.getDealStageLabel(this.activeSalesStageId);
     },
+    activeSalesSortLabel() {
+      if (!this.activeSalesSortBy) return '';
+      const sortMap = {
+        deal_value_desc: this.$t(
+          'CHAT_LIST.SORT_ORDER_ITEMS.deal_value_desc.TEXT'
+        ),
+        next_follow_up_at_asc: this.$t(
+          'CHAT_LIST.SORT_ORDER_ITEMS.next_follow_up_at_asc.TEXT'
+        ),
+      };
+      return sortMap[this.activeSalesSortBy] || '';
+    },
   },
   watch: {
     conversationId() {
@@ -457,9 +476,11 @@ export default {
       this.fetchSalesOverviewIfRequired();
     },
     '$route.query.sales_agent_id'() {
+      if (this.sanitizeSalesScopeFilters()) return;
       this.fetchSalesOverviewIfRequired();
     },
     '$route.query.sales_team_id'() {
+      if (this.sanitizeSalesScopeFilters()) return;
       this.fetchSalesOverviewIfRequired();
     },
     '$route.query.sales_stage'() {
@@ -467,6 +488,7 @@ export default {
     },
     '$route.name': {
       handler() {
+        if (this.sanitizeSalesScopeFilters()) return;
         if (this.ensureDefaultSalesView()) return;
         this.fetchSalesOverviewIfRequired();
       },
@@ -566,6 +588,40 @@ export default {
         sales_home_default_sort: null,
       });
     },
+    applyPreferredSalesHomeDefaults() {
+      if (!this.canManageTeamScope || !this.isSalesHomeDefaultsConfigured) {
+        return;
+      }
+
+      const preferredView =
+        this.preferredSalesQuickView || 'high_value_overdue_follow_up';
+      const preferredStage = this.preferredSalesStageId || 'all_stages';
+      const preferredSort = this.preferredSalesSortBy || '';
+
+      const nextQuery = { ...this.$route.query };
+      if (preferredView && preferredView !== 'all_sales') {
+        nextQuery.sales_view = preferredView;
+      } else {
+        delete nextQuery.sales_view;
+      }
+
+      if (preferredStage !== 'all_stages') {
+        nextQuery.sales_stage = preferredStage;
+      } else {
+        delete nextQuery.sales_stage;
+      }
+
+      if (
+        preferredSort &&
+        preferredSort !== wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC
+      ) {
+        nextQuery.sales_sort = preferredSort;
+      } else {
+        delete nextQuery.sales_sort;
+      }
+
+      this.$router.replace({ query: nextQuery });
+    },
     onConversationLoad() {
       this.fetchConversationIfUnavailable();
     },
@@ -644,8 +700,66 @@ export default {
         maximumFractionDigits: 0,
       }).format(Number(value) || 0);
     },
+    sanitizeSalesScopeFilters() {
+      if (!this.isHomeRoute) return false;
+
+      const query = this.$route.query || {};
+      const nextQuery = { ...query };
+      let hasChanges = false;
+
+      if (!this.canManageAgentFilter && nextQuery.sales_agent_id) {
+        delete nextQuery.sales_agent_id;
+        hasChanges = true;
+      }
+
+      const selectedAgentId = Number(nextQuery.sales_agent_id || 0);
+      if (this.canManageAgentFilter && nextQuery.sales_agent_id) {
+        const knownAgentIds = (this.selectableSalesAgents || []).map(agent =>
+          Number(agent.id)
+        );
+        const hasKnownAgents = knownAgentIds.length > 0;
+        const isValidAgent =
+          selectedAgentId > 0 &&
+          (!hasKnownAgents || knownAgentIds.includes(selectedAgentId));
+
+        if (!isValidAgent) {
+          delete nextQuery.sales_agent_id;
+          hasChanges = true;
+        }
+      }
+
+      if (!this.canManageTeamScope && nextQuery.sales_team_id) {
+        delete nextQuery.sales_team_id;
+        hasChanges = true;
+      }
+
+      const selectedTeamId = Number(nextQuery.sales_team_id || 0);
+      if (this.canManageTeamScope && nextQuery.sales_team_id) {
+        const memberTeamIds = this.memberSalesTeams.map(team =>
+          Number(team.id)
+        );
+        const hasKnownTeams = memberTeamIds.length > 0;
+        const isTeamAllowed =
+          selectedTeamId > 0 &&
+          (this.canViewGlobalSales ||
+            !hasKnownTeams ||
+            memberTeamIds.includes(selectedTeamId));
+
+        if (!isTeamAllowed) {
+          delete nextQuery.sales_team_id;
+          hasChanges = true;
+        }
+      }
+
+      if (hasChanges) {
+        this.$router.replace({ query: nextQuery });
+      }
+
+      return hasChanges;
+    },
     async fetchSalesOverviewIfRequired() {
       if (!this.isHomeRoute) return;
+      if (this.sanitizeSalesScopeFilters()) return;
       await this.fetchSalesOverview();
     },
     ensureDefaultSalesView() {
@@ -744,9 +858,6 @@ export default {
     },
     selectSalesQuickView(quickViewId) {
       const nextQuery = { ...this.$route.query };
-      if (this.canManageAgentFilter) {
-        delete nextQuery.sales_agent_id;
-      }
       this.$router.replace({
         query: {
           ...nextQuery,
@@ -812,6 +923,11 @@ export default {
     clearSalesStage() {
       const nextQuery = { ...this.$route.query };
       delete nextQuery.sales_stage;
+      this.$router.replace({ query: nextQuery });
+    },
+    clearSalesSort() {
+      const nextQuery = { ...this.$route.query };
+      delete nextQuery.sales_sort;
       this.$router.replace({ query: nextQuery });
     },
     getDealStageLabel(stage) {
@@ -995,6 +1111,17 @@ export default {
         <span class="text-xs text-n-slate-10">
           {{ $t('CONVERSATION.SALES_HOME.ACTIVE_FILTERS_LABEL') }}
         </span>
+        <button
+          v-if="canRestoreSalesHomeDefaults"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-n-brand/40 bg-n-brand/10 text-xs text-n-brand hover:brightness-110"
+          @click="applyPreferredSalesHomeDefaults"
+        >
+          <span>{{ $t('CONVERSATION.SALES_HOME.DEFAULTS_CHIP') }}</span>
+          <span class="text-[10px] font-medium">
+            {{ $t('CONVERSATION.SALES_HOME.APPLY_DEFAULTS_ACTION') }}
+          </span>
+        </button>
         <span
           v-if="hasActiveSalesQuickView"
           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-n-weak bg-n-alpha-2 text-xs text-n-slate-12"
@@ -1049,6 +1176,23 @@ export default {
             type="button"
             class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
             @click="clearSalesTeam"
+          >
+            {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
+          </button>
+        </span>
+        <span
+          v-if="activeSalesSortBy && activeSalesSortLabel"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-n-weak bg-n-alpha-2 text-xs text-n-slate-12"
+        >
+          {{
+            $t('CONVERSATION.SALES_HOME.ACTIVE_SORT_CHIP', {
+              sort: activeSalesSortLabel,
+            })
+          }}
+          <button
+            type="button"
+            class="inline-flex h-4 w-4 items-center justify-center rounded-full text-n-slate-11 hover:bg-n-alpha-3 hover:text-n-slate-12"
+            @click="clearSalesSort"
           >
             {{ $t('CONVERSATION.SALES_HOME.CLOSE_CHIP') }}
           </button>

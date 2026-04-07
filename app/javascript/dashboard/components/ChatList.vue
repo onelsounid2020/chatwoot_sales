@@ -946,7 +946,25 @@ function applySalesContextFilters() {
 
 function applySalesQuickView(view) {
   activeSalesQuickView.value = view.id;
+  if (route.name === 'home') {
+    const nextQuery = { ...route.query };
+    if (view.id === 'all_sales') {
+      delete nextQuery.sales_view;
+    } else {
+      nextQuery.sales_view = view.id;
+    }
+    router.replace({ query: nextQuery });
+    return;
+  }
   applySalesContextFilters();
+}
+
+function applySalesQuickViewById(viewId) {
+  const selectedView =
+    salesQuickViews.value.find(view => view.id === viewId) ||
+    salesQuickViews.value.find(view => view.id === 'all_sales');
+  if (!selectedView) return;
+  applySalesQuickView(selectedView);
 }
 
 function applySalesStageView(stageId) {
@@ -1337,41 +1355,78 @@ watch(conversationFilters, (newVal, oldVal) => {
     />
     <div
       v-if="!hasActiveFolders"
-      class="px-3 py-2 border-b border-n-weak flex flex-wrap gap-1"
+      class="px-3 py-2 border-b border-n-weak/50 grid grid-cols-2 gap-2"
     >
-      <button
-        v-for="view in salesQuickViews"
-        :key="view.id"
-        type="button"
-        class="px-2 py-1 rounded-md text-xs border transition-colors"
-        :class="
-          activeSalesQuickView === view.id
-            ? 'border-n-brand text-n-brand bg-n-alpha-2'
-            : 'border-n-weak text-n-slate-11 hover:bg-n-alpha-2'
-        "
-        @click="applySalesQuickView(view)"
-      >
-        {{ view.label }}
-      </button>
-    </div>
-    <div
-      v-if="!hasActiveFolders"
-      class="px-3 py-2 border-b border-n-weak/50 flex flex-wrap gap-1"
-    >
-      <button
-        v-for="stage in salesStageViews"
-        :key="stage.id"
-        type="button"
-        class="px-2 py-1 rounded-md text-xs border transition-colors"
-        :class="
-          activeSalesStage === stage.id
-            ? 'border-n-brand text-n-brand bg-n-alpha-2'
-            : 'border-n-weak text-n-slate-11 hover:bg-n-alpha-2'
-        "
-        @click="applySalesStageView(stage.id)"
-      >
-        {{ stage.label }}
-      </button>
+      <div class="flex flex-col gap-1">
+        <span class="text-[11px] text-n-slate-10">
+          {{ $t('CHAT_LIST.SALES_FILTER_LABELS.QUICK_VIEW') }}
+        </span>
+        <div
+          class="relative inline-flex h-8 items-center rounded-md border border-n-weak bg-n-solid-1"
+        >
+          <select
+            class="h-full w-full appearance-none bg-transparent pl-2 pr-6 text-xs text-n-slate-12 focus:outline-none"
+            :value="activeSalesQuickView"
+            :aria-label="$t('CHAT_LIST.SALES_FILTER_LABELS.QUICK_VIEW')"
+            @change="applySalesQuickViewById($event.target.value)"
+          >
+            <option
+              v-for="view in salesQuickViews"
+              :key="view.id"
+              :value="view.id"
+            >
+              {{ view.label }}
+            </option>
+          </select>
+          <svg
+            class="pointer-events-none absolute right-2 h-3 w-3 text-n-slate-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.937a.75.75 0 1 1 1.08 1.04l-4.25 4.51a.75.75 0 0 1-1.08 0l-4.25-4.51a.75.75 0 0 1 .02-1.06Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-[11px] text-n-slate-10">
+          {{ $t('CHAT_LIST.SALES_FILTER_LABELS.STAGE') }}
+        </span>
+        <div
+          class="relative inline-flex h-8 items-center rounded-md border border-n-weak bg-n-solid-1"
+        >
+          <select
+            class="h-full w-full appearance-none bg-transparent pl-2 pr-6 text-xs text-n-slate-12 focus:outline-none"
+            :value="activeSalesStage"
+            :aria-label="$t('CHAT_LIST.SALES_FILTER_LABELS.STAGE')"
+            @change="applySalesStageView($event.target.value)"
+          >
+            <option
+              v-for="stage in salesStageViews"
+              :key="stage.id"
+              :value="stage.id"
+            >
+              {{ stage.label }}
+            </option>
+          </select>
+          <svg
+            class="pointer-events-none absolute right-2 h-3 w-3 text-n-slate-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.937a.75.75 0 1 1 1.08 1.04l-4.25 4.51a.75.75 0 0 1-1.08 0l-4.25-4.51a.75.75 0 0 1 .02-1.06Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
 
     <p
