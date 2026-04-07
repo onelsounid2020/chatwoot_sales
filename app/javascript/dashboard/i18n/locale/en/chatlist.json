@@ -171,6 +171,10 @@
     },
     "SALES_STAGE_FILTERS": {
       "ALL": "All stages"
+    },
+    "SALES_FILTER_LABELS": {
+      "QUICK_VIEW": "Quick view",
+      "STAGE": "Stage"
     }
   }
 }

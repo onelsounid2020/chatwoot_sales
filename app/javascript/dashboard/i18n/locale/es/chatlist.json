@@ -171,6 +171,10 @@
     },
     "SALES_STAGE_FILTERS": {
       "ALL": "Todas las etapas"
+    },
+    "SALES_FILTER_LABELS": {
+      "QUICK_VIEW": "Vista rápida",
+      "STAGE": "Etapa"
     }
   }
 }
