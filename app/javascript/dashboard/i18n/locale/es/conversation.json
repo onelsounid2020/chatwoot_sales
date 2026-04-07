@@ -286,9 +286,12 @@
       },
       "ACTIONS": {
         "CLEAR_FILTER": "Limpiar filtro",
+        "SAVE_DEFAULT_VIEW": "Guardar vista y filtros predeterminados",
+        "RESET_DEFAULT_VIEW": "Restablecer predeterminados",
         "PIPELINE": "Ver pipeline",
         "REPORTS": "Abrir reporte de ventas"
       },
+      "DEFAULT_VIEW_BADGE": "Predeterminada",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Oportunidades abiertas",
         "STALE_OPPORTUNITIES": "Oportunidades vencidas",

@@ -190,6 +190,25 @@ const hasAppliedFiltersOrActiveFolders = computed(() => {
   return hasAppliedFilters.value || hasActiveFolders.value;
 });
 
+const getStartOfTodayIso = () => {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date.toISOString();
+};
+
+const getStartOfTomorrowIso = () => {
+  const date = new Date();
+  date.setHours(24, 0, 0, 0);
+  return date.toISOString();
+};
+
+const getNowIso = () => new Date().toISOString();
+
+const getIsoFromNowPlusHours = hours => {
+  const date = new Date(Date.now() + hours * 60 * 60 * 1000);
+  return date.toISOString();
+};
+
 const salesQuickViews = computed(() => [
   {
     id: 'all_sales',
@@ -232,6 +251,127 @@ const salesQuickViews = computed(() => [
         attributeKey: 'deal_stage',
         filterOperator: 'equal_to',
         values: ['won'],
+      },
+    ],
+  },
+  {
+    id: 'follow_up_today',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_TODAY'),
+    buildFilters: () => [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_greater_than',
+        values: [getStartOfTodayIso()],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_less_than',
+        values: [getStartOfTomorrowIso()],
+      },
+    ],
+  },
+  {
+    id: 'overdue_follow_up',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.OVERDUE_FOLLOW_UP'),
+    buildFilters: () => [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_present',
+        values: [],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_less_than',
+        values: [getNowIso()],
+      },
+    ],
+  },
+  {
+    id: 'high_value_overdue_follow_up',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.HIGH_VALUE_OVERDUE_FOLLOW_UP'),
+    buildFilters: () => [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'deal_value',
+        filterOperator: 'is_present',
+        values: [],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_present',
+        values: [],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_less_than',
+        values: [getNowIso()],
+      },
+    ],
+  },
+  {
+    id: 'follow_up_next_1h',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_1H'),
+    buildFilters: () => [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_greater_than',
+        values: [getNowIso()],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_less_than',
+        values: [getIsoFromNowPlusHours(1)],
+      },
+    ],
+  },
+  {
+    id: 'follow_up_next_24h',
+    label: t('CHAT_LIST.SALES_QUICK_VIEWS.FOLLOW_UP_NEXT_24H'),
+    buildFilters: () => [
+      {
+        attributeKey: 'status',
+        filterOperator: 'equal_to',
+        values: ['open', 'pending', 'snoozed'],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_greater_than',
+        values: [getNowIso()],
+        queryOperator: 'and',
+      },
+      {
+        attributeKey: 'next_follow_up_at',
+        filterOperator: 'is_less_than',
+        values: [getIsoFromNowPlusHours(24)],
       },
     ],
   },
@@ -736,10 +876,12 @@ function applySalesContextFilters() {
     salesQuickViews.value.find(item => item.id === activeViewId) ||
     salesQuickViews.value.find(item => item.id === 'all_sales');
 
-  const quickViewFilters =
-    quickView?.id && quickView.id !== 'all_sales'
-      ? JSON.parse(JSON.stringify(quickView.filters || []))
-      : [];
+  let quickViewFilters = [];
+  if (quickView?.id && quickView.id !== 'all_sales') {
+    quickViewFilters = quickView.buildFilters
+      ? quickView.buildFilters()
+      : JSON.parse(JSON.stringify(quickView.filters || []));
+  }
 
   const agentFilter = activeAgentId
     ? [

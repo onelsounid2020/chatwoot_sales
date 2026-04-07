@@ -162,6 +162,11 @@
       "MISSING_FOLLOW_UP": "Sin seguimiento",
       "PROPOSAL_STAGE": "En propuesta",
       "WON_STAGE": "Ganadas",
+      "FOLLOW_UP_TODAY": "Seguimiento de hoy",
+      "OVERDUE_FOLLOW_UP": "Seguimiento vencido",
+      "HIGH_VALUE_OVERDUE_FOLLOW_UP": "Alto valor y seguimiento vencido",
+      "FOLLOW_UP_NEXT_1H": "Seguimiento próxima 1h",
+      "FOLLOW_UP_NEXT_24H": "Seguimiento próximas 24h",
       "HIGH_VALUE_NO_FOLLOW_UP": "Con valor y sin seguimiento"
     },
     "SALES_STAGE_FILTERS": {

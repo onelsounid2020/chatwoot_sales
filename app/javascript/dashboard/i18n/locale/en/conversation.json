@@ -286,9 +286,12 @@
       },
       "ACTIONS": {
         "CLEAR_FILTER": "Clear filter",
+        "SAVE_DEFAULT_VIEW": "Save default view and filters",
+        "RESET_DEFAULT_VIEW": "Reset defaults",
         "PIPELINE": "View pipeline",
         "REPORTS": "Open sales report"
       },
+      "DEFAULT_VIEW_BADGE": "Default",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Open opportunities",
         "STALE_OPPORTUNITIES": "Overdue opportunities",

@@ -162,6 +162,11 @@
       "MISSING_FOLLOW_UP": "No follow-up",
       "PROPOSAL_STAGE": "Proposal stage",
       "WON_STAGE": "Won deals",
+      "FOLLOW_UP_TODAY": "Today's follow-up",
+      "OVERDUE_FOLLOW_UP": "Overdue follow-up",
+      "HIGH_VALUE_OVERDUE_FOLLOW_UP": "High value + overdue follow-up",
+      "FOLLOW_UP_NEXT_1H": "Follow-up next 1h",
+      "FOLLOW_UP_NEXT_24H": "Follow-up next 24h",
       "HIGH_VALUE_NO_FOLLOW_UP": "Has value, no follow-up"
     },
     "SALES_STAGE_FILTERS": {
