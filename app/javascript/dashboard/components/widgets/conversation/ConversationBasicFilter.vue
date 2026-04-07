@@ -91,6 +91,14 @@ const chatSortOptions = computed(() => [
     value: 'priority_desc_created_at_asc',
   },
   {
+    label: t('CHAT_LIST.SORT_ORDER_ITEMS.deal_value_desc.TEXT'),
+    value: 'deal_value_desc',
+  },
+  {
+    label: t('CHAT_LIST.SORT_ORDER_ITEMS.next_follow_up_at_asc.TEXT'),
+    value: 'next_follow_up_at_asc',
+  },
+  {
     label: t('CHAT_LIST.SORT_ORDER_ITEMS.waiting_since_asc.TEXT'),
     value: 'waiting_since_asc',
   },

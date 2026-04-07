@@ -245,6 +245,7 @@
       "ACTIVE_VIEW_CHIP": "Vista: {view}",
       "ACTIVE_AGENT_CHIP": "Agente: {agent}",
       "ACTIVE_TEAM_CHIP": "Equipo: {team}",
+      "ACTIVE_STAGE_CHIP": "Etapa: {stage}",
       "SCOPE_LABEL": "Alcance: {scope}",
       "SCOPE": {
         "OWN": "Mi cartera",
@@ -285,9 +286,12 @@
       },
       "ACTIONS": {
         "CLEAR_FILTER": "Limpiar filtro",
+        "SAVE_DEFAULT_VIEW": "Guardar vista y filtros predeterminados",
+        "RESET_DEFAULT_VIEW": "Restablecer predeterminados",
         "PIPELINE": "Ver pipeline",
         "REPORTS": "Abrir reporte de ventas"
       },
+      "DEFAULT_VIEW_BADGE": "Predeterminada",
       "CARDS": {
         "OPEN_OPPORTUNITIES": "Oportunidades abiertas",
         "STALE_OPPORTUNITIES": "Oportunidades vencidas",
