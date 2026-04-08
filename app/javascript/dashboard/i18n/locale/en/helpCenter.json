@@ -579,6 +579,18 @@
           "TITLE": "There are no articles in this category",
           "SUBTITLE": "Articles in this category will appear here"
         }
+      },
+      "INSIGHTS": {
+        "SCOPE": "Scope: {locale} · {category}",
+        "LOW_FEEDBACK_ARTICLES": {
+          "TITLE": "Articles with low helpful score",
+          "SUBTITLE": "Articles that need content improvements.",
+          "METRIC": "{score}% · {votes} votes"
+        },
+        "UNANSWERED_SEARCHES": {
+          "TITLE": "Searches with no results",
+          "SUBTITLE": "Terms users are searching for but cannot find."
+        }
       }
     },
     "CATEGORY_PAGE": {
@@ -872,6 +884,17 @@
         },
         "ARTICLE_TEXT_COLOR": {
           "LABEL": "Article text color"
+        },
+        "ARTICLE_TITLE_COLOR": {
+          "LABEL": "Article title color"
+        },
+        "ARTICLE_TITLE_ALIGN": {
+          "LABEL": "Article title alignment",
+          "PLACEHOLDER": "Choose title alignment",
+          "OPTIONS": {
+            "LEFT": "Left",
+            "CENTER": "Center"
+          }
         },
         "HERO_BG_COLOR": {
           "LABEL": "Hero background color"

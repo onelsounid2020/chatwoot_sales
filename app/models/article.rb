@@ -103,7 +103,16 @@ class Article < ApplicationRecord
       params[:category_slug]
     ).search_by_locale(params[:locale]).search_by_author(params[:author_id]).search_by_status(params[:status])
 
-    records = records.text_search(params[:query]) if params[:query].present?
+    if params[:query].present?
+      query = params[:query].to_s.strip
+      text_search_results = records.text_search(query)
+      records = apply_search_quality_rank(text_search_results)
+
+      if text_search_results.none?
+        records = fallback_search(records, query)
+      end
+    end
+
     records
   end
 
@@ -155,6 +164,37 @@ class Article < ApplicationRecord
     end
   end
 
+  def increment_feedback_reason(reason)
+    normalized_reason = reason.to_s.strip
+    return if normalized_reason.blank?
+
+    with_lock do
+      current_meta = meta.to_h.deep_stringify_keys
+      current_meta['feedback'] ||= {}
+      current_meta['feedback']['reasons'] ||= {}
+      reason_counts = current_meta['feedback']['reasons']
+      reason_counts[normalized_reason] = reason_counts.fetch(normalized_reason, 0).to_i + 1
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update_column(:meta, current_meta)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def feedback_score
+    counts = feedback_counts
+    yes = counts[:yes].to_i
+    no = counts[:no].to_i
+    total = yes + no
+    return 100.0 if total.zero?
+
+    ((yes.to_f / total) * 100).round(1)
+  end
+
+  def feedback_reasons
+    meta.to_h.deep_stringify_keys.dig('feedback', 'reasons').to_h
+  end
+
   def self.update_positions(portal:, positions_hash:)
     return if positions_hash.blank?
 
@@ -166,6 +206,34 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def self.fallback_search(records, query)
+    downcased_query = query.to_s.downcase
+    terms = downcased_query.split(/\s+/).uniq
+    expanded_terms = (terms + synonym_expansions_for(terms)).uniq
+    return records if expanded_terms.blank?
+
+    sql_fragments = []
+    sql_params = {}
+    expanded_terms.each_with_index do |term, index|
+      param_key = "term_#{index}".to_sym
+      sql_params[param_key] = "%#{ActiveRecord::Base.sanitize_sql_like(term)}%"
+      sql_fragments << "LOWER(articles.title) LIKE :#{param_key}"
+      sql_fragments << "LOWER(COALESCE(articles.description, '')) LIKE :#{param_key}"
+      sql_fragments << "LOWER(COALESCE(articles.content, '')) LIKE :#{param_key}"
+    end
+
+    records.where(sql_fragments.join(' OR '), sql_params)
+           .order(Arel.sql('COALESCE(articles.views, 0) DESC, articles.updated_at DESC'))
+  end
+
+  def self.synonym_expansions_for(terms)
+    terms.flat_map { |term| SEARCH_SYNONYMS.fetch(term, []) }
+  end
+
+  def self.apply_search_quality_rank(records)
+    records.order(Arel.sql('pg_search_rank DESC, COALESCE(articles.views, 0) DESC, articles.updated_at DESC'))
+  end
 
   def category_id_changed_action
     # We need to update the position of the article in the new category
@@ -218,3 +286,13 @@ class Article < ApplicationRecord
   end
 end
 Article.include_mod_with('Concerns::Article')
+  SEARCH_SYNONYMS = {
+    'precio' => %w[valor costo cotizacion quote budget],
+    'cotizacion' => %w[precio quote proposal presupuesto],
+    'whatsapp' => %w[wsp whatsapp web],
+    'factura' => %w[invoice billing cobro pago],
+    'integracion' => %w[integration api webhook],
+    'error' => %w[falla problema issue bug],
+    'login' => %w[acceso ingresar sesion],
+    'password' => %w[contrasena clave]
+  }.freeze

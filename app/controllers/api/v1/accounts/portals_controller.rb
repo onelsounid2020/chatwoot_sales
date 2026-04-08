@@ -85,12 +85,12 @@ class Api::V1::Accounts::PortalsController < Api::V1::Accounts::BaseController
 
   def portal_theme_params
     params.require(:portal).permit(
-      :header_bg_color, :header_text_color, :home_bg_color, :article_bg_color, :article_text_color,
+      :header_bg_color, :header_text_color, :home_bg_color, :article_bg_color, :article_text_color, :article_title_color,
       :hero_bg_color, :hero_title_color, :hero_subtitle_color,
       :card_bg_color, :card_border_color, :card_title_color, :card_text_color,
       :visual_template, :home_layout_mode, :typography_preset, :content_width,
       :density_mode, :card_style, :text_align, :header_style, :advanced_section_spacing,
-      :advanced_card_radius, :advanced_shadow_style, :hero_style,
+      :advanced_card_radius, :advanced_shadow_style, :hero_style, :article_title_align,
       :category_columns, :article_link_style
     ).to_h.compact
   end

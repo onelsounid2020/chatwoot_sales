@@ -57,6 +57,41 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @published_articles_count = @articles.published.count
     @draft_articles_count = @articles.draft.count
     @archived_articles_count = @articles.archived.count
+    @feedback_insights = low_feedback_articles(
+      limit: 5,
+      locale: list_params[:locale],
+      category_slug: list_params[:category_slug]
+    )
+    @unanswered_searches = HelpCenterSearchTerm.top_unanswered(
+      portal: @portal,
+      locale: list_params[:locale],
+      category_slug: list_params[:category_slug],
+      limit: 5
+    )
+  end
+
+  def low_feedback_articles(limit:, locale:, category_slug:)
+    published_articles = @portal_articles.published
+    published_articles = published_articles.where(locale: locale) if locale.present?
+    published_articles = published_articles.search_by_category_slug(category_slug) if category_slug.present?
+    published_articles = published_articles.order(updated_at: :desc).limit(200)
+
+    published_articles.filter_map do |article|
+      counts = article.feedback_counts
+      yes_count = counts[:yes].to_i
+      no_count = counts[:no].to_i
+      total_votes = yes_count + no_count
+      next if total_votes < 3
+
+      {
+        id: article.id,
+        title: article.title,
+        score: article.feedback_score,
+        total_votes: total_votes,
+        yes_count: yes_count,
+        no_count: no_count
+      }
+    end.sort_by { |entry| [entry[:score], -entry[:total_votes]] }.first(limit)
   end
 
   def fetch_article

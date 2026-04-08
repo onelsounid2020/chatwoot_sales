@@ -40,6 +40,7 @@ const DEFAULT_THEME_COLORS = {
   homeBgColor: '#ffffff',
   articleBgColor: '#ffffff',
   articleTextColor: '#0f172a',
+  articleTitleColor: '#0f172a',
   heroBgColor: '#f8fafc',
   heroTitleColor: '#0f172a',
   heroSubtitleColor: '#475569',
@@ -55,6 +56,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#ffffff',
     articleBgColor: '#ffffff',
     articleTextColor: '#0f172a',
+    articleTitleColor: '#0f172a',
     heroBgColor: '#f8fafc',
     heroTitleColor: '#0f172a',
     heroSubtitleColor: '#475569',
@@ -69,6 +71,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#f0f9ff',
     articleBgColor: '#ffffff',
     articleTextColor: '#0c4a6e',
+    articleTitleColor: '#0c4a6e',
     heroBgColor: '#dbeafe',
     heroTitleColor: '#0c4a6e',
     heroSubtitleColor: '#155e75',
@@ -83,6 +86,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#fffbeb',
     articleBgColor: '#ffffff',
     articleTextColor: '#78350f',
+    articleTitleColor: '#78350f',
     heroBgColor: '#fef3c7',
     heroTitleColor: '#78350f',
     heroSubtitleColor: '#92400e',
@@ -97,6 +101,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#0f172a',
     articleBgColor: '#111827',
     articleTextColor: '#e5e7eb',
+    articleTitleColor: '#f8fafc',
     heroBgColor: '#1e293b',
     heroTitleColor: '#f8fafc',
     heroSubtitleColor: '#cbd5e1',
@@ -111,6 +116,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#18181b',
     articleBgColor: '#1f1f23',
     articleTextColor: '#e4e4e7',
+    articleTitleColor: '#fafafa',
     heroBgColor: '#27272a',
     heroTitleColor: '#fafafa',
     heroSubtitleColor: '#d4d4d8',
@@ -125,6 +131,7 @@ const THEME_PRESET_VALUES = {
     homeBgColor: '#fff7ed',
     articleBgColor: '#ffffff',
     articleTextColor: '#7c2d12',
+    articleTitleColor: '#7c2d12',
     heroBgColor: '#7c2d12',
     heroTitleColor: '#fffbeb',
     heroSubtitleColor: '#fde68a',
@@ -153,6 +160,7 @@ const ADVANCED_SHADOW_STYLE_VALUES = ['none', 'soft', 'medium'];
 const HERO_STYLE_VALUES = ['minimal', 'soft', 'spotlight'];
 const CATEGORY_COLUMNS_VALUES = ['2', '3'];
 const ARTICLE_LINK_STYLE_VALUES = ['boxed', 'minimal'];
+const ARTICLE_TITLE_ALIGN_VALUES = ['left', 'center'];
 const DESIGNER_PRESET_VALUES = [
   'balanced',
   'conversion',
@@ -168,6 +176,7 @@ const VISUAL_TEMPLATE_PRESETS = {
     homeBgColor: '#f8fafc',
     articleBgColor: '#ffffff',
     articleTextColor: '#0f172a',
+    articleTitleColor: '#0f172a',
     heroBgColor: '#e2e8f0',
     heroTitleColor: '#0f172a',
     heroSubtitleColor: '#475569',
@@ -196,6 +205,7 @@ const VISUAL_TEMPLATE_PRESETS = {
     homeBgColor: '#f5f3ff',
     articleBgColor: '#ffffff',
     articleTextColor: '#312e81',
+    articleTitleColor: '#312e81',
     heroBgColor: '#ede9fe',
     heroTitleColor: '#4c1d95',
     heroSubtitleColor: '#6d28d9',
@@ -230,6 +240,7 @@ const state = reactive({
   homeBgColor: '',
   articleBgColor: '',
   articleTextColor: '',
+  articleTitleColor: '',
   heroBgColor: '',
   heroTitleColor: '',
   heroSubtitleColor: '',
@@ -251,6 +262,7 @@ const state = reactive({
   heroStyle: '',
   categoryColumns: '',
   articleLinkStyle: '',
+  articleTitleAlign: '',
   homePageLink: '',
   liveChatWidgetInboxId: '',
   logoUrl: '',
@@ -416,6 +428,14 @@ const articleLinkStyleOptions = computed(() =>
     ),
   }))
 );
+const articleTitleAlignOptions = computed(() =>
+  ARTICLE_TITLE_ALIGN_VALUES.map(value => ({
+    value,
+    label: t(
+      `HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_TITLE_ALIGN.OPTIONS.${value.toUpperCase()}`
+    ),
+  }))
+);
 const designerPresetOptions = computed(() =>
   DESIGNER_PRESET_VALUES.map(value => ({
     value,
@@ -518,6 +538,7 @@ watch(
         homeBgColor: newVal.home_bg_color || '#ffffff',
         articleBgColor: newVal.article_bg_color || '#ffffff',
         articleTextColor: newVal.article_text_color || '#0f172a',
+        articleTitleColor: newVal.article_title_color || '#0f172a',
         heroBgColor: newVal.hero_bg_color || '#f8fafc',
         heroTitleColor: newVal.hero_title_color || '#0f172a',
         heroSubtitleColor: newVal.hero_subtitle_color || '#475569',
@@ -539,6 +560,7 @@ watch(
         heroStyle: newVal.hero_style || 'soft',
         categoryColumns: newVal.category_columns || '2',
         articleLinkStyle: newVal.article_link_style || 'boxed',
+        articleTitleAlign: newVal.article_title_align || 'left',
         homePageLink: newVal.homepage_link,
         slug: newVal.slug,
         liveChatWidgetInboxId: newVal.inbox?.id || '',
@@ -577,6 +599,7 @@ const handleUpdatePortal = () => {
     home_bg_color: state.homeBgColor,
     article_bg_color: state.articleBgColor,
     article_text_color: state.articleTextColor,
+    article_title_color: state.articleTitleColor,
     hero_bg_color: state.heroBgColor,
     hero_title_color: state.heroTitleColor,
     hero_subtitle_color: state.heroSubtitleColor,
@@ -598,6 +621,7 @@ const handleUpdatePortal = () => {
     hero_style: state.heroStyle || 'soft',
     category_columns: state.categoryColumns || '2',
     article_link_style: state.articleLinkStyle || 'boxed',
+    article_title_align: state.articleTitleAlign || 'left',
     blob_id: state.avatarBlobId,
     inbox_id: state.liveChatWidgetInboxId,
   };
@@ -658,6 +682,7 @@ const applyThemePreset = preset => {
   state.headerTextColor = presetValues.headerTextColor;
   state.articleBgColor = presetValues.articleBgColor;
   state.articleTextColor = presetValues.articleTextColor;
+  state.articleTitleColor = presetValues.articleTitleColor;
   state.heroBgColor = presetValues.heroBgColor;
   state.heroTitleColor = presetValues.heroTitleColor;
   state.heroSubtitleColor = presetValues.heroSubtitleColor;
@@ -673,6 +698,7 @@ const resetThemeColors = () => {
   state.headerTextColor = DEFAULT_THEME_COLORS.headerTextColor;
   state.articleBgColor = DEFAULT_THEME_COLORS.articleBgColor;
   state.articleTextColor = DEFAULT_THEME_COLORS.articleTextColor;
+  state.articleTitleColor = DEFAULT_THEME_COLORS.articleTitleColor;
   state.heroBgColor = DEFAULT_THEME_COLORS.heroBgColor;
   state.heroTitleColor = DEFAULT_THEME_COLORS.heroTitleColor;
   state.heroSubtitleColor = DEFAULT_THEME_COLORS.heroSubtitleColor;
@@ -696,6 +722,7 @@ const applyVisualTemplate = template => {
   state.homeBgColor = preset.homeBgColor;
   state.articleBgColor = preset.articleBgColor;
   state.articleTextColor = preset.articleTextColor;
+  state.articleTitleColor = preset.articleTitleColor;
   state.heroBgColor = preset.heroBgColor;
   state.heroTitleColor = preset.heroTitleColor;
   state.heroSubtitleColor = preset.heroSubtitleColor;
@@ -716,6 +743,7 @@ const applyVisualTemplate = template => {
   state.heroStyle = preset.heroStyle || 'soft';
   state.categoryColumns = preset.categoryColumns || '2';
   state.articleLinkStyle = preset.articleLinkStyle || 'boxed';
+  state.articleTitleAlign = preset.textAlign || 'left';
 };
 
 const applyDesignerPreset = preset => {
@@ -729,6 +757,7 @@ const applyDesignerPreset = preset => {
     state.homeBgColor = '#f8fafc';
     state.articleBgColor = '#ffffff';
     state.articleTextColor = '#0f172a';
+    state.articleTitleColor = '#0f172a';
     state.heroBgColor = '#e2e8f0';
     state.heroTitleColor = '#0f172a';
     state.heroSubtitleColor = '#475569';
@@ -748,6 +777,7 @@ const applyDesignerPreset = preset => {
     state.advancedSectionSpacing = 'regular';
     state.advancedCardRadius = 'md';
     state.advancedShadowStyle = 'soft';
+    state.articleTitleAlign = 'left';
     return;
   }
 
@@ -758,6 +788,7 @@ const applyDesignerPreset = preset => {
     state.homeBgColor = '#f5f3ff';
     state.articleBgColor = '#ffffff';
     state.articleTextColor = '#312e81';
+    state.articleTitleColor = '#312e81';
     state.heroBgColor = '#ede9fe';
     state.heroTitleColor = '#4c1d95';
     state.heroSubtitleColor = '#6d28d9';
@@ -777,6 +808,7 @@ const applyDesignerPreset = preset => {
     state.advancedSectionSpacing = 'relaxed';
     state.advancedCardRadius = 'lg';
     state.advancedShadowStyle = 'medium';
+    state.articleTitleAlign = 'center';
     return;
   }
 
@@ -793,6 +825,7 @@ const applyDesignerPreset = preset => {
     state.advancedSectionSpacing = 'relaxed';
     state.advancedCardRadius = 'lg';
     state.advancedShadowStyle = 'medium';
+    state.articleTitleAlign = 'center';
     return;
   }
 
@@ -809,6 +842,7 @@ const applyDesignerPreset = preset => {
     state.advancedSectionSpacing = 'compact';
     state.advancedCardRadius = 'sm';
     state.advancedShadowStyle = 'none';
+    state.articleTitleAlign = 'left';
     return;
   }
 
@@ -824,6 +858,7 @@ const applyDesignerPreset = preset => {
   state.advancedSectionSpacing = 'regular';
   state.advancedCardRadius = 'md';
   state.advancedShadowStyle = 'soft';
+  state.articleTitleAlign = 'left';
 };
 </script>
 
@@ -1489,6 +1524,47 @@ const applyDesignerPreset = preset => {
               </label>
               <div class="w-full max-w-[432px] justify-start">
                 <ColorPicker v-model="state.articleTextColor" />
+              </div>
+            </div>
+            <div
+              class="grid items-start justify-between w-full gap-2 md:grid-cols-[180px,minmax(0,1fr)]"
+            >
+              <label
+                class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+              >
+                {{
+                  t(
+                    'HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_TITLE_COLOR.LABEL'
+                  )
+                }}
+              </label>
+              <div class="w-full max-w-[432px] justify-start">
+                <ColorPicker v-model="state.articleTitleColor" />
+              </div>
+            </div>
+            <div
+              class="grid items-start justify-between w-full gap-2 md:grid-cols-[180px,minmax(0,1fr)]"
+            >
+              <label
+                class="text-sm font-medium whitespace-nowrap py-2.5 text-n-slate-12"
+              >
+                {{
+                  t(
+                    'HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_TITLE_ALIGN.LABEL'
+                  )
+                }}
+              </label>
+              <div class="w-full max-w-[320px]">
+                <ComboBox
+                  v-model="state.articleTitleAlign"
+                  :options="articleTitleAlignOptions"
+                  :placeholder="
+                    t(
+                      'HELP_CENTER.PORTAL_SETTINGS.FORM.ARTICLE_TITLE_ALIGN.PLACEHOLDER'
+                    )
+                  "
+                  class="[&>div>button:not(.focused)]:!outline-n-weak"
+                />
               </div>
             </div>
             <div

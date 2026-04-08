@@ -34,14 +34,17 @@ end %>
 <div id="portal-home-content" class="max-w-6xl w-full flex flex-col flex-grow mx-auto py-8 md:py-10 px-4 md:px-8 <%= section_gap %>">
   <% if home_layout_mode == 'categories_first' %>
     <%= categories_section %>
+    <%= render "public/api/v1/portals/home_highlights", portal: @portal, most_viewed_articles: @home_most_viewed_articles, recent_articles: @home_recent_articles %>
     <%= featured_section %>
     <%= uncategorized_section %>
   <% elsif home_layout_mode == 'featured_focus' %>
     <%= featured_section %>
+    <%= render "public/api/v1/portals/home_highlights", portal: @portal, most_viewed_articles: @home_most_viewed_articles, recent_articles: @home_recent_articles %>
     <%= uncategorized_section %>
     <%= categories_section %>
   <% else %>
     <%= featured_section %>
+    <%= render "public/api/v1/portals/home_highlights", portal: @portal, most_viewed_articles: @home_most_viewed_articles, recent_articles: @home_recent_articles %>
     <%= categories_section %>
     <%= uncategorized_section %>
   <% end %>

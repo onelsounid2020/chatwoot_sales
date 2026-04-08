@@ -459,12 +459,18 @@ en:
       in_this_section: In this section
       section_articles: More in this section
       most_viewed_articles: Most viewed articles
+      related_articles: Related articles
+      recently_updated: Recently updated
     article_feedback:
       title: Was this article helpful?
       yes: Yes
       no: No
       thanks: Thanks for your feedback.
       stats: "%{yes} found this helpful • %{no} did not"
+      reason:
+        not_helpful: Did not solve my issue
+        placeholder: What was missing? (optional)
+        send: Send feedback
     footer:
       made_with: Made with
     header:

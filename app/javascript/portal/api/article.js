@@ -6,7 +6,8 @@ class ArticlesAPI {
   }
 
   searchArticles(portalSlug, locale, query) {
-    let baseUrl = `${this.baseUrl}/hc/${portalSlug}/${locale}/articles.json?query=${query}`;
+    const encodedQuery = encodeURIComponent(query);
+    let baseUrl = `${this.baseUrl}/hc/${portalSlug}/${locale}/articles.json?query=${encodedQuery}`;
     return axios.get(baseUrl);
   }
 }

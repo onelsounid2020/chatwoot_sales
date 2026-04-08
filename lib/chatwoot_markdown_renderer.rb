@@ -6,11 +6,14 @@ class ChatwootMarkdownRenderer
     table thead tbody tr th td
     hr
     img
+    div
+    span
   ].freeze
   ALLOWED_ARTICLE_ATTRIBUTES = %w[
     href target rel title
     src alt width height
     colspan rowspan
+    class
   ].freeze
 
   def initialize(content)

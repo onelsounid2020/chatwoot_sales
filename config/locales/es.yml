@@ -445,12 +445,18 @@ es:
       in_this_section: En esta sección
       section_articles: Más artículos de esta sección
       most_viewed_articles: Artículos más vistos
+      related_articles: Artículos relacionados
+      recently_updated: Actualizados recientemente
     article_feedback:
       title: ¿Te sirvió este artículo?
       yes: Sí
       no: No
       thanks: Gracias por tu opinión.
       stats: "%{yes} lo encontraron útil • %{no} no"
+      reason:
+        not_helpful: No resolvió mi problema
+        placeholder: ¿Qué te faltó? (opcional)
+        send: Enviar comentario
     footer:
       made_with: Hecho con
     header:

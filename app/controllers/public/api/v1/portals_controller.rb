@@ -7,6 +7,8 @@ class Public::Api::V1::PortalsController < Public::Api::V1::Portals::BaseControl
 
   def show
     @og_image_url = helpers.set_og_image_url('', @portal.header_text)
+    @home_most_viewed_articles = @portal.articles.published.where(locale: @locale).order_by_views.limit(8)
+    @home_recent_articles = @portal.articles.published.where(locale: @locale).order(updated_at: :desc).limit(8)
   end
 
   def sitemap

@@ -64,6 +64,30 @@ const shouldShowPaginationFooter = computed(() => {
   return !(isFetching.value || isSwitchingPortal.value || hasNoArticles.value);
 });
 
+const feedbackInsights = computed(() => props.meta.feedbackInsights || []);
+const unansweredSearches = computed(() => props.meta.unansweredSearches || []);
+const selectedLocaleName = computed(
+  () =>
+    props.allowedLocales.find(locale => locale.code === route.params.locale)
+      ?.name || route.params.locale
+);
+const selectedCategoryName = computed(() => {
+  if (!route.params.categorySlug) {
+    return t('HELP_CENTER.ARTICLES_PAGE.ARTICLES_HEADER.CATEGORY.ALL');
+  }
+  return (
+    props.categories.find(
+      category => category.slug === route.params.categorySlug
+    )?.name || route.params.categorySlug
+  );
+});
+const insightsScopeText = computed(() =>
+  t('HELP_CENTER.ARTICLES_PAGE.INSIGHTS.SCOPE', {
+    locale: selectedLocaleName.value,
+    category: selectedCategoryName.value,
+  })
+);
+
 const updateRoute = newParams => {
   const { portalSlug, locale, tab, categorySlug } = route.params;
   router.push({
@@ -120,6 +144,11 @@ const handleLocaleAction = value => {
   emit('fetchPortal', value);
 };
 const handlePageChange = page => emit('pageChange', page);
+const formatFeedbackMetric = item =>
+  t('HELP_CENTER.ARTICLES_PAGE.INSIGHTS.LOW_FEEDBACK_ARTICLES.METRIC', {
+    score: item.score,
+    votes: item.totalVotes,
+  });
 
 const navigateToNewArticlePage = () => {
   const { categorySlug, locale } = route.params;
@@ -160,6 +189,79 @@ const navigateToNewArticlePage = () => {
       </div>
     </template>
     <template #content>
+      <div
+        v-if="
+          !isLoading && (feedbackInsights.length || unansweredSearches.length)
+        "
+        class="grid grid-cols-1 gap-3 mb-4 lg:grid-cols-2"
+      >
+        <section
+          v-if="feedbackInsights.length"
+          class="rounded-2xl border border-n-weak bg-n-alpha-2 p-4"
+        >
+          <p class="text-sm font-semibold text-n-slate-12">
+            {{
+              t(
+                'HELP_CENTER.ARTICLES_PAGE.INSIGHTS.LOW_FEEDBACK_ARTICLES.TITLE'
+              )
+            }}
+          </p>
+          <p class="text-xs text-n-slate-11 mt-1">
+            {{
+              t(
+                'HELP_CENTER.ARTICLES_PAGE.INSIGHTS.LOW_FEEDBACK_ARTICLES.SUBTITLE'
+              )
+            }}
+          </p>
+          <p class="text-xs text-n-slate-10 mt-1">{{ insightsScopeText }}</p>
+          <ul class="mt-3 space-y-2">
+            <li
+              v-for="item in feedbackInsights"
+              :key="item.id"
+              class="flex items-center justify-between gap-2 rounded-lg border border-n-weak bg-n-solid-1 px-3 py-2"
+            >
+              <span class="text-sm text-n-slate-12 truncate">
+                {{ item.title }}
+              </span>
+              <span class="text-xs font-medium text-n-ruby-11 shrink-0">
+                {{ formatFeedbackMetric(item) }}
+              </span>
+            </li>
+          </ul>
+        </section>
+        <section
+          v-if="unansweredSearches.length"
+          class="rounded-2xl border border-n-weak bg-n-alpha-2 p-4"
+        >
+          <p class="text-sm font-semibold text-n-slate-12">
+            {{
+              t('HELP_CENTER.ARTICLES_PAGE.INSIGHTS.UNANSWERED_SEARCHES.TITLE')
+            }}
+          </p>
+          <p class="text-xs text-n-slate-11 mt-1">
+            {{
+              t(
+                'HELP_CENTER.ARTICLES_PAGE.INSIGHTS.UNANSWERED_SEARCHES.SUBTITLE'
+              )
+            }}
+          </p>
+          <p class="text-xs text-n-slate-10 mt-1">{{ insightsScopeText }}</p>
+          <ul class="mt-3 space-y-2">
+            <li
+              v-for="item in unansweredSearches"
+              :key="item.query"
+              class="flex items-center justify-between gap-2 rounded-lg border border-n-weak bg-n-solid-1 px-3 py-2"
+            >
+              <span class="text-sm text-n-slate-12 truncate">
+                {{ item.query }}
+              </span>
+              <span class="text-xs font-medium text-n-amber-11 shrink-0">
+                {{ item.noResultsCount }}
+              </span>
+            </li>
+          </ul>
+        </section>
+      </div>
       <div
         v-if="isLoading"
         class="flex items-center justify-center py-10 text-n-slate-11"

@@ -88,6 +88,8 @@ By default, it renders:
     --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'dark') %>;
     --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
     --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-article-title: <%= @portal.config&.dig('article_title_color').presence || '#f8fafc' %>;
+    --portal-article-title-align: <%= @portal.config&.dig('article_title_align') == 'center' ? 'center' : 'left' %>;
     --portal-hero-bg: <%= @portal.config&.dig('hero_bg_color').presence || @portal.color %>;
     --portal-hero-title: <%= @portal.config&.dig('hero_title_color').presence || '#f8fafc' %>;
     --portal-hero-subtitle: <%= @portal.config&.dig('hero_subtitle_color').presence || '#cbd5e1' %>;
@@ -134,6 +136,8 @@ By default, it renders:
     --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'light') %>;
     --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
     --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-article-title: <%= @portal.config&.dig('article_title_color').presence || '#0f172a' %>;
+    --portal-article-title-align: <%= @portal.config&.dig('article_title_align') == 'center' ? 'center' : 'left' %>;
     --portal-hero-bg: <%= @portal.config&.dig('hero_bg_color').presence || @portal.color %>;
     --portal-hero-title: <%= @portal.config&.dig('hero_title_color').presence || '#f8fafc' %>;
     --portal-hero-subtitle: <%= @portal.config&.dig('hero_subtitle_color').presence || '#e2e8f0' %>;
@@ -324,6 +328,38 @@ By default, it renders:
 
   #cw-article-content a {
     color: var(--portal-link-color);
+  }
+
+  #cw-article-content .hc-block {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    padding: 0.875rem 1rem;
+    margin: 1rem 0;
+  }
+
+  #cw-article-content .hc-block-info {
+    background-color: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.35);
+  }
+
+  #cw-article-content .hc-block-warning {
+    background-color: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.38);
+  }
+
+  #cw-article-content .hc-block-success {
+    background-color: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+  }
+
+  #cw-article-content .hc-block-cta {
+    background-color: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+  }
+
+  #portal-article-title {
+    color: var(--portal-article-title);
+    text-align: var(--portal-article-title-align);
   }
   </style>
 

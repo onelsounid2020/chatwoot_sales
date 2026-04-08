@@ -15,6 +15,8 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
     @articles_count = @articles.count
 
     search_articles
+    @articles_count = @articles.count if @search_query.present?
+    track_search_query
     order_by_sort_param
     limit_results
   end
@@ -23,16 +25,20 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
     @og_image_url = helpers.set_og_image_url(@portal.name, @article.title)
     @section_articles = section_articles.limit(10)
     @section_articles_count = section_articles.count
+    @related_articles = related_articles.limit(6)
+    @most_viewed_articles = most_viewed_articles.limit(6)
     @feedback_counts = @article.feedback_counts
     @feedback_submitted = feedback_submitted?
   end
 
   def feedback
     vote = params[:vote].to_s
+    feedback_reason = params[:feedback_reason].to_s
     return redirect_to(article_page_url) unless %w[yes no].include?(vote)
 
     unless feedback_submitted?
       @article.increment_feedback_count(vote)
+      @article.increment_feedback_reason(feedback_reason) if vote == 'no'
       cookies[feedback_cookie_key] = {
         value: vote,
         expires: 1.year.from_now,
@@ -76,9 +82,23 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   def order_by_sort_param
     @articles = if list_params[:sort].present? && list_params[:sort] == 'views'
                   @articles.order_by_views
+                elsif @search_query.present?
+                  @articles
                 else
                   @articles.order_by_position
                 end
+  end
+
+  def track_search_query
+    return if @search_query.blank?
+
+    HelpCenterSearchTerm.track!(
+      portal: @portal,
+      locale: permitted_params[:locale] || @portal.default_locale,
+      category_slug: list_params[:category_slug],
+      query: @search_query,
+      results_count: @articles.size
+    )
   end
 
   def set_article
@@ -115,6 +135,23 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
     else
       @portal.articles.published.where(category_id: nil, locale: @article.locale).order_by_position
     end
+  end
+
+  def related_articles
+    category_scope = if @article.category_id.present?
+                       @portal.articles.published.where(category_id: @article.category_id, locale: @article.locale)
+                     else
+                       @portal.articles.published.where(category_id: nil, locale: @article.locale)
+                     end
+
+    related = category_scope.where.not(id: @article.id).order_by_views
+    return related if related.any?
+
+    @portal.articles.published.where(locale: @article.locale).where.not(id: @article.id).order_by_views
+  end
+
+  def most_viewed_articles
+    @portal.articles.published.where(locale: @article.locale).where.not(id: @article.id).order_by_views
   end
 
   def article_page_url

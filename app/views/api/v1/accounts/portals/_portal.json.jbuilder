@@ -13,6 +13,7 @@ json.header_text_color portal.config&.dig('header_text_color')
 json.home_bg_color portal.config&.dig('home_bg_color')
 json.article_bg_color portal.config&.dig('article_bg_color')
 json.article_text_color portal.config&.dig('article_text_color')
+json.article_title_color portal.config&.dig('article_title_color')
 json.hero_bg_color portal.config&.dig('hero_bg_color')
 json.hero_title_color portal.config&.dig('hero_title_color')
 json.hero_subtitle_color portal.config&.dig('hero_subtitle_color')
@@ -34,6 +35,7 @@ json.advanced_shadow_style portal.config&.dig('advanced_shadow_style')
 json.hero_style portal.config&.dig('hero_style')
 json.category_columns portal.config&.dig('category_columns')
 json.article_link_style portal.config&.dig('article_link_style')
+json.article_title_align portal.config&.dig('article_title_align')
 
 json.config do
   json.allowed_locales do

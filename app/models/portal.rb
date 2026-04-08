@@ -44,6 +44,7 @@ class Portal < ApplicationRecord
     hero_style
     category_columns
     article_link_style
+    article_title_align
   ].freeze
   THEME_CONFIG_KEYS = %w[
     header_bg_color
@@ -51,6 +52,7 @@ class Portal < ApplicationRecord
     home_bg_color
     article_bg_color
     article_text_color
+    article_title_color
     hero_bg_color
     hero_title_color
     hero_subtitle_color

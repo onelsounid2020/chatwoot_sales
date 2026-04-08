@@ -7,6 +7,8 @@ json.slug portal.slug
 json.home_bg_color portal.config&.dig('home_bg_color')
 json.article_bg_color portal.config&.dig('article_bg_color')
 json.article_text_color portal.config&.dig('article_text_color')
+json.article_title_color portal.config&.dig('article_title_color')
+json.article_title_align portal.config&.dig('article_title_align')
 
 json.categories do
   if portal.categories.any?

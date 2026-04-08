@@ -567,6 +567,18 @@
           "TITLE": "No hay artículos en esta categoría",
           "SUBTITLE": "Los artículos de esta categoría aparecerán aquí"
         }
+      },
+      "INSIGHTS": {
+        "SCOPE": "Alcance: {locale} · {category}",
+        "LOW_FEEDBACK_ARTICLES": {
+          "TITLE": "Artículos con baja utilidad",
+          "SUBTITLE": "Artículos que necesitan mejorar su contenido.",
+          "METRIC": "{score}% · {votes} votos"
+        },
+        "UNANSWERED_SEARCHES": {
+          "TITLE": "Búsquedas sin resultados",
+          "SUBTITLE": "Términos que los usuarios buscan y no encuentran."
+        }
       }
     },
     "CATEGORY_PAGE": {
@@ -850,6 +862,17 @@
         },
         "ARTICLE_TEXT_COLOR": {
           "LABEL": "Color del texto del artículo"
+        },
+        "ARTICLE_TITLE_COLOR": {
+          "LABEL": "Color del título del artículo"
+        },
+        "ARTICLE_TITLE_ALIGN": {
+          "LABEL": "Alineación del título del artículo",
+          "PLACEHOLDER": "Selecciona alineación del título",
+          "OPTIONS": {
+            "LEFT": "Izquierda",
+            "CENTER": "Centro"
+          }
         },
         "HERO_BG_COLOR": {
           "LABEL": "Color de fondo del hero"
