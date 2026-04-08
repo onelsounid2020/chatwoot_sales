@@ -1,4 +1,10 @@
 <% if !@is_plain_layout_enabled %>
+<% hero_style = @portal.config&.dig('hero_style').presence || 'soft' %>
+<% hero_outer_classes = case hero_style
+  when 'minimal' then 'pt-8 pb-8 md:pt-10 md:pb-8 min-h-[220px] md:min-h-[250px]'
+  when 'spotlight' then 'pt-12 pb-12 md:pt-20 md:pb-16 min-h-[320px] md:min-h-[380px]'
+  else 'pt-10 pb-10 md:pt-16 md:pb-12 min-h-[280px] md:min-h-[320px]'
+end %>
 <% content_for :head do %>
   <title><%= @portal.display_title %></title>
   <meta name="title" content="<%= @portal.display_title %>">
@@ -11,14 +17,13 @@
   <% end %>
 <% end %>
 <section id="portal-bg" class="w-full bg-white dark:bg-slate-900 shadow-inner">
-  <div id="portal-bg-gradient" class="pt-8 pb-8 md:pt-14 md:pb-6 min-h-[240px] md:min-h-[260px]">
-    <div class="mx-auto max-w-5xl px-4 md:px-8 flex flex-col items-start">
-       <span class="text-sm leading-[24px] font-semibold text-slate-600 dark:text-slate-300 mb-1 <%= @portal.logo.present? ? 'block lg:hidden' : 'hidden' %>"><%= @portal.name %></span>
-      <h1 class="text-2xl md:text-4xl text-slate-900 dark:text-white font-semibold leading-normal">
+  <div id="portal-bg-gradient" class="<%= hero_outer_classes %>">
+    <div id="portal-hero-inner" class="mx-auto max-w-6xl px-4 md:px-8 flex flex-col items-start gap-3">
+      <h1 id="portal-hero-title" class="max-w-3xl text-3xl md:text-5xl text-slate-900 dark:text-white font-semibold leading-tight">
         <%= portal.header_text %>
       </h1>
-      <p class="text-slate-600 dark:text-slate-200 text-start text-lg leading-normal pt-2 pb-4"><%= I18n.t('public_portal.hero.sub_title') %></p>
-      <div id="search-wrap" class="w-full"></div>
+      <p id="portal-hero-subtitle" class="max-w-2xl text-slate-600 dark:text-slate-200 text-start text-base md:text-lg leading-relaxed pt-1 pb-2"><%= I18n.t('public_portal.hero.sub_title') %></p>
+      <div id="search-wrap" class="w-full max-w-3xl"></div>
     </div>
   </div>
 </section>
