@@ -149,6 +149,23 @@ const formatFeedbackMetric = item =>
     score: item.score,
     votes: item.totalVotes,
   });
+const formatUnansweredMetric = item =>
+  t('HELP_CENTER.ARTICLES_PAGE.INSIGHTS.UNANSWERED_SEARCHES.METRIC', {
+    count: item.noResultsCount,
+  });
+
+const openInsightArticle = articleId => {
+  const { tab, categorySlug, locale } = route.params;
+  router.push({
+    name: 'portals_articles_edit',
+    params: {
+      articleSlug: articleId,
+      tab,
+      categorySlug,
+      locale,
+    },
+  });
+};
 
 const navigateToNewArticlePage = () => {
   const { categorySlug, locale } = route.params;
@@ -218,14 +235,31 @@ const navigateToNewArticlePage = () => {
             <li
               v-for="item in feedbackInsights"
               :key="item.id"
-              class="flex items-center justify-between gap-2 rounded-lg border border-n-weak bg-n-solid-1 px-3 py-2"
+              class="flex items-center justify-between gap-2 rounded-lg border border-n-weak bg-n-solid-1 px-3 py-2 hover:bg-n-alpha-2 transition-colors"
             >
-              <span class="text-sm text-n-slate-12 truncate">
-                {{ item.title }}
-              </span>
-              <span class="text-xs font-medium text-n-ruby-11 shrink-0">
-                {{ formatFeedbackMetric(item) }}
-              </span>
+              <button
+                type="button"
+                class="text-left min-w-0 flex-1"
+                @click="openInsightArticle(item.id)"
+              >
+                <span class="block text-sm text-n-slate-12 truncate">
+                  {{ item.title }}
+                </span>
+                <span class="block text-xs font-medium text-n-ruby-11 mt-0.5">
+                  {{ formatFeedbackMetric(item) }}
+                </span>
+              </button>
+              <button
+                type="button"
+                class="text-xs font-semibold text-n-brand shrink-0 hover:underline"
+                @click="openInsightArticle(item.id)"
+              >
+                {{
+                  t(
+                    'HELP_CENTER.ARTICLES_PAGE.INSIGHTS.LOW_FEEDBACK_ARTICLES.OPEN_ARTICLE'
+                  )
+                }}
+              </button>
             </li>
           </ul>
         </section>
@@ -256,7 +290,7 @@ const navigateToNewArticlePage = () => {
                 {{ item.query }}
               </span>
               <span class="text-xs font-medium text-n-amber-11 shrink-0">
-                {{ item.noResultsCount }}
+                {{ formatUnansweredMetric(item) }}
               </span>
             </li>
           </ul>

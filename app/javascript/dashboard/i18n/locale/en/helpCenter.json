@@ -585,11 +585,13 @@
         "LOW_FEEDBACK_ARTICLES": {
           "TITLE": "Articles with low helpful score",
           "SUBTITLE": "Articles that need content improvements.",
-          "METRIC": "{score}% · {votes} votes"
+          "METRIC": "{score}% · {votes} votes",
+          "OPEN_ARTICLE": "Open"
         },
         "UNANSWERED_SEARCHES": {
           "TITLE": "Searches with no results",
-          "SUBTITLE": "Terms users are searching for but cannot find."
+          "SUBTITLE": "Terms users are searching for but cannot find.",
+          "METRIC": "{count} no-result searches"
         }
       }
     },

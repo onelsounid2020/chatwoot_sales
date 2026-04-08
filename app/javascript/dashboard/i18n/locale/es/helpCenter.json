@@ -573,11 +573,13 @@
         "LOW_FEEDBACK_ARTICLES": {
           "TITLE": "Artículos con baja utilidad",
           "SUBTITLE": "Artículos que necesitan mejorar su contenido.",
-          "METRIC": "{score}% · {votes} votos"
+          "METRIC": "{score}% · {votes} votos",
+          "OPEN_ARTICLE": "Abrir"
         },
         "UNANSWERED_SEARCHES": {
           "TITLE": "Búsquedas sin resultados",
-          "SUBTITLE": "Términos que los usuarios buscan y no encuentran."
+          "SUBTITLE": "Términos que los usuarios buscan y no encuentran.",
+          "METRIC": "{count} búsquedas sin resultados"
         }
       }
     },
