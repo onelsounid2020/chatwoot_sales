@@ -23,13 +23,6 @@ By default, it renders:
 
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'portal' %>
-    <style>
-      .appearance-menu[data-current-theme="system"] .check-mark-icon:is(.light-theme, .dark-theme),
-      .appearance-menu[data-current-theme="dark"] .check-mark-icon:is(.light-theme, .system-theme),
-      .appearance-menu[data-current-theme="light"] .check-mark-icon:is(.dark-theme, .system-theme) {
-        display: none;
-      }
-    </style>
     <%= csrf_meta_tags %>
     <% if content_for?(:head) %>
       <%= yield(:head) %>
@@ -41,21 +34,10 @@ By default, it renders:
       <link rel="icon" href="<%= url_for(@portal.logo) %>">
     <% end %>
 
-    <% unless @theme_from_params.blank? %>
-    <%# this adds the theme from params, ensuring that there a localstorage value set %>
-    <%# this will further trigger the next script to ensure color mode is toggled without a FOUC %>
-    <script>localStorage.theme = '<%= @theme_from_params %>';</script>
-    <% end %>
-
     <script>
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        // we can use document.body here but that would mean pushing this script inside the body
-        // since the body is not created yet. This is done to avoid FOUC, at a tiny cost of Time to Interactive
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-        document.documentElement.classList.add('light')
-      }
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      localStorage.theme = 'light';
     </script>
   </head>
   <body>
@@ -98,21 +80,93 @@ By default, it renders:
   <style>
   html.dark {
     --dynamic-portal-bg: <%= generate_portal_bg(@portal.color, 'dark') %>;
-    --dynamic-portal-bg-gradient: <%= generate_gradient_to_bottom('dark') %>;
+    --dynamic-portal-bg-gradient: none;
     --dynamic-hover-bg-color: <%= generate_portal_hover_color(@portal.color , 'dark') %>;
+    --dynamic-hover-color: <%= @portal.color %>;
+    --portal-header-bg: <%= @portal.config&.dig('header_bg_color').presence || '#0f172a' %>;
+    --portal-header-text: <%= @portal.config&.dig('header_text_color').presence || '#f8fafc' %>;
     --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'dark') %>;
     --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
     --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-hero-bg: <%= @portal.config&.dig('hero_bg_color').presence || @portal.color %>;
+    --portal-hero-title: <%= @portal.config&.dig('hero_title_color').presence || '#f8fafc' %>;
+    --portal-hero-subtitle: <%= @portal.config&.dig('hero_subtitle_color').presence || '#cbd5e1' %>;
+    --portal-card-bg: <%= @portal.config&.dig('card_bg_color').presence || '#0f172a' %>;
+    --portal-card-border: <%= @portal.config&.dig('card_border_color').presence || '#1f2937' %>;
+    --portal-card-title: <%= @portal.config&.dig('card_title_color').presence || '#f8fafc' %>;
+    --portal-card-text: <%= @portal.config&.dig('card_text_color').presence || '#cbd5e1' %>;
+    --portal-content-max-width: <%= case @portal.config&.dig('content_width')
+      when 'narrow' then '56rem'
+      when 'wide' then '72rem'
+      else '64rem'
+      end %>;
+    --portal-card-padding-y: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.875rem' : '1.25rem' %>;
+    --portal-card-padding-x: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.75rem' : '0.75rem' %>;
+    --portal-item-padding-y: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.125rem' : '0.25rem' %>;
+    --portal-section-gap: <%= case @portal.config&.dig('advanced_section_spacing')
+      when 'compact' then '1rem'
+      when 'relaxed' then '2rem'
+      else '1.5rem'
+      end %>;
+    --portal-text-align: <%= @portal.config&.dig('text_align') == 'center' ? 'center' : 'left' %>;
+    --portal-hero-align-items: <%= @portal.config&.dig('text_align') == 'center' ? 'center' : 'flex-start' %>;
+    --portal-card-border-width: <%= @portal.config&.dig('card_style') == 'outlined' ? '2px' : '1px' %>;
+    --portal-card-shadow: <%= case @portal.config&.dig('advanced_shadow_style')
+      when 'none' then 'none'
+      when 'medium' then '0 14px 36px rgba(2, 6, 23, 0.18)'
+      else (@portal.config&.dig('card_style') == 'elevated' ? '0 10px 30px rgba(2, 6, 23, 0.10)' : '0 4px 14px rgba(2, 6, 23, 0.08)')
+      end %>;
+    --portal-card-radius: <%= case @portal.config&.dig('advanced_card_radius')
+      when 'sm' then '0.5rem'
+      when 'lg' then '1rem'
+      else (@portal.config&.dig('card_style') == 'elevated' ? '0.875rem' : '0.75rem')
+      end %>;
     --portal-link-color: <%= @portal.color %>;
   }
 
   html.light {
     --dynamic-portal-bg: <%= generate_portal_bg(@portal.color, 'light') %>;
-    --dynamic-portal-bg-gradient: <%= generate_gradient_to_bottom('light') %>;
+    --dynamic-portal-bg-gradient: none;
     --dynamic-hover-bg-color: <%= generate_portal_hover_color(@portal.color , 'light') %>;
+    --dynamic-hover-color: <%= @portal.color %>;
+    --portal-header-bg: <%= @portal.config&.dig('header_bg_color').presence || '#ffffff' %>;
+    --portal-header-text: <%= @portal.config&.dig('header_text_color').presence || '#0f172a' %>;
     --portal-home-bg: <%= @portal.config&.dig('home_bg_color').presence || generate_portal_bg(@portal.color, 'light') %>;
     --portal-article-bg: <%= @portal.config&.dig('article_bg_color').presence || 'transparent' %>;
     --portal-article-text: <%= @portal.config&.dig('article_text_color').presence || 'inherit' %>;
+    --portal-hero-bg: <%= @portal.config&.dig('hero_bg_color').presence || @portal.color %>;
+    --portal-hero-title: <%= @portal.config&.dig('hero_title_color').presence || '#f8fafc' %>;
+    --portal-hero-subtitle: <%= @portal.config&.dig('hero_subtitle_color').presence || '#e2e8f0' %>;
+    --portal-card-bg: <%= @portal.config&.dig('card_bg_color').presence || '#ffffff' %>;
+    --portal-card-border: <%= @portal.config&.dig('card_border_color').presence || '#e2e8f0' %>;
+    --portal-card-title: <%= @portal.config&.dig('card_title_color').presence || '#1e293b' %>;
+    --portal-card-text: <%= @portal.config&.dig('card_text_color').presence || '#475569' %>;
+    --portal-content-max-width: <%= case @portal.config&.dig('content_width')
+      when 'narrow' then '56rem'
+      when 'wide' then '72rem'
+      else '64rem'
+      end %>;
+    --portal-card-padding-y: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.875rem' : '1.25rem' %>;
+    --portal-card-padding-x: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.75rem' : '0.75rem' %>;
+    --portal-item-padding-y: <%= @portal.config&.dig('density_mode') == 'compact' ? '0.125rem' : '0.25rem' %>;
+    --portal-section-gap: <%= case @portal.config&.dig('advanced_section_spacing')
+      when 'compact' then '1rem'
+      when 'relaxed' then '2rem'
+      else '1.5rem'
+      end %>;
+    --portal-text-align: <%= @portal.config&.dig('text_align') == 'center' ? 'center' : 'left' %>;
+    --portal-hero-align-items: <%= @portal.config&.dig('text_align') == 'center' ? 'center' : 'flex-start' %>;
+    --portal-card-border-width: <%= @portal.config&.dig('card_style') == 'outlined' ? '2px' : '1px' %>;
+    --portal-card-shadow: <%= case @portal.config&.dig('advanced_shadow_style')
+      when 'none' then 'none'
+      when 'medium' then '0 14px 36px rgba(15, 23, 42, 0.18)'
+      else (@portal.config&.dig('card_style') == 'elevated' ? '0 10px 30px rgba(15, 23, 42, 0.12)' : '0 4px 14px rgba(15, 23, 42, 0.08)')
+      end %>;
+    --portal-card-radius: <%= case @portal.config&.dig('advanced_card_radius')
+      when 'sm' then '0.5rem'
+      when 'lg' then '1rem'
+      else (@portal.config&.dig('card_style') == 'elevated' ? '0.875rem' : '0.75rem')
+      end %>;
     --portal-link-color: <%= @portal.color %>;
   }
 
@@ -122,7 +176,7 @@ By default, it renders:
 
   /* Portal background */
   #portal-bg {
-    background: var(--dynamic-portal-bg);
+    background: var(--portal-hero-bg);
   }
   /* Portal background gradient */
   #portal-bg-gradient {
@@ -134,9 +188,47 @@ By default, it renders:
   }
 
   /* Header section */
-  #header-action-button:hover,
-  #toggle-appearance:hover,
-  #toggle-theme-button:hover {
+  #portal-header {
+    background-color: var(--portal-header-bg) !important;
+    color: var(--portal-header-text) !important;
+  }
+
+  #portal-header a,
+  #portal-header span,
+  #portal-header button,
+  #portal-header select,
+  #portal-header option {
+    color: var(--portal-header-text) !important;
+  }
+
+  #portal-header svg,
+  #portal-header svg path {
+    stroke: var(--portal-header-text) !important;
+  }
+
+  #portal-header .appearance-menu {
+    background-color: var(--portal-card-bg) !important;
+  }
+
+  #portal-header[data-header-style='transparent'] {
+    background-color: transparent !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  html.light #portal-header[data-header-style='transparent'] {
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  html.dark #portal-header[data-header-style='transparent'] {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  }
+
+  #portal-header .locale-switcher {
+    background-color: transparent !important;
+  }
+
+  #header-action-button:hover {
     color: var(--dynamic-hover-color);
     stroke: var(--dynamic-hover-color);
   }
@@ -145,6 +237,84 @@ By default, it renders:
   }
   #category-block:hover #category-name  {
     color: var(--dynamic-hover-color);
+  }
+
+  #portal-main .portal-card-link:hover,
+  #portal-main .portal-card-link:hover * {
+    color: var(--portal-link-color) !important;
+  }
+
+  #portal-hero-title {
+    color: var(--portal-hero-title);
+  }
+
+  #portal-hero-subtitle {
+    color: var(--portal-hero-subtitle);
+  }
+
+  .portal-card {
+    background-color: var(--portal-card-bg);
+    border-color: var(--portal-card-border);
+    border-width: var(--portal-card-border-width) !important;
+    border-style: solid;
+    border-radius: var(--portal-card-radius) !important;
+    box-shadow: var(--portal-card-shadow);
+    padding-top: var(--portal-card-padding-y) !important;
+    padding-bottom: var(--portal-card-padding-y) !important;
+    padding-left: var(--portal-card-padding-x) !important;
+    padding-right: var(--portal-card-padding-x) !important;
+  }
+
+  .portal-card-title {
+    color: var(--portal-card-title);
+  }
+
+  .portal-card-text,
+  .portal-card-link {
+    color: var(--portal-card-text);
+  }
+
+  #portal-main .portal-card,
+  #portal-main .portal-card-title,
+  #portal-main .portal-card-text,
+  #portal-main #portal-hero-title,
+  #portal-main #portal-hero-subtitle {
+    text-align: var(--portal-text-align);
+  }
+
+  #portal-hero-inner {
+    align-items: var(--portal-hero-align-items) !important;
+  }
+
+  #portal-main .max-w-5xl {
+    max-width: var(--portal-content-max-width) !important;
+  }
+  #portal-main #portal-home-content {
+    row-gap: var(--portal-section-gap) !important;
+  }
+
+  #portal-main #category-item {
+    padding-top: var(--portal-item-padding-y) !important;
+    padding-bottom: var(--portal-item-padding-y) !important;
+  }
+
+  #portal-main {
+    font-family: <%= case @portal.config&.dig('typography_preset')
+      when 'classic' then "'Georgia', 'Times New Roman', serif"
+      when 'reading' then "'Merriweather', 'Georgia', serif"
+      else "'Inter', 'Segoe UI', system-ui, sans-serif"
+      end %>;
+  }
+
+  #portal-main h1,
+  #portal-main h2,
+  #portal-main h3,
+  #portal-main h4 {
+    font-family: <%= case @portal.config&.dig('typography_preset')
+      when 'classic' then "'Georgia', 'Times New Roman', serif"
+      when 'reading' then "'Merriweather', 'Georgia', serif"
+      else "'Inter', 'Segoe UI', system-ui, sans-serif"
+      end %>;
   }
 
   #cw-article-content {

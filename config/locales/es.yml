@@ -402,7 +402,7 @@ es:
       limit_exceeded: 'Document limit exceeded'
       pdf_format_error: 'must be a PDF file'
       pdf_size_error: 'must be less than 10MB'
-      pdf_upload_failed: 'Failed to upload PDF to OpenAI'
+      pdf_upload_failed: 'No se pudo subir el PDF a OpenAI'
       pdf_upload_success: 'PDF uploaded successfully with file_id: %{file_id}'
       pdf_processing_failed: 'Failed to process PDF document %{document_id}: %{error}'
       pdf_processing_success: 'Successfully processed PDF document %{document_id}'
@@ -441,11 +441,21 @@ es:
       others: otros
       by: Por
       no_articles: No hay artículos aquí
+    article_page:
+      in_this_section: En esta sección
+      section_articles: Más artículos de esta sección
+      most_viewed_articles: Artículos más vistos
+    article_feedback:
+      title: ¿Te sirvió este artículo?
+      yes: Sí
+      no: No
+      thanks: Gracias por tu opinión.
+      stats: "%{yes} lo encontraron útil • %{no} no"
     footer:
       made_with: Hecho con
     header:
       go_to_homepage: Sitio web
-      visit_website: Visit website
+      visit_website: Visitar sitio web
       appearance:
         system: Sistema
         light: Claro

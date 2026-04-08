@@ -29,7 +29,36 @@ class Portal < ApplicationRecord
 
   DEFAULT_COLOR = '#1f93ff'.freeze
   HEX_COLOR_REGEX = /\A#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\z/.freeze
-  THEME_CONFIG_KEYS = %w[home_bg_color article_bg_color article_text_color].freeze
+  STYLE_CONFIG_KEYS = %w[
+    visual_template
+    home_layout_mode
+    typography_preset
+    content_width
+    density_mode
+    card_style
+    text_align
+    header_style
+    advanced_section_spacing
+    advanced_card_radius
+    advanced_shadow_style
+    hero_style
+    category_columns
+    article_link_style
+  ].freeze
+  THEME_CONFIG_KEYS = %w[
+    header_bg_color
+    header_text_color
+    home_bg_color
+    article_bg_color
+    article_text_color
+    hero_bg_color
+    hero_title_color
+    hero_subtitle_color
+    card_bg_color
+    card_border_color
+    card_title_color
+    card_text_color
+  ].freeze
 
   belongs_to :account
   has_many :categories, dependent: :destroy_async
@@ -49,7 +78,11 @@ class Portal < ApplicationRecord
 
   scope :active, -> { where(archived: false) }
 
-  CONFIG_JSON_KEYS = (%w[allowed_locales default_locale draft_locales website_token] + THEME_CONFIG_KEYS).freeze
+  CONFIG_JSON_KEYS = (
+    %w[allowed_locales default_locale draft_locales website_token] +
+    THEME_CONFIG_KEYS +
+    STYLE_CONFIG_KEYS
+  ).freeze
 
   def file_base_data
     {

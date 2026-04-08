@@ -1,27 +1,33 @@
+<% article_link_style = portal.config&.dig('article_link_style').presence || 'boxed' %>
+<% article_link_classes = if article_link_style == 'minimal'
+  'group/item rounded-lg border border-transparent px-1 py-1 text-sm leading-6 text-slate-700 transition-all hover:border-transparent hover:bg-transparent dark:text-slate-100 dark:hover:border-transparent dark:hover:bg-transparent'
+else
+  'group/item rounded-xl border border-transparent px-3 py-2 text-sm leading-6 text-slate-700 transition-all hover:border-slate-200 hover:bg-white/80 dark:text-slate-100 dark:hover:border-slate-700 dark:hover:bg-slate-900/60'
+end %>
 <section class="flex flex-col w-full h-full lg:container">
-  <div id="<%= !@is_plain_layout_enabled ? 'category-block' : '' %>" class="flex flex-col gap-8 h-full <%= !@is_plain_layout_enabled ? 'border border-solid border-slate-100 dark:border-slate-800 py-5 px-3 rounded-lg' : '' %>">
-    <div class="flex justify-between items-center w-full <%= !@is_plain_layout_enabled ?  'px-1' : '' %>">
-      <h3 id="<%= !@is_plain_layout_enabled ? 'category-name' : '' %>" class="text-xl text-slate-800 dark:text-slate-50 font-semibold leading-relaxed hover:cursor-pointer <%= @is_plain_layout_enabled ? 'hover:underline' : 'pl-1' %>">
+  <div id="<%= !@is_plain_layout_enabled ? 'category-block' : '' %>" class="portal-card flex h-full flex-col gap-5 rounded-2xl border border-solid border-slate-200/80 bg-white/85 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+    <div class="flex items-center justify-between">
+      <h3 id="<%= !@is_plain_layout_enabled ? 'category-name' : '' %>" class="portal-card-title text-lg font-semibold leading-tight text-slate-900 dark:text-slate-50 <%= @is_plain_layout_enabled ? 'hover:underline' : '' %>">
         <%= I18n.t('public_portal.header.uncategorized') %>
       </h3>
     </div>
-    <div class="-mt-4">
+    <div class="flex flex-1 flex-col gap-1.5">
       <% portal.articles.published.where(category_id: nil).order(position: :asc).take(5).each do |article| %>
       <a
-        class="leading-7 text-slate-700 dark:text-slate-100"
+        class="portal-card-link <%= article_link_classes %>"
         href="<%= generate_article_link(portal.slug, article.slug, @theme_from_params, @is_plain_layout_enabled) %>"
       >
-        <div id="<%= !@is_plain_layout_enabled ? 'category-item' : '' %>" class="flex justify-between hover:cursor-pointer items-center py-1 rounded-lg gap-3  <%= !@is_plain_layout_enabled ? 'px-2' : 'hover:underline' %>">
-          <%= article.title %>
-          <span class="flex items-center font-normal">
+        <div id="<%= !@is_plain_layout_enabled ? 'category-item' : '' %>" class="flex items-start justify-between gap-3">
+          <span class="line-clamp-2"><%= article.title %></span>
+          <span class="mt-1 flex items-center opacity-60 transition-opacity group-hover/item:opacity-100">
             <%= render partial: 'icons/chevron-right' %>
           </span>
         </div>
       </a>
       <% end %>
     </div>
-    <div class="flex justify-between flex-row items-center <%= !@is_plain_layout_enabled && 'px-2' %>">
-      <span class="text-sm font-medium text-slate-600 dark:text-slate-400"><%= render 'public/api/v1/portals/article_count', article_count: portal.articles.published.where(category_id: nil).size %></span>
+    <div class="mt-auto flex items-center justify-between border-t border-slate-200/70 pt-3 dark:border-slate-800">
+      <span class="portal-card-text text-xs font-medium text-slate-600 dark:text-slate-400"><%= render 'public/api/v1/portals/article_count', article_count: portal.articles.published.where(category_id: nil).size %></span>
     </div>
   </div>
 </section>

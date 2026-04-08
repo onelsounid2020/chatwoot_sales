@@ -132,6 +132,29 @@ class Article < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  def feedback_counts
+    feedback_data = meta.to_h.deep_stringify_keys.fetch('feedback', {})
+
+    {
+      yes: feedback_data.fetch('yes', 0).to_i,
+      no: feedback_data.fetch('no', 0).to_i
+    }
+  end
+
+  def increment_feedback_count(vote)
+    return unless %w[yes no].include?(vote)
+
+    with_lock do
+      current_meta = meta.to_h.deep_stringify_keys
+      current_meta['feedback'] ||= {}
+      current_meta['feedback'][vote] = current_meta['feedback'].fetch(vote, 0).to_i + 1
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update_column(:meta, current_meta)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
   def self.update_positions(portal:, positions_hash:)
     return if positions_hash.blank?
 

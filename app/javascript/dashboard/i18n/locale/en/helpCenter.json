@@ -740,6 +740,77 @@
     },
     "PORTAL_SETTINGS": {
       "FORM": {
+        "TABS": {
+          "BASIC": "Basic",
+          "ARTICLES": "Articles",
+          "ADVANCED": "Advanced theme",
+          "DESIGNER": "Designer"
+        },
+        "ADVANCED_DESCRIPTION": "Fine-tune rhythm and surfaces with safe design tokens (no custom CSS).",
+        "ARTICLES_DESCRIPTION": "Configure article reading experience, spacing and typography without touching code.",
+        "DESIGNER_DESCRIPTION": "Control hero mood, card density, and article list behavior through performant presets.",
+        "DESIGNER_PRESET": {
+          "LABEL": "Quick presets",
+          "OPTIONS": {
+            "BALANCED": "Balanced",
+            "CONVERSION": "Conversion",
+            "EDITORIAL": "Editorial",
+            "COGNITO_CLEAN": "Cognito clean",
+            "PICSART_BOLD": "Picsart bold"
+          }
+        },
+        "HERO_STYLE": {
+          "LABEL": "Hero style",
+          "PLACEHOLDER": "Choose hero style",
+          "OPTIONS": {
+            "MINIMAL": "Minimal",
+            "SOFT": "Soft",
+            "SPOTLIGHT": "Spotlight"
+          }
+        },
+        "CATEGORY_COLUMNS": {
+          "LABEL": "Category columns",
+          "PLACEHOLDER": "Choose columns",
+          "OPTIONS": {
+            "2": "2 columns",
+            "3": "3 columns"
+          }
+        },
+        "ARTICLE_LINK_STYLE": {
+          "LABEL": "Article row style",
+          "PLACEHOLDER": "Choose row style",
+          "OPTIONS": {
+            "BOXED": "Boxed",
+            "MINIMAL": "Minimal"
+          }
+        },
+        "ADVANCED_SECTION_SPACING": {
+          "LABEL": "Section spacing",
+          "PLACEHOLDER": "Choose spacing",
+          "OPTIONS": {
+            "COMPACT": "Compact",
+            "REGULAR": "Regular",
+            "RELAXED": "Relaxed"
+          }
+        },
+        "ADVANCED_CARD_RADIUS": {
+          "LABEL": "Card radius",
+          "PLACEHOLDER": "Choose radius",
+          "OPTIONS": {
+            "SM": "Small",
+            "MD": "Medium",
+            "LG": "Large"
+          }
+        },
+        "ADVANCED_SHADOW_STYLE": {
+          "LABEL": "Shadow style",
+          "PLACEHOLDER": "Choose shadow",
+          "OPTIONS": {
+            "NONE": "None",
+            "SOFT": "Soft",
+            "MEDIUM": "Medium"
+          }
+        },
         "AVATAR": {
           "LABEL": "Logo",
           "IMAGE_UPLOAD_ERROR": "Couldn't upload image! Try again",
@@ -779,6 +850,20 @@
         "BRAND_COLOR": {
           "LABEL": "Brand color"
         },
+        "HEADER_BG_COLOR": {
+          "LABEL": "Header background color"
+        },
+        "HEADER_TEXT_COLOR": {
+          "LABEL": "Header text/icon color"
+        },
+        "HEADER_STYLE": {
+          "LABEL": "Header style",
+          "PLACEHOLDER": "Choose header style",
+          "OPTIONS": {
+            "SOLID": "Solid",
+            "TRANSPARENT": "Transparent"
+          }
+        },
         "HOME_BG_COLOR": {
           "LABEL": "Home background color"
         },
@@ -788,6 +873,98 @@
         "ARTICLE_TEXT_COLOR": {
           "LABEL": "Article text color"
         },
+        "HERO_BG_COLOR": {
+          "LABEL": "Hero background color"
+        },
+        "HERO_TITLE_COLOR": {
+          "LABEL": "Hero title color"
+        },
+        "HERO_SUBTITLE_COLOR": {
+          "LABEL": "Hero subtitle color"
+        },
+        "CARD_BG_COLOR": {
+          "LABEL": "Cards background color"
+        },
+        "CARD_BORDER_COLOR": {
+          "LABEL": "Cards border color"
+        },
+        "CARD_TITLE_COLOR": {
+          "LABEL": "Cards title color"
+        },
+        "CARD_TEXT_COLOR": {
+          "LABEL": "Cards text color"
+        },
+        "TYPOGRAPHY_PRESET": {
+          "LABEL": "Typography",
+          "PLACEHOLDER": "Choose typography",
+          "OPTIONS": {
+            "MODERN": "Modern sans",
+            "CLASSIC": "Classic serif",
+            "READING": "Long reading"
+          }
+        },
+        "CONTENT_WIDTH": {
+          "LABEL": "Content width",
+          "PLACEHOLDER": "Choose width",
+          "OPTIONS": {
+            "NARROW": "Narrow",
+            "REGULAR": "Regular",
+            "WIDE": "Wide"
+          }
+        },
+        "DENSITY_MODE": {
+          "LABEL": "Density",
+          "PLACEHOLDER": "Choose density",
+          "OPTIONS": {
+            "COMPACT": "Compact",
+            "COMFORTABLE": "Comfortable"
+          }
+        },
+        "CARD_STYLE": {
+          "LABEL": "Card style",
+          "PLACEHOLDER": "Choose card style",
+          "OPTIONS": {
+            "SOFT": "Soft",
+            "OUTLINED": "Outlined",
+            "ELEVATED": "Elevated"
+          }
+        },
+        "TEXT_ALIGN": {
+          "LABEL": "Text alignment",
+          "PLACEHOLDER": "Choose alignment",
+          "OPTIONS": {
+            "LEFT": "Left",
+            "CENTER": "Center"
+          }
+        },
+        "VISUAL_TEMPLATE": {
+          "LABEL": "Visual template",
+          "PLACEHOLDER": "Choose template",
+          "OPTIONS": {
+            "COGNISM": "Cognism style",
+            "PICSART": "Picsart style",
+            "CUSTOM": "Custom"
+          }
+        },
+        "HOME_LAYOUT_MODE": {
+          "LABEL": "Home layout",
+          "PLACEHOLDER": "Choose home layout",
+          "OPTIONS": {
+            "BALANCED": "Balanced",
+            "CATEGORIES_FIRST": "Categories first",
+            "FEATURED_FOCUS": "Featured focus",
+            "COMPACT": "Compact"
+          }
+        },
+        "PREVIEW": {
+          "LABEL": "Live preview",
+          "HERO_TITLE_SAMPLE": "How can we help your customers today?",
+          "HERO_SUBTITLE_SAMPLE": "This is how your hero section will look with the selected style.",
+          "CARD_TITLE_SAMPLE": "Getting started with your product",
+          "CARD_TEXT_SAMPLE": "A short description of the article block with current spacing and typography.",
+          "HERO_COLORS": "Hero colors",
+          "CARD_COLORS": "Card colors"
+        },
         "THEME_PRESET": {
           "LABEL": "Theme preset",
           "PLACEHOLDER": "Choose a preset",
@@ -795,7 +972,10 @@
           "OPTIONS": {
             "CLEAN": "Clean",
             "OCEAN": "Ocean",
-            "SAND": "Sand"
+            "SAND": "Sand",
+            "MIDNIGHT": "Midnight",
+            "GRAPHITE": "Graphite",
+            "SUNSET": "Sunset"
           }
         },
         "SAVE_CHANGES": "Save changes"

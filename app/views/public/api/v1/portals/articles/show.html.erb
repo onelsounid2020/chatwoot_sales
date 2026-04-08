@@ -35,11 +35,97 @@
 </div>
 <% end %>
 
-<div class="flex max-w-5xl w-full px-4 md:px-8 mx-auto">
-  <article id="cw-article-content" class="article-content flex-grow flex-2 mx-auto text-slate-800 dark:text-slate-50 text-lg max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-0 prose-h3:text-lg prose-code:[&>p]:p-1 prose-code:[&>p]:rounded-sm prose-code:[&>p]:bg-black-100 dark:prose-code:[&>p]:bg-black-600 prose-code:after:content-none prose-code:before:content-none prose dark:prose-invert break-words w-full <%= @is_plain_layout_enabled ? 'py-4' : 'pt-8 pb-12' %>">
-    <%= @parsed_content %>
-  </article>
-  <div class="flex-1" id="cw-hc-toc"></div>
+<div class="max-w-6xl w-full px-4 md:px-8 mx-auto py-6 md:py-8">
+  <div class="grid gap-6 lg:grid-cols-[18rem,minmax(0,1fr)]">
+    <aside class="order-2 lg:order-1 lg:sticky lg:top-24 self-start space-y-4">
+      <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <% category_link_params = {
+          portal_slug: @portal.slug,
+          category_locale: @article.category&.locale,
+          category_slug: @article.category&.slug,
+          theme: @theme_from_params,
+          is_plain_layout_enabled: @is_plain_layout_enabled
+        } %>
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <h2 class="text-sm font-semibold text-slate-900 truncate">
+              <%= I18n.t('public_portal.article_page.in_this_section') %>
+            </h2>
+            <p class="mt-0.5 text-xs text-slate-500 truncate">
+              <%= @article.category&.name || I18n.t('public_portal.header.uncategorized') %>
+              •
+              <%= render 'public/api/v1/portals/article_count', article_count: @section_articles_count %>
+            </p>
+          </div>
+          <% if @article.category.present? %>
+            <a
+              href="<%= generate_category_link(category_link_params) %>"
+              class="shrink-0 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <%= I18n.t('public_portal.common.view_all_articles') %>
+            </a>
+          <% end %>
+        </div>
+        <div class="space-y-2">
+          <% if @section_articles.present? %>
+            <% @section_articles.each do |related_article| %>
+              <a
+                href="<%= generate_article_link(@portal.slug, related_article.slug, @theme_from_params, @is_plain_layout_enabled) %>"
+                class="block rounded-lg px-3 py-2 text-sm transition-colors <%= related_article.id == @article.id ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900' %>"
+              >
+                <%= related_article.title %>
+              </a>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-slate-500 px-1">
+              <%= I18n.t('public_portal.common.no_articles') %>
+            </p>
+          <% end %>
+        </div>
+      </section>
+    </aside>
+
+    <article
+      id="cw-article-content"
+      class="article-content order-1 lg:order-2 rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm text-slate-800 text-lg max-w-none prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-0 prose-h3:text-lg prose-code:[&>p]:p-1 prose-code:[&>p]:rounded-sm prose-code:[&>p]:bg-black-100 prose-code:after:content-none prose-code:before:content-none prose break-words w-full"
+    >
+      <%= @parsed_content %>
+
+      <div class="mt-10 border-t border-slate-200 pt-6 not-prose">
+        <% if flash[:notice].present? %>
+          <p class="mb-3 text-sm font-medium text-emerald-700"><%= flash[:notice] %></p>
+        <% end %>
+        <p class="text-sm font-semibold text-slate-900 mb-3">
+          <%= I18n.t('public_portal.article_feedback.title') %>
+        </p>
+        <div class="flex flex-wrap items-center gap-2">
+          <%= form_with url: "/hc/#{@portal.slug}/articles/#{@article.slug}/feedback", method: :post, local: true, class: 'inline-flex' do %>
+            <%= hidden_field_tag :vote, 'yes' %>
+            <button
+              type="submit"
+              class="rounded-lg border px-3 py-2 text-sm font-medium transition-colors <%= @feedback_submitted ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50' %>"
+              <%= @feedback_submitted ? 'disabled' : '' %>
+            >
+              <%= I18n.t('public_portal.article_feedback.yes') %>
+            </button>
+          <% end %>
+          <%= form_with url: "/hc/#{@portal.slug}/articles/#{@article.slug}/feedback", method: :post, local: true, class: 'inline-flex' do %>
+            <%= hidden_field_tag :vote, 'no' %>
+            <button
+              type="submit"
+              class="rounded-lg border px-3 py-2 text-sm font-medium transition-colors <%= @feedback_submitted ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50' %>"
+              <%= @feedback_submitted ? 'disabled' : '' %>
+            >
+              <%= I18n.t('public_portal.article_feedback.no') %>
+            </button>
+          <% end %>
+        </div>
+        <p class="mt-3 text-xs text-slate-500">
+          <%= I18n.t('public_portal.article_feedback.stats', yes: @feedback_counts[:yes], no: @feedback_counts[:no]) %>
+        </p>
+      </div>
+    </article>
+  </div>
 </div>
 <style>
   .article-content li > p {

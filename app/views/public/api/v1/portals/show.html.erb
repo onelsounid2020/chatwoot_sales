@@ -1,19 +1,48 @@
 <%= render "public/api/v1/portals/hero", portal: @portal %>
-<div class="max-w-5xl w-full flex flex-col flex-grow mx-auto py-8 px-4 md:px-8 gap-6">
-  <%# Featured Articles %>
-  <% if !@is_plain_layout_enabled %>
-    <div><%= render "public/api/v1/portals/featured_articles", articles: @portal.articles, categories: @portal.categories.where(locale: @locale), portal: @portal %></div>
+<% home_layout_mode = @portal.config&.dig('home_layout_mode').presence || 'balanced' %>
+<% section_gap = home_layout_mode == 'compact' ? 'gap-4' : 'gap-6' %>
+<% category_columns = @portal.config&.dig('category_columns').presence || '2' %>
+<% category_column_class = category_columns == '3' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 md:grid-cols-2' %>
+<% category_grid_classes = if home_layout_mode == 'compact'
+  "grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-4"
+else
+  "#{category_column_class} gap-x-6 gap-y-6"
+end %>
+<% show_featured = !@is_plain_layout_enabled && home_layout_mode != 'compact' %>
+<% featured_section = capture do %>
+  <% if show_featured %>
+    <div>
+      <%= render "public/api/v1/portals/featured_articles", articles: @portal.articles, categories: @portal.categories.where(locale: @locale), portal: @portal %>
+    </div>
   <% end %>
-  <%# Categories with articles %>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-    <% @portal.categories.where(locale: @locale).joins(:articles).where(articles:{ status: :published }).order(position: :asc).group('categories.id').each do |category| %>
+<% end %>
+<% categories_section = capture do %>
+  <div class="grid <%= category_grid_classes %>">
+    <% @portal.categories.where(locale: @locale).joins(:articles).where(articles: { status: :published }).order(position: :asc).group('categories.id').each do |category| %>
       <%= render "public/api/v1/portals/category-block", category: category, portal: @portal %>
     <% end %>
   </div>
-  <%# Uncategorized articles %>
+<% end %>
+<% uncategorized_section = capture do %>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-6">
     <% if @portal.articles.where(status: :published, category_id: nil, locale: @locale).count > 0 %>
       <%= render "public/api/v1/portals/uncategorized-block", category: "Uncategorized", portal: @portal %>
     <% end %>
   </div>
+<% end %>
+
+<div id="portal-home-content" class="max-w-6xl w-full flex flex-col flex-grow mx-auto py-8 md:py-10 px-4 md:px-8 <%= section_gap %>">
+  <% if home_layout_mode == 'categories_first' %>
+    <%= categories_section %>
+    <%= featured_section %>
+    <%= uncategorized_section %>
+  <% elsif home_layout_mode == 'featured_focus' %>
+    <%= featured_section %>
+    <%= uncategorized_section %>
+    <%= categories_section %>
+  <% else %>
+    <%= featured_section %>
+    <%= categories_section %>
+    <%= uncategorized_section %>
+  <% end %>
 </div>

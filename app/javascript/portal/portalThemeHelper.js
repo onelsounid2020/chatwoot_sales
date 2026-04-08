@@ -129,15 +129,6 @@ export const initializeMediaQueryListener = () => {
 
 export const initializeTheme = () => {
   if (window.portalConfig.isPlainLayoutEnabled === 'true') return;
-  // start with updating the theme in the header, this will set the current theme on the button
-  // and set the hover color at the start of init, this is set again when the theme is switched
-  switchTheme(localStorage.theme || 'system');
-
-  window.updateThemeInHeader = updateThemeInHeader;
-
-  // add the event listeners for the dropdown toggle and theme buttons
-  initializeThemeHandlers();
-
-  // add the media query listener to update the theme when the system theme changes
-  initializeMediaQueryListener();
+  // We enforce light mode in portal for visual consistency/performance.
+  switchTheme('light');
 };

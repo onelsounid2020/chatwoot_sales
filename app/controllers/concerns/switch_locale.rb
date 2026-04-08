@@ -59,8 +59,9 @@ module SwitchLocale
   def validate_and_get_locale(locale)
     return I18n.default_locale.to_s if locale.blank?
 
+    locale = locale.to_s
     available_locales = I18n.available_locales.map(&:to_s)
-    locale_without_variant = locale.split('_')[0]
+    locale_without_variant = locale.to_s.split(/[-_]/)[0]
 
     if available_locales.include?(locale)
       locale

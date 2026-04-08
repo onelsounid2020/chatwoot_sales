@@ -3,7 +3,7 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   before_action :portal
   before_action :ensure_portal_feature_enabled
   before_action :set_category, except: [:index, :show, :tracking_pixel]
-  before_action :set_article, only: [:show]
+  before_action :set_article, only: [:show, :feedback]
   layout 'portal'
 
   def index
@@ -21,6 +21,27 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
 
   def show
     @og_image_url = helpers.set_og_image_url(@portal.name, @article.title)
+    @section_articles = section_articles.limit(10)
+    @section_articles_count = section_articles.count
+    @feedback_counts = @article.feedback_counts
+    @feedback_submitted = feedback_submitted?
+  end
+
+  def feedback
+    vote = params[:vote].to_s
+    return redirect_to(article_page_url) unless %w[yes no].include?(vote)
+
+    unless feedback_submitted?
+      @article.increment_feedback_count(vote)
+      cookies[feedback_cookie_key] = {
+        value: vote,
+        expires: 1.year.from_now,
+        httponly: true
+      }
+      flash[:notice] = I18n.t('public_portal.article_feedback.thanks')
+    end
+
+    redirect_to article_page_url
   end
 
   def tracking_pixel
@@ -86,6 +107,26 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
 
   def render_article_content(content)
     ChatwootMarkdownRenderer.new(content).render_article
+  end
+
+  def section_articles
+    if @article.category_id.present?
+      @article.category.articles.published.where(locale: @article.locale).order_by_position
+    else
+      @portal.articles.published.where(category_id: nil, locale: @article.locale).order_by_position
+    end
+  end
+
+  def article_page_url
+    helpers.generate_article_link(@portal.slug, @article.slug, @theme_from_params, @is_plain_layout_enabled)
+  end
+
+  def feedback_cookie_key
+    "hc_article_feedback_#{@article.id}"
+  end
+
+  def feedback_submitted?
+    cookies[feedback_cookie_key].present?
   end
 end
 

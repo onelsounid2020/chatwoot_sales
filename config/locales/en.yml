@@ -455,6 +455,16 @@ en:
       others: others
       by: By
       no_articles: There are no articles here
+    article_page:
+      in_this_section: In this section
+      section_articles: More in this section
+      most_viewed_articles: Most viewed articles
+    article_feedback:
+      title: Was this article helpful?
+      yes: Yes
+      no: No
+      thanks: Thanks for your feedback.
+      stats: "%{yes} found this helpful • %{no} did not"
     footer:
       made_with: Made with
     header:
