@@ -61,7 +61,7 @@ module SwitchLocale
 
     locale = locale.to_s
     available_locales = I18n.available_locales.map(&:to_s)
-    locale_without_variant = locale.to_s.split(/[-_]/)[0]
+    locale_without_variant = locale.split(/[-_]/)[0]
 
     if available_locales.include?(locale)
       locale
